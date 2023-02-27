@@ -1,7 +1,9 @@
 plugins {
+    kotlin("kapt")
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("kotlinx-serialization")
+    id("com.google.dagger.hilt.android")
 }
 
 android {
@@ -48,6 +50,9 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+    kapt {
+        correctErrorTypes = true
+    }
 }
 
 dependencies {
@@ -56,6 +61,9 @@ dependencies {
     implementation(Dependencies.lifecycleRuntimeKtx)
     implementation(Dependencies.kotlinxSerialization)
     implementation(Dependencies.kotlinxSerializationRetrofit)
+
+    implementation(Dependencies.hilt)
+    kapt(Dependencies.hiltCompiler)
 
     implementation(Dependencies.material)
     implementation(Dependencies.composeActivity)

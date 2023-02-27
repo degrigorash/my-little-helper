@@ -7,6 +7,8 @@ object Dependencies {
     // Android
     val coreKtx by lazy { "androidx.core:core-ktx:${Versions.coreKtx}" }
     val lifecycleRuntimeKtx by lazy { "androidx.lifecycle:lifecycle-runtime-ktx:${Versions.lifecycleRuntimeKtx}" }
+    val hilt by lazy { "com.google.dagger:hilt-android:${Versions.hilt}" }
+    val hiltCompiler by lazy { "com.google.dagger:hilt-android-compiler:${Versions.hilt}" }
 
     // Compose
     val composeActivity by lazy { "androidx.activity:activity-compose:${Versions.composeActivity}" }

@@ -7,6 +7,7 @@ object Versions {
     const val androidPlugin = "7.4.0"
     const val lifecycleRuntimeKtx = "2.5.1"
     const val material3 = "1.0.1"
+    const val hilt = "2.45"
 
     const val composeCompiler = "1.4.3"
     const val composeActivity = "1.6.1"
