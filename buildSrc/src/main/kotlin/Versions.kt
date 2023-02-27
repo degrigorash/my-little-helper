@@ -1,7 +1,8 @@
 object Versions {
     const val kotlin = "1.8.10"
-    const val kotlinSerialization = "1.5.0"
     const val coreKtx = "1.9.0"
+    const val kotlinxSerialization = "1.5.0"
+    const val kotlinxSerializationRetrofit = "0.8.0"
 
     const val androidPlugin = "7.4.0"
     const val lifecycleRuntimeKtx = "2.5.1"

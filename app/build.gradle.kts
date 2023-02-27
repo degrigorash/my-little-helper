@@ -54,6 +54,8 @@ dependencies {
     implementation(Dependencies.kotlin)
     implementation(Dependencies.coreKtx)
     implementation(Dependencies.lifecycleRuntimeKtx)
+    implementation(Dependencies.kotlinxSerialization)
+    implementation(Dependencies.kotlinxSerializationRetrofit)
 
     implementation(Dependencies.material)
     implementation(Dependencies.composeActivity)

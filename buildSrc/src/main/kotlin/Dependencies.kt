@@ -1,6 +1,8 @@
 object Dependencies {
     // Kotlin
     val kotlin by lazy { "org.jetbrains.kotlin:kotlin-stdlib:${Versions.kotlin}" }
+    val kotlinxSerialization by lazy { "org.jetbrains.kotlinx:kotlinx-serialization-json:${Versions.kotlinxSerialization}" }
+    val kotlinxSerializationRetrofit by lazy { "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:${Versions.kotlinxSerializationRetrofit}" }
 
     // Android
     val coreKtx by lazy { "androidx.core:core-ktx:${Versions.coreKtx}" }
