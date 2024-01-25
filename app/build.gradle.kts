@@ -61,6 +61,7 @@ dependencies {
     implementation(Dependencies.lifecycleRuntimeKtx)
     implementation(Dependencies.kotlinxSerialization)
     implementation(Dependencies.kotlinxSerializationRetrofit)
+    implementation(Dependencies.timber)
 
     implementation(Dependencies.hilt)
     kapt(Dependencies.hiltCompiler)
@@ -69,6 +70,7 @@ dependencies {
     implementation(Dependencies.composeActivity)
     implementation(Dependencies.composeViewModel)
     implementation(Dependencies.composeUi)
+    implementation(Dependencies.composeNavigation)
     implementation(Dependencies.composeUiToolingPreview)
 
     testImplementation(Dependencies.junit)

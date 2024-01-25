@@ -9,12 +9,14 @@ object Dependencies {
     val lifecycleRuntimeKtx by lazy { "androidx.lifecycle:lifecycle-runtime-ktx:${Versions.lifecycleRuntimeKtx}" }
     val hilt by lazy { "com.google.dagger:hilt-android:${Versions.hilt}" }
     val hiltCompiler by lazy { "com.google.dagger:hilt-android-compiler:${Versions.hilt}" }
+    val timber by lazy { "com.jakewharton.timber:timber:${Versions.timber}" }
 
     // Compose
     val composeActivity by lazy { "androidx.activity:activity-compose:${Versions.composeActivity}" }
     val composeViewModel by lazy { "androidx.lifecycle:lifecycle-viewmodel-compose:${Versions.composeViewModel}" }
     val material by lazy { "androidx.compose.material3:material3:${Versions.material3}" }
     val composeUi by lazy { "androidx.compose.ui:ui:${Versions.compose}" }
+    val composeNavigation by lazy { "androidx.navigation:navigation-compose:${Versions.composeNavigation}" }
     val composeUiToolingPreview by lazy { "androidx.compose.ui:ui-tooling-preview:${Versions.compose}" }
     val composeUiTooling by lazy { "androidx.compose.ui:ui-tooling:${Versions.compose}" }
     val composeUiTestManifest by lazy { "androidx.compose.ui:ui-test-manifest:${Versions.compose}" }
