@@ -4,7 +4,7 @@ object Versions {
     const val kotlinxSerialization = "1.5.0"
     const val kotlinxSerializationRetrofit = "0.8.0"
 
-    const val androidPlugin = "7.4.0"
+    const val androidPlugin = "8.2.2"
     const val lifecycleRuntimeKtx = "2.5.1"
     const val material3 = "1.0.1"
     const val hilt = "2.45"
