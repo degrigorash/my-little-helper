@@ -13,6 +13,7 @@ object Dependencies {
     val hilt by lazy { "com.google.dagger:hilt-android:${Versions.hilt}" }
     val hiltCompiler by lazy { "com.google.dagger:hilt-android-compiler:${Versions.hilt}" }
     val timber by lazy { "com.jakewharton.timber:timber:${Versions.timber}" }
+    val datastore by lazy { "androidx.datastore:datastore-preferences:${Versions.datastore}" }
 
     // Compose
     val composeActivity by lazy { "androidx.activity:activity-compose:${Versions.composeActivity}" }

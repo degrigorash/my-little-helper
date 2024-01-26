@@ -12,6 +12,7 @@ object Versions {
     const val material3 = "1.1.2"
     const val hilt = "2.45"
     const val timber = "5.0.1"
+    const val datastore = "1.0.0"
 
     const val composeCompiler = "1.4.3"
     const val composeActivity = "1.8.2"

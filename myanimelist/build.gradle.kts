@@ -41,6 +41,7 @@ dependencies {
     implementation(Dependencies.lifecycleRuntimeKtx)
     implementation(Dependencies.kotlinxSerialization)
     implementation(Dependencies.timber)
+    implementation(Dependencies.datastore)
 
     implementation(Dependencies.kotlinxSerializationRetrofit)
     implementation(Dependencies.retrofit)
