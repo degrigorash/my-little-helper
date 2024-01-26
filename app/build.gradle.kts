@@ -1,3 +1,7 @@
+import Dependencies.kotlinxSerializationRetrofit
+import Dependencies.okhttp3
+import Dependencies.retrofit
+
 plugins {
     kotlin("kapt")
     id("com.android.application")
@@ -33,11 +37,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_18
-        targetCompatibility = JavaVersion.VERSION_18
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_18.toString()
+        jvmTarget = JavaVersion.VERSION_17.toString()
     }
     buildFeatures {
         compose = true
@@ -56,12 +60,17 @@ android {
 }
 
 dependencies {
+    implementation(project(":myanimelist"))
+
     implementation(Dependencies.kotlin)
     implementation(Dependencies.coreKtx)
     implementation(Dependencies.lifecycleRuntimeKtx)
     implementation(Dependencies.kotlinxSerialization)
-    implementation(Dependencies.kotlinxSerializationRetrofit)
     implementation(Dependencies.timber)
+
+    implementation(kotlinxSerializationRetrofit)
+    implementation(retrofit)
+    implementation(okhttp3)
 
     implementation(Dependencies.hilt)
     kapt(Dependencies.hiltCompiler)
@@ -71,6 +80,7 @@ dependencies {
     implementation(Dependencies.composeViewModel)
     implementation(Dependencies.composeUi)
     implementation(Dependencies.composeNavigation)
+    implementation(Dependencies.composeNavigationHilt)
     implementation(Dependencies.composeUiToolingPreview)
 
     testImplementation(Dependencies.junit)

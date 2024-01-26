@@ -1,6 +1,6 @@
 plugins {
     kotlin("kapt")
-    id("com.android.application")
+    id("com.android.library")
     id("org.jetbrains.kotlin.android")
     id("kotlinx-serialization")
     id("com.google.dagger.hilt.android")
@@ -14,9 +14,7 @@ android {
         minSdk = Config.minSdk
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        vectorDrawables {
-            useSupportLibrary = true
-        }
+        consumerProguardFiles("consumer-rules.pro")
     }
 
     buildTypes {
@@ -29,20 +27,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "1.8"
-    }
-    buildFeatures {
-        compose = true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = Versions.composeCompiler
-    }
-    kapt {
-        correctErrorTypes = true
+        jvmTarget = JavaVersion.VERSION_17.toString()
     }
 }
 
@@ -51,8 +40,11 @@ dependencies {
     implementation(Dependencies.coreKtx)
     implementation(Dependencies.lifecycleRuntimeKtx)
     implementation(Dependencies.kotlinxSerialization)
-    implementation(Dependencies.kotlinxSerializationRetrofit)
     implementation(Dependencies.timber)
+
+    implementation(Dependencies.kotlinxSerializationRetrofit)
+    implementation(Dependencies.retrofit)
+    implementation(Dependencies.okhttp3)
 
     implementation(Dependencies.hilt)
     kapt(Dependencies.hiltCompiler)
@@ -61,6 +53,8 @@ dependencies {
     implementation(Dependencies.composeActivity)
     implementation(Dependencies.composeViewModel)
     implementation(Dependencies.composeUi)
+    implementation(Dependencies.composeNavigation)
+    implementation(Dependencies.composeNavigationHilt)
     implementation(Dependencies.composeUiToolingPreview)
 
     testImplementation(Dependencies.junit)

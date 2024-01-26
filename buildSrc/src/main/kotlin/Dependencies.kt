@@ -2,6 +2,9 @@ object Dependencies {
     // Kotlin
     val kotlin by lazy { "org.jetbrains.kotlin:kotlin-stdlib:${Versions.kotlin}" }
     val kotlinxSerialization by lazy { "org.jetbrains.kotlinx:kotlinx-serialization-json:${Versions.kotlinxSerialization}" }
+
+    val retrofit by lazy { "com.squareup.retrofit2:retrofit:${Versions.retrofit}" }
+    val okhttp3 by lazy { "com.squareup.okhttp3:okhttp:${Versions.okhttp3}" }
     val kotlinxSerializationRetrofit by lazy { "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:${Versions.kotlinxSerializationRetrofit}" }
 
     // Android
@@ -17,6 +20,7 @@ object Dependencies {
     val material by lazy { "androidx.compose.material3:material3:${Versions.material3}" }
     val composeUi by lazy { "androidx.compose.ui:ui:${Versions.compose}" }
     val composeNavigation by lazy { "androidx.navigation:navigation-compose:${Versions.composeNavigation}" }
+    val composeNavigationHilt by lazy { "androidx.hilt:hilt-navigation-compose:${Versions.composeNavigationHilt}" }
     val composeUiToolingPreview by lazy { "androidx.compose.ui:ui-tooling-preview:${Versions.compose}" }
     val composeUiTooling by lazy { "androidx.compose.ui:ui-tooling:${Versions.compose}" }
     val composeUiTestManifest by lazy { "androidx.compose.ui:ui-test-manifest:${Versions.compose}" }
