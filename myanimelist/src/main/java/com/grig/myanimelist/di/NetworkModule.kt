@@ -26,23 +26,19 @@ class NetworkModule {
 
     @Singleton
     @Provides
-    fun provideOkHttpClient(
-        tokenManager: TokenManager
-    ) = OkHttpClient.Builder()
+    fun provideOkHttpClientBuilder() = OkHttpClient.Builder()
         .connectTimeout(30, TimeUnit.SECONDS)
         .writeTimeout(30, TimeUnit.SECONDS)
         .readTimeout(30, TimeUnit.SECONDS)
-        .addInterceptor(AuthorizationInterceptor(tokenManager))
-        .build()
 
     @OptIn(ExperimentalSerializationApi::class)
     @Singleton
     @Provides
     @Named("Oauth2")
     fun provideAuthRetrofit(
-        okHttpClient: OkHttpClient
+        okHttpClientBuilder: OkHttpClient.Builder
     ): Retrofit = Retrofit.Builder()
-        .client(okHttpClient)
+        .client(okHttpClientBuilder.build())
         .baseUrl("https://myanimelist.net/")
         .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
         .build()
@@ -52,9 +48,14 @@ class NetworkModule {
     @Provides
     @Named("Mal")
     fun provideMalRetrofit(
-        okHttpClient: OkHttpClient
+        okHttpClientBuilder: OkHttpClient.Builder,
+        tokenManager: TokenManager
     ): Retrofit = Retrofit.Builder()
-        .client(okHttpClient)
+        .client(
+            okHttpClientBuilder
+                .addInterceptor(AuthorizationInterceptor(tokenManager))
+                .build()
+        )
         .baseUrl("https://api.myanimelist.net/")
         .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
         .build()
