@@ -1,30 +1,20 @@
-import Dependencies.kotlinxSerializationRetrofit
-import Dependencies.okhttp3
-import Dependencies.retrofit
-
 plugins {
     kotlin("kapt")
-    id("com.android.application")
+    id("com.android.library")
     id("org.jetbrains.kotlin.android")
     id("kotlinx-serialization")
     id("com.google.dagger.hilt.android")
 }
 
 android {
-    namespace = "com.grig.mylittlehelper"
+    namespace = "com.grig.myanimelist"
     compileSdk = Config.compileSdk
 
     defaultConfig {
-        applicationId = "com.grig.mylittlehelper"
         minSdk = Config.minSdk
-        targetSdk = Config.targetSdk
-        versionCode = Config.versionCode
-        versionName = Config.versionName
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        vectorDrawables {
-            useSupportLibrary = true
-        }
+        consumerProguardFiles("consumer-rules.pro")
     }
 
     buildTypes {
@@ -49,28 +39,19 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion = Versions.composeCompiler
     }
-    packagingOptions {
-        resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
-        }
-    }
-    kapt {
-        correctErrorTypes = true
-    }
 }
 
 dependencies {
-    implementation(project(":myanimelist"))
-
     implementation(Dependencies.kotlin)
     implementation(Dependencies.coreKtx)
     implementation(Dependencies.lifecycleRuntimeKtx)
     implementation(Dependencies.kotlinxSerialization)
     implementation(Dependencies.timber)
+    implementation(Dependencies.datastore)
 
-    implementation(kotlinxSerializationRetrofit)
-    implementation(retrofit)
-    implementation(okhttp3)
+    implementation(Dependencies.kotlinxSerializationRetrofit)
+    implementation(Dependencies.retrofit)
+    implementation(Dependencies.okhttp3)
 
     implementation(Dependencies.hilt)
     kapt(Dependencies.hiltCompiler)
