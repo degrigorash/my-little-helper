@@ -3,7 +3,7 @@ package com.grig.myanimelist.di
 import com.grig.myanimelist.data.AuthorizationInterceptor
 import com.grig.myanimelist.data.MalAuthService
 import com.grig.myanimelist.data.MalService
-import com.grig.myanimelist.data.TokenManager
+import com.grig.myanimelist.data.UserManager
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module
 import dagger.Provides
@@ -22,7 +22,9 @@ import javax.inject.Singleton
 @Module
 class NetworkModule {
 
-    private val json = Json
+    private val json = Json {
+        ignoreUnknownKeys = true
+    }
 
     @Singleton
     @Provides
@@ -49,11 +51,11 @@ class NetworkModule {
     @Named("Mal")
     fun provideMalRetrofit(
         okHttpClientBuilder: OkHttpClient.Builder,
-        tokenManager: TokenManager
+        userManager: UserManager
     ): Retrofit = Retrofit.Builder()
         .client(
             okHttpClientBuilder
-                .addInterceptor(AuthorizationInterceptor(tokenManager))
+                .addInterceptor(AuthorizationInterceptor(userManager))
                 .build()
         )
         .baseUrl("https://api.myanimelist.net/")

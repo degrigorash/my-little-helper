@@ -26,6 +26,9 @@ object Dependencies {
     val composeUiTooling by lazy { "androidx.compose.ui:ui-tooling:${Versions.compose}" }
     val composeUiTestManifest by lazy { "androidx.compose.ui:ui-test-manifest:${Versions.compose}" }
 
+    // Tools
+    val coil by lazy { "io.coil-kt:coil-compose:${Versions.coil}" }
+
     // Testing
     val junit by lazy { "junit:junit:${Versions.junit}" }
     val androidxJunit by lazy { "androidx.test.ext:junit:${Versions.androidxJunit}" }

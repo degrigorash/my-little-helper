@@ -83,6 +83,8 @@ dependencies {
     implementation(Dependencies.composeNavigationHilt)
     implementation(Dependencies.composeUiToolingPreview)
 
+    implementation(Dependencies.coil)
+
     testImplementation(Dependencies.junit)
     androidTestImplementation(Dependencies.androidxJunit)
     androidTestImplementation(Dependencies.espressoCore)

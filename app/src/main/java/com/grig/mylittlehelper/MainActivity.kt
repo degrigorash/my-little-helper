@@ -25,7 +25,7 @@ class MainActivity : ComponentActivity() {
                 MAL_AUTH_REDIRECT_HOST -> {
                     malRepository.getAuthorizationCode(it)?.let { code ->
                         lifecycleScope.launch {
-                            malRepository.getToken(code)
+                            malRepository.auth(code)
                         }
                     }
                 }

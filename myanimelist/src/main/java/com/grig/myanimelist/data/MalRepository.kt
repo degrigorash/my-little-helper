@@ -1,10 +1,11 @@
 package com.grig.myanimelist.data
 
 import android.net.Uri
-import com.grig.myanimelist.data.model.MalUser
+import com.grig.myanimelist.data.model.MalAnime
+import com.grig.myanimelist.data.model.MalUserState
 import com.grig.myanimelist.tools.generateCodeVerifier
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
+import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -12,22 +13,10 @@ import javax.inject.Singleton
 class MalRepository @Inject constructor(
     private val malAuthService: MalAuthService,
     private val malService: MalService,
-    private val tokenManager: TokenManager
+    private val userManager: UserManager
 ) {
 
-    val userFlow: Flow<MalUser?> = tokenManager.accessTokenFlow
-        .map { accessToken ->
-            if (!accessToken.isNullOrBlank()) {
-                val response = malService.getUser()
-                if (response.isSuccessful) {
-                    response.body()
-                } else {
-                    null
-                }
-            } else {
-                null
-            }
-        }
+    val userFlow: Flow<MalUserState> = userManager.userFlow
 
     private val codeVerifier by lazy { generateCodeVerifier() }
     private val codeChallenge by lazy { codeVerifier }
@@ -39,7 +28,7 @@ class MalRepository @Inject constructor(
         "&code_challenge=$codeChallenge" +
         "&code_challenge_method=plain"
 
-    suspend fun getToken(authorizationCode: String) {
+    suspend fun auth(authorizationCode: String) {
         val response = malAuthService.getToken(
             clientId = clientId,
             code = authorizationCode,
@@ -47,15 +36,41 @@ class MalRepository @Inject constructor(
             grantType = "authorization_code"
         )
         if (response.isSuccessful) {
-            val body = response.body()
-            if (body != null) {
-                tokenManager.saveTokens(body.accessToken, body.refreshToken)
+            response.body()?.let {
+                userManager.saveTokens(it.accessToken, it.refreshToken)
             }
+            Timber.wtf("token: ${response.body()?.accessToken}")
+        } else {
+            Timber.e("fail to get token: ${response.errorBody()?.string()}")
+        }
+
+        val userResponse = malService.getUser()
+        if (userResponse.isSuccessful) {
+            userResponse.body()?.let {
+                userManager.saveUser(it)
+            }
+            Timber.wtf("user: ${userResponse.body()?.name}")
+        } else {
+            Timber.e("fail to get user: ${userResponse.errorBody()?.string()}")
         }
     }
 
     fun getAuthorizationCode(uri: Uri?): String? {
         return uri?.getQueryParameter("code")
+    }
+
+    suspend fun getUserAnimeList(): List<MalAnime> {
+        val result = mutableListOf<MalAnime>()
+        var offset = 0
+        var response = malService.getUserAnimeList(offset = offset)
+        while (response.isSuccessful) {
+            val body = response.body()
+            if (body?.data == null || body.data.size < 100) break
+            result.addAll(body.data.map { it.anime })
+            offset += body.data.size
+            response = malService.getUserAnimeList(offset = offset)
+        }
+        return result.sortedByDescending { it.mean }
     }
 
     companion object {

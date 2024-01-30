@@ -4,14 +4,14 @@ import okhttp3.Interceptor
 import okhttp3.Response
 
 internal class AuthorizationInterceptor(
-    private val tokenManager: TokenManager
+    private val userManager: UserManager
 ) : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {
         val req = chain.request()
-        if (tokenManager.accessToken != null) {
+        if (userManager.accessToken != null) {
             val newReq = req.newBuilder()
-                .header("Authorization", "Bearer ${tokenManager.accessToken}")
+                .header("Authorization", "Bearer ${userManager.accessToken}")
                 .build()
             return chain.proceed(newReq)
         }

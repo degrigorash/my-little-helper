@@ -8,6 +8,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.grig.myanimelist.ui.malNavigation
 import com.grig.mylittlehelper.ui.home.HomeScreen
 import com.grig.mylittlehelper.ui.home.HomeViewModel
 
@@ -25,13 +26,14 @@ fun MyLittleHelperNavHost(
         composable("home") {
             HomeScreen(
                 viewModel = hiltViewModel(),
-                // navigateToPhoto = {
-                //     navController.navigate(Screens.Photo.toString())
-                // },
+                navigateToAnimeList = {
+                    navController.navigate("mal_list")
+                },
                 // navigateToManagePhotos = {
                 //     navController.navigate("${Screens.ManagePhotos}/$it")
                 // }
             )
         }
+        malNavigation()
     }
 }

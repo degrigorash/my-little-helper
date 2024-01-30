@@ -33,6 +33,12 @@ android {
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_17.toString()
     }
+    buildFeatures {
+        compose = true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = Versions.composeCompiler
+    }
 }
 
 dependencies {
@@ -57,6 +63,8 @@ dependencies {
     implementation(Dependencies.composeNavigation)
     implementation(Dependencies.composeNavigationHilt)
     implementation(Dependencies.composeUiToolingPreview)
+
+    implementation(Dependencies.coil)
 
     testImplementation(Dependencies.junit)
     androidTestImplementation(Dependencies.androidxJunit)

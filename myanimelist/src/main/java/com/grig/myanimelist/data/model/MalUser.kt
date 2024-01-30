@@ -3,6 +3,11 @@ package com.grig.myanimelist.data.model
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
+sealed class MalUserState {
+    data class Authorized(val user: MalUser) : MalUserState()
+    data object Unauthorized : MalUserState()
+}
+
 @Serializable
 data class MalUser(
     @SerialName("id")
