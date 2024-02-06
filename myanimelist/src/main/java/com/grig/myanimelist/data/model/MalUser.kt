@@ -1,5 +1,6 @@
 package com.grig.myanimelist.data.model
 
+import com.grig.myanimelist.data.model.anime.MalAnimeStatistics
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 

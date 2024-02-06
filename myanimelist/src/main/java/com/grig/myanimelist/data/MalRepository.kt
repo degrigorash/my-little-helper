@@ -1,8 +1,9 @@
 package com.grig.myanimelist.data
 
 import android.net.Uri
-import com.grig.myanimelist.data.model.MalAnime
 import com.grig.myanimelist.data.model.MalUserState
+import com.grig.myanimelist.data.model.anime.MalAnime
+import com.grig.myanimelist.data.model.manga.MalManga
 import com.grig.myanimelist.tools.generateCodeVerifier
 import kotlinx.coroutines.flow.Flow
 import timber.log.Timber
@@ -39,7 +40,6 @@ class MalRepository @Inject constructor(
             response.body()?.let {
                 userManager.saveTokens(it.accessToken, it.refreshToken)
             }
-            Timber.wtf("token: ${response.body()?.accessToken}")
         } else {
             Timber.e("fail to get token: ${response.errorBody()?.string()}")
         }
@@ -49,7 +49,6 @@ class MalRepository @Inject constructor(
             userResponse.body()?.let {
                 userManager.saveUser(it)
             }
-            Timber.wtf("user: ${userResponse.body()?.name}")
         } else {
             Timber.e("fail to get user: ${userResponse.errorBody()?.string()}")
         }
@@ -65,10 +64,26 @@ class MalRepository @Inject constructor(
         var response = malService.getUserAnimeList(offset = offset)
         while (response.isSuccessful) {
             val body = response.body()
-            if (body?.data == null || body.data.size < 100) break
+            if (body?.data == null) break
             result.addAll(body.data.map { it.anime })
             offset += body.data.size
             response = malService.getUserAnimeList(offset = offset)
+            if (body.data.size < 100) break
+        }
+        return result.sortedByDescending { it.mean }
+    }
+
+    suspend fun getUserMangaList(): List<MalManga> {
+        val result = mutableListOf<MalManga>()
+        var offset = 0
+        var response = malService.getUserMangaList(offset = offset)
+        while (response.isSuccessful) {
+            val body = response.body()
+            if (body?.data == null) break
+            result.addAll(body.data.map { it.manga })
+            offset += body.data.size
+            response = malService.getUserMangaList(offset = offset)
+            if (body.data.size < 100) break
         }
         return result.sortedByDescending { it.mean }
     }

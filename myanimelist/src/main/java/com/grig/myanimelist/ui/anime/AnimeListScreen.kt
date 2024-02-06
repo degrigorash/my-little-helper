@@ -1,4 +1,4 @@
-package com.grig.myanimelist.ui
+package com.grig.myanimelist.ui.anime
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -13,8 +13,8 @@ import androidx.compose.ui.Modifier
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun UserListScreen(
-    viewModel: UserListViewModel
+fun AnimeListScreen(
+    viewModel: AnimeListViewModel
 ) {
     val animes = viewModel.animeList.collectAsState().value
 

@@ -28,12 +28,12 @@ fun MyLittleHelperNavHost(
             MyLittleHelperTheme {
                 HomeScreen(
                     viewModel = hiltViewModel(),
-                    navigateToAnimeList = {
-                        navController.navigate("mal_list")
+                    navigateToAnimeList = { username ->
+                        navController.navigate("mal_anime_list/$username")
                     },
-                    // navigateToManagePhotos = {
-                    //     navController.navigate("${Screens.ManagePhotos}/$it")
-                    // }
+                    navigateToMangaList = { username ->
+                        navController.navigate("mal_manga_list/$username")
+                    },
                 )
             }
         }

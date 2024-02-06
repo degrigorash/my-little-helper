@@ -1,4 +1,4 @@
-package com.grig.myanimelist.ui
+package com.grig.myanimelist.ui.anime
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -15,7 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.grig.myanimelist.data.model.MalAnime
+import com.grig.myanimelist.data.model.anime.MalAnime
 
 @Composable
 fun AnimeItem(anime: MalAnime) {

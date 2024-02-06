@@ -18,7 +18,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -41,7 +40,8 @@ fun MalHomeScreen(
     modifier: Modifier = Modifier,
     isDarkTheme: Boolean,
     viewModel: HomeViewModel,
-    navigateToAnimeList: () -> Unit
+    navigateToAnimeList: (username: String?) -> Unit,
+    navigateToMangaList: (username: String?) -> Unit
 ) {
     val uriHandler = LocalUriHandler.current
     val userState = viewModel.malUserFlow.collectAsState(initial = MalUserState.Unauthorized).value
@@ -121,7 +121,13 @@ fun MalHomeScreen(
                     .fillMaxWidth(0.5f)
                     .padding(end = 8.dp),
                 onClick = {
-
+                    navigateToAnimeList(
+                        if (checked && customUsername.isNotBlank()) {
+                            customUsername
+                        } else {
+                            user?.name
+                        }
+                    )
                 },
             ) {
                 Text(
@@ -133,7 +139,13 @@ fun MalHomeScreen(
                     .fillMaxWidth()
                     .padding(start = 8.dp),
                 onClick = {
-
+                    navigateToMangaList(
+                        if (checked && customUsername.isNotBlank()) {
+                            customUsername
+                        } else {
+                            user?.name
+                        }
+                    )
                 },
             ) {
                 Text(

@@ -10,7 +10,8 @@ import androidx.compose.ui.Modifier
 @Composable
 fun HomeScreen(
     viewModel: HomeViewModel,
-    navigateToAnimeList: () -> Unit
+    navigateToAnimeList: (username: String?) -> Unit,
+    navigateToMangaList: (username: String?) -> Unit
 ) {
     val isDarkTheme = isSystemInDarkTheme()
 
@@ -25,7 +26,8 @@ fun HomeScreen(
             MalHomeScreen(
                 isDarkTheme = isDarkTheme,
                 viewModel = viewModel,
-                navigateToAnimeList = navigateToAnimeList
+                navigateToAnimeList = navigateToAnimeList,
+                navigateToMangaList = navigateToMangaList
             )
         }
     }
