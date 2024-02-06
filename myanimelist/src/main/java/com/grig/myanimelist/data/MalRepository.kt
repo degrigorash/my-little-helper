@@ -73,6 +73,10 @@ class MalRepository @Inject constructor(
         return result.sortedByDescending { it.mean }
     }
 
+    suspend fun logout() {
+        userManager.logout()
+    }
+
     companion object {
         const val MAL_AUTH_REDIRECT_HOST = "grigmal.auth"
     }

@@ -40,6 +40,14 @@ class UserManager @Inject constructor(
         }
     }
 
+    suspend fun logout() {
+        dataStore.edit { userData ->
+            userData.remove(ACCESS_TOKEN)
+            userData.remove(REFRESH_TOKEN)
+            userData.remove(USER)
+        }
+    }
+
     companion object {
         val ACCESS_TOKEN = stringPreferencesKey("accessToken")
         val REFRESH_TOKEN = stringPreferencesKey("refreshToken")

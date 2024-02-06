@@ -1,4 +1,4 @@
-package com.grig.mylittlehelper.ui.theme
+package com.grig.myanimelist.ui.theme
 
 import android.app.Activity
 import android.os.Build
@@ -16,33 +16,15 @@ import androidx.compose.ui.platform.LocalView
 import androidx.core.view.ViewCompat
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Primary900,
-    secondary = Primary900,
-    background = Primary800,
-    surface = Primary800,
-    onPrimary = White,
-    onSecondary = White,
-    onBackground = White,
-    onPrimaryContainer = White,
-    onSecondaryContainer = White,
-    onSurface = White
+    primary = Primary
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Primary100,
-    secondary = Primary100,
-    background = Primary50,
-    surface = Primary50,
-    onPrimary = Black,
-    onSecondary = Black,
-    onBackground = Black,
-    onPrimaryContainer = Black,
-    onSecondaryContainer = Black,
-    onSurface = Black
+    primary = Primary
 )
 
 @Composable
-fun MyLittleHelperTheme(
+fun MyAnimeListTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
     dynamicColor: Boolean = false,
@@ -60,7 +42,7 @@ fun MyLittleHelperTheme(
     if (!view.isInEditMode) {
         SideEffect {
             (view.context as Activity).window.statusBarColor = colorScheme.primary.toArgb()
-            ViewCompat.getWindowInsetsController(view)?.isAppearanceLightStatusBars = !darkTheme
+            ViewCompat.getWindowInsetsController(view)?.isAppearanceLightStatusBars = darkTheme
         }
     }
 
