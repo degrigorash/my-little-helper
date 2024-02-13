@@ -23,7 +23,7 @@ class MangaListViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            mangaList.emit(malRepository.getUserMangaList())
+            mangaList.emit(malRepository.getUserMangaList(username))
         }
     }
 }

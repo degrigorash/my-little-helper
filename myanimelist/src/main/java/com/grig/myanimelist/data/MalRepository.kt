@@ -1,6 +1,7 @@
 package com.grig.myanimelist.data
 
 import android.net.Uri
+import com.grig.myanimelist.clientApiId
 import com.grig.myanimelist.data.model.MalUserState
 import com.grig.myanimelist.data.model.anime.MalAnime
 import com.grig.myanimelist.data.model.manga.MalManga
@@ -21,17 +22,16 @@ class MalRepository @Inject constructor(
 
     private val codeVerifier by lazy { generateCodeVerifier() }
     private val codeChallenge by lazy { codeVerifier }
-    private val clientId = "2af73157ee73b08de87664cbf7cfb162"
 
     fun loginUri() = "https://myanimelist.net/v1/oauth2/authorize?" +
         "response_type=code" +
-        "&client_id=$clientId" +
+        "&client_id=$clientApiId" +
         "&code_challenge=$codeChallenge" +
         "&code_challenge_method=plain"
 
     suspend fun auth(authorizationCode: String) {
         val response = malAuthService.getToken(
-            clientId = clientId,
+            clientId = clientApiId,
             code = authorizationCode,
             codeVerifier = codeVerifier,
             grantType = "authorization_code"
@@ -58,31 +58,43 @@ class MalRepository @Inject constructor(
         return uri?.getQueryParameter("code")
     }
 
-    suspend fun getUserAnimeList(): List<MalAnime> {
+    suspend fun getUserAnimeList(username: String?): List<MalAnime> {
         val result = mutableListOf<MalAnime>()
         var offset = 0
-        var response = malService.getUserAnimeList(offset = offset)
+        var response = malService.getUserAnimeList(
+            username = username ?: "@me",
+            offset = offset
+        )
         while (response.isSuccessful) {
             val body = response.body()
             if (body?.data == null) break
             result.addAll(body.data.map { it.anime })
             offset += body.data.size
-            response = malService.getUserAnimeList(offset = offset)
+            response = malService.getUserAnimeList(
+                username = username ?: "@me",
+                offset = offset
+            )
             if (body.data.size < 100) break
         }
         return result.sortedByDescending { it.mean }
     }
 
-    suspend fun getUserMangaList(): List<MalManga> {
+    suspend fun getUserMangaList(username: String?): List<MalManga> {
         val result = mutableListOf<MalManga>()
         var offset = 0
-        var response = malService.getUserMangaList(offset = offset)
+        var response = malService.getUserMangaList(
+            username = username ?: "@me",
+            offset = offset
+        )
         while (response.isSuccessful) {
             val body = response.body()
             if (body?.data == null) break
             result.addAll(body.data.map { it.manga })
             offset += body.data.size
-            response = malService.getUserMangaList(offset = offset)
+            response = malService.getUserMangaList(
+                username = username ?: "@me",
+                offset = offset
+            )
             if (body.data.size < 100) break
         }
         return result.sortedByDescending { it.mean }

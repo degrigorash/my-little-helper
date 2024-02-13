@@ -22,7 +22,7 @@ class AnimeListViewModel @Inject constructor(
     init {
 
         viewModelScope.launch {
-            animeList.emit(malRepository.getUserAnimeList())
+            animeList.emit(malRepository.getUserAnimeList(username))
         }
     }
 }
