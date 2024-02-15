@@ -5,8 +5,8 @@ import kotlinx.serialization.SerialName
 enum class MalMangaMediaType {
     @SerialName("manga")
     Manga,
-    @SerialName("novel")
-    Novel,
+    @SerialName("light_novel")
+    LightNovel,
     @SerialName("one_shot")
     OneShot,
     @SerialName("doujinshi")

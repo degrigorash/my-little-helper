@@ -12,9 +12,12 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.grig.myanimelist.data.model.MalNsfw
+import com.grig.myanimelist.data.model.MalRating
 import com.grig.myanimelist.data.model.anime.MalAnime
 
 @Composable
@@ -28,9 +31,12 @@ fun AnimeItem(anime: MalAnime) {
             modifier = Modifier
                 .width(150.dp)
                 .height(150.dp)
-                .padding(8.dp),
+                .padding(8.dp)
+                .blur(
+                    if (anime.nsfw == MalNsfw.Nsfw || anime.rating == MalRating.Rx) 10.dp else 0.dp,
+                ),
             model = anime.pictures?.medium,
-            contentDescription = null,
+            contentDescription = null
         )
         Column(
             modifier = Modifier
@@ -49,6 +55,17 @@ fun AnimeItem(anime: MalAnime) {
             Text(
                 modifier = Modifier.padding(top = 4.dp),
                 text = anime.status.toString()
+            )
+            anime.rating?.let {
+                Text(
+                    modifier = Modifier.padding(top = 4.dp),
+                    text = it.toString(),
+                    color = it.color
+                )
+            }
+            Text(
+                modifier = Modifier.padding(top = 4.dp),
+                text = anime.nsfw.toString()
             )
         }
     }

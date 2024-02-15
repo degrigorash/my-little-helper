@@ -18,8 +18,9 @@ interface MalService {
         @Path("username") username: String,
         @Query("limit") limit: Int = 100,
         @Query("offset") offset: Int = 0,
+        @Query("nsfw") nsfw: Boolean = true,
         @Query("status") status: String = "plan_to_watch",
-        @Query("fields") fields: String = "alternative_titles,synopsis,mean,rank,popularity,status,num_episodes,studios,pictures"
+        @Query("fields") fields: String = "alternative_titles,synopsis,mean,rank,popularity,status,num_episodes,studios,pictures,rating,nsfw"
     ): Response<MalAnimeList>
 
     @GET("v2/users/{username}/mangalist")
@@ -27,7 +28,8 @@ interface MalService {
         @Path("username") username: String,
         @Query("limit") limit: Int = 100,
         @Query("offset") offset: Int = 0,
+        @Query("nsfw") nsfw: Boolean = true,
         @Query("status") status: String = "plan_to_read",
-        @Query("fields") fields: String = "alternative_titles,synopsis,mean,rank,popularity,media_type,status,num_volumes,num_chapters,pictures"
+        @Query("fields") fields: String = "alternative_titles,synopsis,mean,rank,popularity,media_type,status,num_volumes,num_chapters,pictures,nsfw"
     ): Response<MalMangaList>
 }

@@ -12,10 +12,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.grig.myanimelist.data.model.anime.MalAnime
+import com.grig.myanimelist.data.model.MalNsfw
 import com.grig.myanimelist.data.model.manga.MalManga
 
 @Composable
@@ -29,7 +30,10 @@ fun MangaItem(manga: MalManga) {
             modifier = Modifier
                 .width(150.dp)
                 .height(150.dp)
-                .padding(8.dp),
+                .padding(8.dp)
+                .blur(
+                    if(manga.nsfw == MalNsfw.Nsfw) 10.dp else 0.dp,
+                ),
             model = manga.pictures?.medium,
             contentDescription = null,
         )
@@ -50,6 +54,10 @@ fun MangaItem(manga: MalManga) {
             Text(
                 modifier = Modifier.padding(top = 4.dp),
                 text = manga.status.toString()
+            )
+            Text(
+                modifier = Modifier.padding(top = 4.dp),
+                text = manga.nsfw.toString()
             )
         }
     }
