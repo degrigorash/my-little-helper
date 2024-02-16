@@ -49,6 +49,7 @@ fun MalHomeScreen(
     val user = (userState as? MalUserState.Authorized)?.user
     var checked by rememberSaveable { mutableStateOf(false) }
     var customUsername by rememberSaveable { mutableStateOf("") }
+    val buttonsEnabled = authorized || customUsername.isNotBlank()
 
     Column(
         modifier = modifier
@@ -102,7 +103,7 @@ fun MalHomeScreen(
                         } else {
                             viewModel.malLogin { uriHandler.openUri(it) }
                         }
-                    },
+                    }
                 ) {
                     Text(
                         text = stringResource(if (authorized) R.string.logout else R.string.login)
@@ -129,6 +130,7 @@ fun MalHomeScreen(
                         }
                     )
                 },
+                enabled = buttonsEnabled
             ) {
                 Text(
                     text = stringResource(MalR.string.anime_list)
@@ -147,6 +149,7 @@ fun MalHomeScreen(
                         }
                     )
                 },
+                enabled = buttonsEnabled
             ) {
                 Text(
                     text = stringResource(MalR.string.manga_list)
