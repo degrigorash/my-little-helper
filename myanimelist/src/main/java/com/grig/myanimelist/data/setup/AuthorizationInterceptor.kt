@@ -1,6 +1,7 @@
-package com.grig.myanimelist.data
+package com.grig.myanimelist.data.setup
 
 import com.grig.myanimelist.clientApiId
+import com.grig.myanimelist.data.UserManager
 import okhttp3.Interceptor
 import okhttp3.Response
 

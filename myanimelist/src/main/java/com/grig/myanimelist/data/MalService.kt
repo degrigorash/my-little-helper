@@ -11,7 +11,7 @@ import retrofit2.http.Query
 interface MalService {
 
     @GET("v2/users/@me")
-    suspend fun getUser(): Response<MalUser>
+    suspend fun getUser(): Result<MalUser>
 
     @GET("v2/users/{username}/animelist")
     suspend fun getUserAnimeList(
@@ -21,7 +21,7 @@ interface MalService {
         @Query("nsfw") nsfw: Boolean = true,
         @Query("status") status: String = "plan_to_watch",
         @Query("fields") fields: String = "alternative_titles,synopsis,mean,rank,popularity,status,num_episodes,studios,pictures,rating,nsfw"
-    ): Response<MalAnimeList>
+    ): Result<MalAnimeList>
 
     @GET("v2/users/{username}/mangalist")
     suspend fun getUserMangaList(
@@ -31,5 +31,5 @@ interface MalService {
         @Query("nsfw") nsfw: Boolean = true,
         @Query("status") status: String = "plan_to_read",
         @Query("fields") fields: String = "alternative_titles,synopsis,mean,rank,popularity,media_type,status,num_volumes,num_chapters,pictures,nsfw"
-    ): Response<MalMangaList>
+    ): Result<MalMangaList>
 }
