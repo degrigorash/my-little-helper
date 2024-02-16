@@ -3,9 +3,6 @@ package com.grig.myanimelist.data
 import android.net.Uri
 import com.grig.myanimelist.clientApiId
 import com.grig.myanimelist.data.model.MalUserState
-import com.grig.myanimelist.data.model.anime.MalAnime
-import com.grig.myanimelist.data.model.anime.MalAnimeList
-import com.grig.myanimelist.data.model.manga.MalManga
 import com.grig.myanimelist.tools.generateCodeVerifier
 import kotlinx.coroutines.flow.Flow
 import timber.log.Timber
@@ -70,48 +67,6 @@ class MalRepository @Inject constructor(
         username = username ?: "@me",
         offset = offset
     )
-
-    // suspend fun getUserAnimeList(username: String?): List<MalAnime> {
-    //     val result = mutableListOf<MalAnime>()
-    //     var offset = 0
-    //     var response = malService.getUserAnimeList(
-    //         username = username ?: "@me",
-    //         offset = offset
-    //     )
-    //     while (response.isSuccess) {
-    //         val body = response.getOrNull()
-    //         if (body?.data == null) break
-    //         result.addAll(body.data.map { it.anime })
-    //         offset += body.data.size
-    //         response = malService.getUserAnimeList(
-    //             username = username ?: "@me",
-    //             offset = offset
-    //         )
-    //         if (body.data.size < 100) break
-    //     }
-    //     return result.sortedByDescending { it.mean }
-    // }
-
-    // suspend fun getUserMangaList(username: String?): List<MalManga> {
-    //     val result = mutableListOf<MalManga>()
-    //     var offset = 0
-    //     var response = malService.getUserMangaList(
-    //         username = username ?: "@me",
-    //         offset = offset
-    //     )
-    //     while (response.isSuccessful) {
-    //         val body = response.body()
-    //         if (body?.data == null) break
-    //         result.addAll(body.data.map { it.manga })
-    //         offset += body.data.size
-    //         response = malService.getUserMangaList(
-    //             username = username ?: "@me",
-    //             offset = offset
-    //         )
-    //         if (body.data.size < 100) break
-    //     }
-    //     return result.sortedByDescending { it.mean }
-    // }
 
     suspend fun logout() {
         userManager.logout()
