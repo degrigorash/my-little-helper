@@ -1,5 +1,10 @@
-package com.grig.myanimelist.data.model
+package com.grig.myanimelist.data.model.anime
 
+import com.grig.myanimelist.data.model.MalAlternativeTitles
+import com.grig.myanimelist.data.model.MalNsfw
+import com.grig.myanimelist.data.model.MalPictures
+import com.grig.myanimelist.data.model.MalRating
+import com.grig.myanimelist.data.model.MalStudio
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -20,21 +25,15 @@ data class MalAnime(
     @SerialName("popularity")
     val popularity: Int? = null,
     @SerialName("status")
-    val status: MalStatus = MalStatus.NotYetAired,
+    val status: MalAnimeAiringStatus = MalAnimeAiringStatus.NotYetAired,
     @SerialName("num_episodes")
     val numEpisodes: Int? = null,
     @SerialName("studios")
     val studios: List<MalStudio> = emptyList(),
     @SerialName("main_picture")
-    val pictures: MalPictures? = null
-)
-
-@Serializable
-data class MalAlternativeTitles(
-    @SerialName("synonyms")
-    val synonyms: List<String> = emptyList(),
-    @SerialName("en")
-    val en: String? = null,
-    @SerialName("ja")
-    val ja: String? = null
+    val pictures: MalPictures? = null,
+    @SerialName("rating")
+    val rating: MalRating? = null,
+    @SerialName("nsfw")
+    val nsfw: MalNsfw = MalNsfw.Safe
 )

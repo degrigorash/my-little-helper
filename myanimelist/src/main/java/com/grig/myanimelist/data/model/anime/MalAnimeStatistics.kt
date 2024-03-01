@@ -1,4 +1,4 @@
-package com.grig.myanimelist.data.model
+package com.grig.myanimelist.data.model.anime
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

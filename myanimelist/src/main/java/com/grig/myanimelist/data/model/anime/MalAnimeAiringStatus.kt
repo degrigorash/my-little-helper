@@ -1,8 +1,8 @@
-package com.grig.myanimelist.data.model
+package com.grig.myanimelist.data.model.anime
 
 import kotlinx.serialization.SerialName
 
-enum class MalStatus {
+enum class MalAnimeAiringStatus {
     @SerialName("finished_airing")
     FinishedAiring,
     @SerialName("currently_airing")

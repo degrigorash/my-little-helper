@@ -1,9 +1,10 @@
 package com.grig.myanimelist.di
 
-import com.grig.myanimelist.data.AuthorizationInterceptor
+import com.grig.myanimelist.data.setup.AuthorizationInterceptor
 import com.grig.myanimelist.data.MalAuthService
 import com.grig.myanimelist.data.MalService
 import com.grig.myanimelist.data.UserManager
+import com.grig.myanimelist.data.setup.ResultCallAdapterFactory
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module
 import dagger.Provides
@@ -43,6 +44,7 @@ class NetworkModule {
         .client(okHttpClientBuilder.build())
         .baseUrl("https://myanimelist.net/")
         .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
+        .addCallAdapterFactory(ResultCallAdapterFactory())
         .build()
 
     @OptIn(ExperimentalSerializationApi::class)
@@ -60,6 +62,7 @@ class NetworkModule {
         )
         .baseUrl("https://api.myanimelist.net/")
         .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
+        .addCallAdapterFactory(ResultCallAdapterFactory())
         .build()
 
     @Singleton

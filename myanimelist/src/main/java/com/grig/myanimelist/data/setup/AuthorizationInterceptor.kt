@@ -1,5 +1,7 @@
-package com.grig.myanimelist.data
+package com.grig.myanimelist.data.setup
 
+import com.grig.myanimelist.clientApiId
+import com.grig.myanimelist.data.UserManager
 import okhttp3.Interceptor
 import okhttp3.Response
 
@@ -9,12 +11,16 @@ internal class AuthorizationInterceptor(
 
     override fun intercept(chain: Interceptor.Chain): Response {
         val req = chain.request()
-        if (userManager.accessToken != null) {
+        return if (userManager.accessToken != null) {
             val newReq = req.newBuilder()
                 .header("Authorization", "Bearer ${userManager.accessToken}")
                 .build()
-            return chain.proceed(newReq)
+            chain.proceed(newReq)
+        } else {
+            val newReq = req.newBuilder()
+                .header("X-MAL-CLIENT-ID", clientApiId)
+                .build()
+            chain.proceed(newReq)
         }
-        return chain.proceed(req)
     }
 }

@@ -1,7 +1,7 @@
 package com.grig.myanimelist.data
 
 import android.net.Uri
-import com.grig.myanimelist.data.model.MalAnime
+import com.grig.myanimelist.clientApiId
 import com.grig.myanimelist.data.model.MalUserState
 import com.grig.myanimelist.tools.generateCodeVerifier
 import kotlinx.coroutines.flow.Flow
@@ -20,38 +20,31 @@ class MalRepository @Inject constructor(
 
     private val codeVerifier by lazy { generateCodeVerifier() }
     private val codeChallenge by lazy { codeVerifier }
-    private val clientId = "2af73157ee73b08de87664cbf7cfb162"
 
     fun loginUri() = "https://myanimelist.net/v1/oauth2/authorize?" +
         "response_type=code" +
-        "&client_id=$clientId" +
+        "&client_id=$clientApiId" +
         "&code_challenge=$codeChallenge" +
         "&code_challenge_method=plain"
 
     suspend fun auth(authorizationCode: String) {
         val response = malAuthService.getToken(
-            clientId = clientId,
+            clientId = clientApiId,
             code = authorizationCode,
             codeVerifier = codeVerifier,
             grantType = "authorization_code"
         )
-        if (response.isSuccessful) {
-            response.body()?.let {
-                userManager.saveTokens(it.accessToken, it.refreshToken)
-            }
-            Timber.wtf("token: ${response.body()?.accessToken}")
-        } else {
-            Timber.e("fail to get token: ${response.errorBody()?.string()}")
+        response.getOrNull()?.let {
+            userManager.saveTokens(it.accessToken, it.refreshToken)
+        } ?: {
+            Timber.e("fail to get token: ${response.exceptionOrNull()?.message}")
         }
 
         val userResponse = malService.getUser()
-        if (userResponse.isSuccessful) {
-            userResponse.body()?.let {
-                userManager.saveUser(it)
-            }
-            Timber.wtf("user: ${userResponse.body()?.name}")
-        } else {
-            Timber.e("fail to get user: ${userResponse.errorBody()?.string()}")
+        userResponse.getOrNull()?.let {
+            userManager.saveUser(it)
+        } ?: {
+            Timber.e("fail to get user: ${userResponse.exceptionOrNull()?.message}")
         }
     }
 
@@ -59,18 +52,24 @@ class MalRepository @Inject constructor(
         return uri?.getQueryParameter("code")
     }
 
-    suspend fun getUserAnimeList(): List<MalAnime> {
-        val result = mutableListOf<MalAnime>()
-        var offset = 0
-        var response = malService.getUserAnimeList(offset = offset)
-        while (response.isSuccessful) {
-            val body = response.body()
-            if (body?.data == null || body.data.size < 100) break
-            result.addAll(body.data.map { it.anime })
-            offset += body.data.size
-            response = malService.getUserAnimeList(offset = offset)
-        }
-        return result.sortedByDescending { it.mean }
+    suspend fun getUserAnimeList(
+        username: String?,
+        offset: Int
+    ) = malService.getUserAnimeList(
+        username = username ?: "@me",
+        offset = offset
+    )
+
+    suspend fun getUserMangaList(
+        username: String?,
+        offset: Int
+    ) = malService.getUserMangaList(
+        username = username ?: "@me",
+        offset = offset
+    )
+
+    suspend fun logout() {
+        userManager.logout()
     }
 
     companion object {

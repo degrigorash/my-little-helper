@@ -11,6 +11,7 @@ import androidx.navigation.compose.rememberNavController
 import com.grig.myanimelist.ui.malNavigation
 import com.grig.mylittlehelper.ui.home.HomeScreen
 import com.grig.mylittlehelper.ui.home.HomeViewModel
+import com.grig.mylittlehelper.ui.theme.MyLittleHelperTheme
 
 @Composable
 fun MyLittleHelperNavHost(
@@ -24,15 +25,17 @@ fun MyLittleHelperNavHost(
         startDestination = startDestination
     ) {
         composable("home") {
-            HomeScreen(
-                viewModel = hiltViewModel(),
-                navigateToAnimeList = {
-                    navController.navigate("mal_list")
-                },
-                // navigateToManagePhotos = {
-                //     navController.navigate("${Screens.ManagePhotos}/$it")
-                // }
-            )
+            MyLittleHelperTheme {
+                HomeScreen(
+                    viewModel = hiltViewModel(),
+                    navigateToAnimeList = { username ->
+                        navController.navigate("mal_anime_list/$username")
+                    },
+                    navigateToMangaList = { username ->
+                        navController.navigate("mal_manga_list/$username")
+                    },
+                )
+            }
         }
         malNavigation()
     }
