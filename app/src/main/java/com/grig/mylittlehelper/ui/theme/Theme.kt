@@ -16,22 +16,36 @@ import androidx.compose.ui.platform.LocalView
 import androidx.core.view.ViewCompat
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
+    primary = Primary900,
+    secondary = Primary900,
+    background = Primary800,
+    surface = Primary800,
+    onPrimary = White,
+    onSecondary = White,
+    onBackground = White,
+    onPrimaryContainer = White,
+    onSecondaryContainer = White,
+    onSurface = White
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40
+    primary = Primary200,
+    secondary = Primary200,
+    background = Primary50,
+    surface = Primary50,
+    onPrimary = Black,
+    onSecondary = Black,
+    onBackground = Black,
+    onPrimaryContainer = Black,
+    onSecondaryContainer = Black,
+    onSurface = Black
 )
 
 @Composable
 fun MyLittleHelperTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
@@ -46,7 +60,7 @@ fun MyLittleHelperTheme(
     if (!view.isInEditMode) {
         SideEffect {
             (view.context as Activity).window.statusBarColor = colorScheme.primary.toArgb()
-            ViewCompat.getWindowInsetsController(view)?.isAppearanceLightStatusBars = darkTheme
+            ViewCompat.getWindowInsetsController(view)?.isAppearanceLightStatusBars = !darkTheme
         }
     }
 

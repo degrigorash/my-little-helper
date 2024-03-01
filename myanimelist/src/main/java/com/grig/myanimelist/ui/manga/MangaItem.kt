@@ -1,4 +1,4 @@
-package com.grig.myanimelist.ui
+package com.grig.myanimelist.ui.manga
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -12,13 +12,15 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.grig.myanimelist.data.model.MalAnime
+import com.grig.myanimelist.data.model.MalNsfw
+import com.grig.myanimelist.data.model.manga.MalManga
 
 @Composable
-fun AnimeItem(anime: MalAnime) {
+fun MangaItem(manga: MalManga) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -28,8 +30,11 @@ fun AnimeItem(anime: MalAnime) {
             modifier = Modifier
                 .width(150.dp)
                 .height(150.dp)
-                .padding(8.dp),
-            model = anime.pictures?.medium,
+                .padding(8.dp)
+                .blur(
+                    if(manga.nsfw == MalNsfw.Nsfw) 10.dp else 0.dp,
+                ),
+            model = manga.pictures?.medium,
             contentDescription = null,
         )
         Column(
@@ -37,18 +42,22 @@ fun AnimeItem(anime: MalAnime) {
                 .fillMaxWidth()
                 .padding(end = 8.dp, top = 8.dp)
         ) {
-            Text(text = "${anime.title} (${anime.numEpisodes.toString()})")
+            Text(text = "${manga.title} (${manga.numVolumes.toString()})")
             Text(
                 modifier = Modifier.padding(top = 4.dp),
-                text = anime.mean.toString()
+                text = manga.mean.toString()
             )
             Text(
                 modifier = Modifier.padding(top = 4.dp),
-                text = "Rank: ${anime.rank}, Popularity: ${anime.popularity}"
+                text = "Rank: ${manga.rank}, Popularity: ${manga.popularity}"
             )
             Text(
                 modifier = Modifier.padding(top = 4.dp),
-                text = anime.status.toString()
+                text = manga.status.toString()
+            )
+            Text(
+                modifier = Modifier.padding(top = 4.dp),
+                text = manga.nsfw.toString()
             )
         }
     }

@@ -12,9 +12,15 @@ class HomeViewModel @Inject constructor(
     private val malRepository: MalRepository
 ) : ViewModel() {
 
-    val userFlow = malRepository.userFlow
+    val malUserFlow = malRepository.userFlow
 
-    fun tryLogin(openUri: (String) -> Unit) {
+    fun malLogin(openUri: (String) -> Unit) {
         openUri(malRepository.loginUri())
+    }
+
+    fun malLogout() {
+        viewModelScope.launch {
+            malRepository.logout()
+        }
     }
 }

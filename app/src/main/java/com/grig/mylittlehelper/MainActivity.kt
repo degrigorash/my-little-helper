@@ -6,9 +6,9 @@ import androidx.activity.compose.setContent
 import androidx.lifecycle.lifecycleScope
 import com.grig.myanimelist.data.MalRepository
 import com.grig.myanimelist.data.MalRepository.Companion.MAL_AUTH_REDIRECT_HOST
-import com.grig.mylittlehelper.ui.theme.MyLittleHelperTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -26,18 +26,16 @@ class MainActivity : ComponentActivity() {
                     malRepository.getAuthorizationCode(it)?.let { code ->
                         lifecycleScope.launch {
                             malRepository.auth(code)
+                            intent.data = null
                         }
                     }
                 }
-
                 else -> {}
             }
         }
 
         setContent {
-            MyLittleHelperTheme {
-                MyLittleHelperNavHost()
-            }
+            MyLittleHelperNavHost()
         }
     }
 }
