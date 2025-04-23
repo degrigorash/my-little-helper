@@ -7,7 +7,7 @@ object Versions {
     const val retrofit = "2.9.0"
     const val okhttp3 = "4.12.0"
 
-    const val androidPlugin = "8.2.2"
+    const val androidPlugin = "8.9.1"
     const val lifecycleRuntimeKtx = "2.5.1"
     const val material3 = "1.2.0-rc01"
     const val hilt = "2.50"
