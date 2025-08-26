@@ -17,6 +17,8 @@ enum class MalMangaMediaType {
     Manhua,
     @SerialName("oel")
     Oel,
+    @SerialName("novel")
+    Novel,
     @SerialName("unknown")
     Unknown
 }
