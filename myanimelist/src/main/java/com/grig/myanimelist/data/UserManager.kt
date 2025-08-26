@@ -16,7 +16,7 @@ import javax.inject.Inject
 import javax.inject.Named
 
 class UserManager @Inject constructor(
-    @Named("AuthDataStore")
+    @param:Named("AuthDataStore")
     private val dataStore: DataStore<Preferences>
 ) {
 
