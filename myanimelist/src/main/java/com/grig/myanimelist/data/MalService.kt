@@ -1,9 +1,8 @@
 package com.grig.myanimelist.data
 
-import com.grig.myanimelist.data.model.anime.MalAnimeList
 import com.grig.myanimelist.data.model.MalUser
+import com.grig.myanimelist.data.model.anime.MalAnimeList
 import com.grig.myanimelist.data.model.manga.MalMangaList
-import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query

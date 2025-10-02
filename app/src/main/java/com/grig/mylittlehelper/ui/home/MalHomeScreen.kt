@@ -1,6 +1,7 @@
 package com.grig.mylittlehelper.ui.home
 
 import androidx.compose.foundation.border
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -38,11 +39,11 @@ import com.grig.myanimelist.R as MalR
 @Composable
 fun MalHomeScreen(
     modifier: Modifier = Modifier,
-    isDarkTheme: Boolean,
-    viewModel: HomeViewModel,
+    viewModel: MalHomeViewModel,
     navigateToAnimeList: (username: String?) -> Unit,
     navigateToMangaList: (username: String?) -> Unit
 ) {
+    val isDarkTheme = isSystemInDarkTheme()
     val uriHandler = LocalUriHandler.current
     val userState = viewModel.malUserFlow.collectAsState(initial = MalUserState.Unauthorized).value
     val authorized = userState is MalUserState.Authorized

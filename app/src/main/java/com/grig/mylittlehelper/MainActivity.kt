@@ -8,7 +8,6 @@ import com.grig.myanimelist.data.MalRepository
 import com.grig.myanimelist.data.MalRepository.Companion.MAL_AUTH_REDIRECT_HOST
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
