@@ -2,4 +2,6 @@
     <string name="app_name">MyLittleHelper</string>
     <string name="login">Login</string>
     <string name="logout">Logout</string>
+    <string name="mal_button">MyAnimeList</string>
+    <string name="danish_button">Dansk</string>
 </resources>

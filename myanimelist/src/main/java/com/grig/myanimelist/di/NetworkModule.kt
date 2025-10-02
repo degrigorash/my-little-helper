@@ -1,9 +1,9 @@
 package com.grig.myanimelist.di
 
-import com.grig.myanimelist.data.setup.AuthorizationInterceptor
 import com.grig.myanimelist.data.MalAuthService
 import com.grig.myanimelist.data.MalService
 import com.grig.myanimelist.data.UserManager
+import com.grig.myanimelist.data.setup.AuthorizationInterceptor
 import com.grig.myanimelist.data.setup.ResultCallAdapterFactory
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module

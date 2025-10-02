@@ -1,4 +1,4 @@
-package com.grig.myanimelist.ui.theme
+package com.grig.danish.ui.theme
 
 import android.app.Activity
 import android.os.Build
@@ -24,7 +24,7 @@ private val LightColorScheme = lightColorScheme(
 )
 
 @Composable
-fun MyAnimeListTheme(
+fun DanishTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
     dynamicColor: Boolean = false,
