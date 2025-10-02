@@ -47,6 +47,8 @@ android {
 }
 
 dependencies {
+    implementation(project(":core"))
+
     implementation(Dependencies.kotlin)
     implementation(Dependencies.coreKtx)
     implementation(Dependencies.lifecycleRuntimeKtx)
@@ -57,6 +59,7 @@ dependencies {
     implementation(Dependencies.kotlinxSerializationRetrofit)
     implementation(Dependencies.retrofit)
     implementation(Dependencies.okhttp3)
+    implementation(Dependencies.retrofitScalars)
 
     implementation(Dependencies.hilt)
     kapt(Dependencies.hiltCompiler)

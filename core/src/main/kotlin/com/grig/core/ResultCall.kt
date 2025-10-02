@@ -1,4 +1,4 @@
-package com.grig.myanimelist.data.setup
+package com.grig.core
 
 import okhttp3.Request
 import okio.Timeout

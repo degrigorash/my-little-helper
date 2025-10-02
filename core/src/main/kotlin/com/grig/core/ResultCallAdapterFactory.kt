@@ -1,4 +1,4 @@
-package com.grig.myanimelist.data.setup
+package com.grig.core
 
 import retrofit2.Call
 import retrofit2.CallAdapter
