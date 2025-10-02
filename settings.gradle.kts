@@ -16,3 +16,4 @@ rootProject.name = "MyLittleHelper"
 include(":app")
 include(":myanimelist")
 include(":danish")
+include(":core")

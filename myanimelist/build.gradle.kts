@@ -47,6 +47,8 @@ android {
 }
 
 dependencies {
+    implementation(project(":core"))
+
     implementation(Dependencies.kotlin)
     implementation(Dependencies.coreKtx)
     implementation(Dependencies.lifecycleRuntimeKtx)

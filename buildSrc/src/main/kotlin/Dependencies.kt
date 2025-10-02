@@ -6,6 +6,7 @@ object Dependencies {
     val retrofit by lazy { "com.squareup.retrofit2:retrofit:${Versions.retrofit}" }
     val okhttp3 by lazy { "com.squareup.okhttp3:okhttp:${Versions.okhttp3}" }
     val kotlinxSerializationRetrofit by lazy { "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:${Versions.kotlinxSerializationRetrofit}" }
+    val retrofitScalars by lazy { "com.squareup.retrofit2:converter-scalars:${Versions.retrofitScalars}" }
 
     // Android
     val coreKtx by lazy { "androidx.core:core-ktx:${Versions.coreKtx}" }

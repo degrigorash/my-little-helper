@@ -21,6 +21,5 @@ fun DanishHome(
         modifier = modifier
             .background(Primary)
     ) {
-
     }
 }
