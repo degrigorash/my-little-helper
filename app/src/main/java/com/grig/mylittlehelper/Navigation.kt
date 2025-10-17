@@ -17,7 +17,8 @@ import com.grig.mylittlehelper.ui.theme.MyLittleHelperTheme
 fun MyLittleHelperNavHost(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
-    startDestination: String = "home"
+    startDestination: String = "home",
+    saveStartScreen: (String) -> Unit = {}
 ) {
     NavHost(
         modifier = modifier,
@@ -28,9 +29,11 @@ fun MyLittleHelperNavHost(
             MyLittleHelperTheme {
                 HomeScreen(
                     navigateToMal = {
+                        saveStartScreen("mal_home")
                         navController.navigate("mal_home")
                     },
                     navigateToDanish = {
+                        saveStartScreen("danish_home")
                         navController.navigate("danish_home")
                     }
                 )

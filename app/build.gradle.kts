@@ -87,6 +87,7 @@ dependencies {
     implementation(Dependencies.composeNavigation)
     implementation(Dependencies.composeNavigationHilt)
     implementation(Dependencies.composeUiToolingPreview)
+    implementation(Dependencies.datastore)
 
     implementation(Dependencies.coil)
 
