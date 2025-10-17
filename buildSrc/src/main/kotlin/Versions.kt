@@ -31,4 +31,6 @@ object Versions {
     const val espressoCore = "3.7.0"
 
     const val benManesVersions = "0.52.0"
+
+    const val media3 = "1.4.1"
 }

@@ -72,6 +72,8 @@ dependencies {
     implementation(Dependencies.composeNavigationHilt)
     implementation(Dependencies.composeUiToolingPreview)
 
+    implementation(Dependencies.media3Exoplayer)
+
     implementation(Dependencies.coil)
 
     testImplementation(Dependencies.junit)

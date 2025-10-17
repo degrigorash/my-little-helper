@@ -15,6 +15,7 @@ object Dependencies {
     val hiltCompiler by lazy { "com.google.dagger:hilt-android-compiler:${Versions.hilt}" }
     val timber by lazy { "com.jakewharton.timber:timber:${Versions.timber}" }
     val datastore by lazy { "androidx.datastore:datastore-preferences:${Versions.datastore}" }
+    val media3Exoplayer by lazy { "androidx.media3:media3-exoplayer:${Versions.media3}" }
 
     // Compose
     val composeActivity by lazy { "androidx.activity:activity-compose:${Versions.composeActivity}" }
