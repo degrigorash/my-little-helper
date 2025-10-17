@@ -4,7 +4,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.grig.danish.ui.theme.DanishTheme
-import com.grig.danish.ui.word.DanishTestWordSoundScreen
+import com.grig.danish.ui.sound.DanishTestWordSoundScreen
 
 fun NavGraphBuilder.danishNavigation() {
 //    composable("danish_home") {
