@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -26,9 +27,27 @@ fun DanishTestWordSoundScreen(
     viewModel: DanishTestWordViewModel,
     modifier: Modifier = Modifier
 ) {
+    val context = LocalContext.current
+
+    LaunchedEffect(Unit) {
+        viewModel.event.collect {
+            when (it) {
+                WordEvent.Loading -> {
+                }
+
+                is WordEvent.Success -> {
+                    OneShotAudioPlayer(context).play(it.link)
+                }
+
+                is WordEvent.Error -> {
+                }
+            }
+        }
+    }
 
     DanishTestWordSound(
-        modifier = modifier,
+        modifier = modifier
+            .systemBarsPadding(),
         onMicClick = viewModel::onMicClick
     )
 }
@@ -44,27 +63,7 @@ fun DanishTestWordSound(
     modifier: Modifier = Modifier,
     onMicClick: (word: String) -> Unit
 ) {
-    val context = LocalContext.current
     var word by remember { mutableStateOf("") }
-
-//    LaunchedEffect(Unit) {
-//        viewModel.event.collect {
-//            when (it) {
-//                LoginCharityEmailEvent.Exit -> {
-//                    back()
-//                }
-//
-//                LoginCharityEmailEvent.Next -> {
-//                    next()
-//                }
-//
-//                is LoginCharityEmailEvent.Partner -> {
-//                    partner = it.partnerUrl to it.email
-//                    showPartnerDialog = true
-//                }
-//            }
-//        }
-//    }
 
     Column(
         modifier = modifier
@@ -83,7 +82,6 @@ fun DanishTestWordSound(
                 .wrapContentSize()
                 .clickable {
                     onMicClick(word)
-                    OneShotAudioPlayer(context).play("")
                 },
             painter = painterResource(R.drawable.ic_talk),
             contentDescription = ""
