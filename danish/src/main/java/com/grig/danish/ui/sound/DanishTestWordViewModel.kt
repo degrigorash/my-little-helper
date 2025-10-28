@@ -22,22 +22,12 @@ class DanishTestWordViewModel @Inject constructor(
         viewModelScope.launch {
             _event.emit(WordEvent.Loading)
             repository.word(word)
-                .onSuccess {
-                    _event.emit(
-                        WordEvent.Success(findLink(it))
-                    )
+                .onSuccess { link ->
+                    _event.emit(WordEvent.Success(link))
                 }
                 .onFailure {
-                    WordEvent.Error
+                    _event.emit(WordEvent.Error)
                 }
         }
-    }
-
-    private fun findLink(code: String): String {
-        val linkPart = code
-            .substringBefore(".mp3")
-            .substringAfter("audio id")
-            .substringAfter("https://")
-        return "https://${linkPart}.mp3"
     }
 }
