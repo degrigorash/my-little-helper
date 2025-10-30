@@ -14,7 +14,7 @@ import javax.inject.Inject
 
 class DanishRepository @Inject constructor(
     private val service: DanishService,
-    @ApplicationContext private val appContext: Context
+    @param:ApplicationContext private val appContext: Context
 ) {
 
     suspend fun word(word: String): Result<String> {

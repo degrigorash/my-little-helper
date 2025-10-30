@@ -34,6 +34,6 @@ class DataStoreModule {
     }
 
     enum class DataStoreKeys(val value: String) {
-        START_SCREEN("START_SCREEN"),
+//        START_SCREEN("START_SCREEN"),
     }
 }

@@ -1,4 +1,4 @@
-package com.grig.mylittlehelper.ui.home
+package com.grig.myanimelist.ui.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
