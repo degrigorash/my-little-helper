@@ -1,4 +1,4 @@
-package com.grig.core
+package com.grig.core.network
 
 import retrofit2.Call
 import retrofit2.CallAdapter
