@@ -2,12 +2,12 @@ package com.grig.danish.ui.quiz
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import androidx.navigation.toRoute
-import com.grig.danish.DanishRoute
+import androidx.lifecycle.viewModelScope
 import com.grig.danish.data.DanishRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -16,14 +16,19 @@ class VocabularyQuizViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private val startWord: String
-        get() = savedStateHandle.toRoute<DanishRoute.DanishQuizNoun>().startWord
-
-    private val _state = MutableStateFlow(QuizState.Word(startWord))
+    private val _state = MutableStateFlow<QuizState>(QuizState.Loading)
     val state: StateFlow<QuizState> = _state
 
 //    private val _event = MutableSharedFlow<WordEvent>()
 //    val event = _event.asSharedFlow()
+
+    private val words = listOf(
+        "hund", "æble", "rød"
+    )
+
+    init {
+        pickWord()
+    }
 
     fun updateAnswer(value: String) {
 //        _state.value = _state.value.copy(userAnswer = value, result = AnswerResult.NONE)
@@ -53,5 +58,13 @@ class VocabularyQuizViewModel @Inject constructor(
 //            userAnswer = "",
 //            result = AnswerResult.NONE
 //        )
+    }
+
+    private fun pickWord() {
+        viewModelScope.launch {
+            words.random().let {
+                _state.value = QuizState.Word(it)
+            }
+        }
     }
 }

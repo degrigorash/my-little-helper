@@ -4,16 +4,16 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.grig.core.theme.AppTheme
 import com.grig.danish.ui.learn.LearnNounRoute
-import com.grig.danish.ui.quiz.VocabularyQuizRoute
+import com.grig.danish.ui.quiz.QuizRoute
 
 fun NavGraphBuilder.danishNavigation() {
     composable<DanishRoute.DanishHome> {
-        AppTheme { LearnNounRoute() }
+        AppTheme { QuizRoute() }
     }
     composable<DanishRoute.DanishLearnNoun> {
         AppTheme { LearnNounRoute() }
     }
     composable<DanishRoute.DanishQuizNoun> {
-        AppTheme { VocabularyQuizRoute() }
+        AppTheme { QuizRoute() }
     }
 }

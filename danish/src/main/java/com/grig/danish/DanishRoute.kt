@@ -11,5 +11,5 @@ sealed class DanishRoute {
     data object DanishLearnNoun : DanishRoute()
 
     @Serializable
-    data class DanishQuizNoun(val startWord: String) : DanishRoute()
+    data object DanishQuizNoun : DanishRoute()
 }
