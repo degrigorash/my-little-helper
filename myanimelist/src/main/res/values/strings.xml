@@ -2,4 +2,6 @@
     <string name="anime_list">Anime List</string>
     <string name="manga_list">Manga List</string>
     <string name="search_for_user">Search by Username</string>
+    <string name="login">Login</string>
+    <string name="logout">Logout</string>
 </resources>

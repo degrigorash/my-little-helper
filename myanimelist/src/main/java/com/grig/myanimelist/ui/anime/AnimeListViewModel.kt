@@ -3,6 +3,8 @@ package com.grig.myanimelist.ui.anime
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.toRoute
+import com.grig.myanimelist.MalRoute
 import com.grig.myanimelist.data.MalRepository
 import com.grig.myanimelist.data.model.anime.MalAnime
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -12,11 +14,13 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AnimeListViewModel @Inject constructor(
-    savedStateHandle: SavedStateHandle,
+    private val savedStateHandle: SavedStateHandle,
     private val malRepository: MalRepository
 ) : ViewModel() {
 
-    private val username: String? = savedStateHandle["username"]
+    private val username: String?
+        get() = savedStateHandle.toRoute<MalRoute.MalAnimeList>().username
+
     private var offset = 0
     private var animes = mutableListOf<MalAnime>()
     val state: MutableStateFlow<AnimeUiState> = MutableStateFlow(AnimeUiState.Loading)

@@ -1,4 +1,4 @@
-package com.grig.mylittlehelper.ui.home
+package com.grig.myanimelist.ui.home
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -31,10 +31,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.grig.myanimelist.data.model.MalUserState
-import com.grig.mylittlehelper.R
-import com.grig.mylittlehelper.ui.theme.Primary50
-import com.grig.mylittlehelper.ui.theme.Primary900
-import com.grig.myanimelist.R as MalR
+import com.grig.myanimelist.R
 
 @Composable
 fun MalHomeScreen(
@@ -70,14 +67,15 @@ fun MalHomeScreen(
                     .clip(RoundedCornerShape(6.dp))
                     .border(
                         width = 2.dp,
-                        color = if (isDarkTheme) Primary50 else Primary900,
+//                        color = if (isDarkTheme) Primary50 else Primary900,
+                        color = MaterialTheme.colorScheme.primary,
                         shape = RoundedCornerShape(6.dp)
                     ),
                 model = user?.picture,
                 contentDescription = null,
-                placeholder = painterResource(MalR.drawable.mal_user_placeholder),
-                fallback = painterResource(MalR.drawable.mal_user_placeholder),
-                error = painterResource(MalR.drawable.mal_user_placeholder)
+                placeholder = painterResource(R.drawable.mal_user_placeholder),
+                fallback = painterResource(R.drawable.mal_user_placeholder),
+                error = painterResource(R.drawable.mal_user_placeholder)
             )
             Column(
                 modifier = Modifier
@@ -134,7 +132,7 @@ fun MalHomeScreen(
                 enabled = buttonsEnabled
             ) {
                 Text(
-                    text = stringResource(MalR.string.anime_list)
+                    text = stringResource(R.string.anime_list)
                 )
             }
             Button(
@@ -153,7 +151,7 @@ fun MalHomeScreen(
                 enabled = buttonsEnabled
             ) {
                 Text(
-                    text = stringResource(MalR.string.manga_list)
+                    text = stringResource(R.string.manga_list)
                 )
             }
         }
@@ -174,7 +172,7 @@ fun MalHomeScreen(
             Text(
                 modifier = Modifier
                     .padding(start = 8.dp),
-                text = stringResource(MalR.string.search_for_user),
+                text = stringResource(R.string.search_for_user),
                 style = MaterialTheme.typography.titleLarge
             )
         }
