@@ -1,4 +1,4 @@
-package com.grig.core
+package com.grig.core.network
 
 import okhttp3.Request
 import okio.Timeout

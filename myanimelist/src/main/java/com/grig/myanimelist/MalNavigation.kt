@@ -4,16 +4,16 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
+import com.grig.core.theme.AppTheme
 import com.grig.myanimelist.ui.anime.AnimeListScreen
 import com.grig.myanimelist.ui.home.MalHomeScreen
 import com.grig.myanimelist.ui.manga.MangaListScreen
-import com.grig.myanimelist.ui.theme.MyAnimeListTheme
 
 fun NavGraphBuilder.malNavigation(
     navController: NavHostController
 ) {
     composable<MalRoute.MalHome> {
-        MyAnimeListTheme {
+        AppTheme {
             MalHomeScreen(
                 viewModel = hiltViewModel(),
                 navigateToAnimeList = { username ->
@@ -26,12 +26,12 @@ fun NavGraphBuilder.malNavigation(
         }
     }
     composable<MalRoute.MalAnimeList> {
-        MyAnimeListTheme {
+        AppTheme {
             AnimeListScreen(viewModel = hiltViewModel())
         }
     }
     composable<MalRoute.MalMangaList> {
-        MyAnimeListTheme {
+        AppTheme {
             MangaListScreen(viewModel = hiltViewModel())
         }
     }

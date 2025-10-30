@@ -1,6 +1,6 @@
 package com.grig.danish.di
 
-import com.grig.core.ResultCallAdapterFactory
+import com.grig.core.network.ResultCallAdapterFactory
 import com.grig.danish.data.DanishService
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module

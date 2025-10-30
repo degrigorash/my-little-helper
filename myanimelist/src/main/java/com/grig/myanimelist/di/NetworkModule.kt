@@ -1,6 +1,6 @@
 package com.grig.myanimelist.di
 
-import com.grig.core.ResultCallAdapterFactory
+import com.grig.core.network.ResultCallAdapterFactory
 import com.grig.myanimelist.data.MalAuthService
 import com.grig.myanimelist.data.MalService
 import com.grig.myanimelist.data.UserManager
