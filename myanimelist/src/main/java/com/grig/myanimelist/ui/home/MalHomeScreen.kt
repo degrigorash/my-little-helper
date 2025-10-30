@@ -30,8 +30,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.grig.myanimelist.data.model.MalUserState
 import com.grig.myanimelist.R
+import com.grig.myanimelist.data.model.MalUserState
 
 @Composable
 fun MalHomeScreen(
