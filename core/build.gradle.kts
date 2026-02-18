@@ -8,10 +8,10 @@ plugins {
 
 android {
     namespace = "com.grig.core"
-    compileSdk = Config.compileSdk
+    compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
-        minSdk = Config.minSdk
+        minSdk = libs.versions.minSdk.get().toInt()
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
     }
@@ -29,7 +29,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = Versions.composeCompiler
+        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
@@ -43,11 +43,11 @@ android {
 }
 
 dependencies {
-    implementation(Dependencies.kotlin)
-    implementation(Dependencies.coreKtx)
+    implementation(libs.kotlin)
+    implementation(libs.core.ktx)
 
-    implementation(Dependencies.composeUi)
-    implementation(Dependencies.material)
+    implementation(libs.compose.ui)
+    implementation(libs.material)
 
-    implementation(Dependencies.retrofit)
+    implementation(libs.retrofit)
 }
