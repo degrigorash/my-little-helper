@@ -1,6 +1,3 @@
-import Dependencies.kotlinxSerializationRetrofit
-import Dependencies.okhttp3
-import Dependencies.retrofit
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -14,14 +11,14 @@ plugins {
 
 android {
     namespace = "com.grig.mylittlehelper"
-    compileSdk = Config.compileSdk
+    compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
         applicationId = "com.grig.mylittlehelper"
-        minSdk = Config.minSdk
-        targetSdk = Config.targetSdk
-        versionCode = Config.versionCode
-        versionName = Config.versionName
+        minSdk = libs.versions.minSdk.get().toInt()
+        targetSdk = libs.versions.targetSdk.get().toInt()
+        versionCode = libs.versions.versionCode.get().toInt()
+        versionName = libs.versions.versionName.get()
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -51,7 +48,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = Versions.composeCompiler
+        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
     }
     packaging {
         resources {
@@ -68,35 +65,35 @@ dependencies {
     implementation(project(":danish"))
     implementation(project(":core"))
 
-    implementation(Dependencies.kotlin)
-    implementation(Dependencies.coreKtx)
-    implementation(Dependencies.lifecycleRuntimeKtx)
-    implementation(Dependencies.kotlinxSerialization)
-    implementation(Dependencies.timber)
+    implementation(libs.kotlin)
+    implementation(libs.core.ktx)
+    implementation(libs.lifecycle.runtime.ktx)
+    implementation(libs.kotlinx.serialization)
+    implementation(libs.timber)
 
-    implementation(kotlinxSerializationRetrofit)
-    implementation(retrofit)
-    implementation(okhttp3)
+    implementation(libs.kotlinx.serialization.retrofit)
+    implementation(libs.retrofit)
+    implementation(libs.okhttp3)
 
-    implementation(Dependencies.hilt)
-    kapt(Dependencies.hiltCompiler)
+    implementation(libs.hilt)
+    kapt(libs.hilt.compiler)
 
-    implementation(Dependencies.material)
-    implementation(Dependencies.composeActivity)
-    implementation(Dependencies.composeViewModel)
-    implementation(Dependencies.composeUi)
-    implementation(Dependencies.composeNavigation)
-    implementation(Dependencies.composeNavigationHilt)
-    implementation(Dependencies.composeUiToolingPreview)
-    implementation(Dependencies.datastore)
+    implementation(libs.material)
+    implementation(libs.compose.activity)
+    implementation(libs.compose.viewmodel)
+    implementation(libs.compose.ui)
+    implementation(libs.compose.navigation)
+    implementation(libs.compose.navigation.hilt)
+    implementation(libs.compose.ui.tooling.preview)
+    implementation(libs.datastore)
 
-    implementation(Dependencies.coil)
+    implementation(libs.coil)
 
-    testImplementation(Dependencies.junit)
-    androidTestImplementation(Dependencies.androidxJunit)
-    androidTestImplementation(Dependencies.espressoCore)
-    androidTestImplementation(Dependencies.composeUiTest)
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.espresso.core)
+    androidTestImplementation(libs.compose.ui.test)
 
-    debugImplementation(Dependencies.composeUiTooling)
-    debugImplementation(Dependencies.composeUiTestManifest)
+    debugImplementation(libs.compose.ui.tooling)
+    debugImplementation(libs.compose.ui.test.manifest)
 }

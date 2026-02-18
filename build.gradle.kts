@@ -6,14 +6,14 @@ buildscript {
 }
 
 plugins {
-    id("org.jetbrains.kotlin.jvm") version Versions.kotlin apply false
-    id("org.jetbrains.kotlin.android") version Versions.kotlin apply false
-    id("com.android.application") version Versions.androidPlugin apply false
-    id("com.android.library") version Versions.androidPlugin apply false
-    id("org.jetbrains.kotlin.plugin.serialization") version Versions.kotlinxSerialization apply false
-    id("com.google.dagger.hilt.android") version Versions.hilt apply false
-    id("com.github.ben-manes.versions") version Versions.benManesVersions apply false
-    id("org.jetbrains.kotlin.plugin.compose") version Versions.kotlin apply false
+    alias(libs.plugins.kotlin.jvm) apply false
+    alias(libs.plugins.kotlin.android) apply false
+    alias(libs.plugins.android.application) apply false
+    alias(libs.plugins.android.library) apply false
+    alias(libs.plugins.kotlinx.serialization) apply false
+    alias(libs.plugins.hilt) apply false
+    alias(libs.plugins.ben.manes.versions) apply false
+    alias(libs.plugins.kotlin.compose) apply false
 }
 
 // Report stable updates by default (ignore alpha/beta/rc/snapshot unless current is non-stable)
