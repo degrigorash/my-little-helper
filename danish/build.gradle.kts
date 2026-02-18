@@ -1,12 +1,9 @@
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-
 plugins {
-    kotlin("kapt")
     id("com.android.library")
-    id("org.jetbrains.kotlin.android")
     id("kotlinx-serialization")
     id("com.google.dagger.hilt.android")
     id("org.jetbrains.kotlin.plugin.compose")
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -33,11 +30,6 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    kotlin {
-        compilerOptions {
-            jvmTarget = JvmTarget.JVM_17
-        }
-    }
     buildFeatures {
         compose = true
     }
@@ -62,7 +54,7 @@ dependencies {
     implementation(libs.retrofit.scalars)
 
     implementation(libs.hilt)
-    kapt(libs.hilt.compiler)
+    ksp(libs.hilt.compiler)
 
     implementation(libs.material)
     implementation(libs.compose.activity)

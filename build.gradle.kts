@@ -7,13 +7,13 @@ buildscript {
 
 plugins {
     alias(libs.plugins.kotlin.jvm) apply false
-    alias(libs.plugins.kotlin.android) apply false
     alias(libs.plugins.android.application) apply false
     alias(libs.plugins.android.library) apply false
     alias(libs.plugins.kotlinx.serialization) apply false
     alias(libs.plugins.hilt) apply false
     alias(libs.plugins.ben.manes.versions) apply false
     alias(libs.plugins.kotlin.compose) apply false
+    alias(libs.plugins.ksp) apply false
 }
 
 // Report stable updates by default (ignore alpha/beta/rc/snapshot unless current is non-stable)
