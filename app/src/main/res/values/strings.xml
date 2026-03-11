@@ -1,5 +1,9 @@
 <resources>
     <string name="app_name">MyLittleHelper</string>
+    <string name="choose_your_path">Choose Your Path.</string>
     <string name="mal_button">MyAnimeList</string>
+    <string name="mal_description">Track your anime &amp; manga journey</string>
+    <string name="learn_danish">Learn Danish</string>
+    <string name="danish_description">Master the Danish language</string>
     <string name="danish_button">Dansk</string>
 </resources>
