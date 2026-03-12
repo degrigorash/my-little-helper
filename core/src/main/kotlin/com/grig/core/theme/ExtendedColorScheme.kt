@@ -15,7 +15,10 @@ data class ExtendedColorScheme(
     val malIconContainer: Color,
     val danishCardStart: Color,
     val danishCardEnd: Color,
-    val danishIconContainer: Color
+    val danishIconContainer: Color,
+    val malLoginGradientStart: Color,
+    val malLoginGradientEnd: Color,
+    val malLoginOutline: Color
 )
 
 val LightExtendedColorScheme = ExtendedColorScheme(
@@ -28,7 +31,10 @@ val LightExtendedColorScheme = ExtendedColorScheme(
     malIconContainer = malIconContainerLight,
     danishCardStart = danishCardStartLight,
     danishCardEnd = danishCardEndLight,
-    danishIconContainer = danishIconContainerLight
+    danishIconContainer = danishIconContainerLight,
+    malLoginGradientStart = malLoginGradientStartLight,
+    malLoginGradientEnd = malLoginGradientEndLight,
+    malLoginOutline = malLoginOutlineLight
 )
 
 val DarkExtendedColorScheme = ExtendedColorScheme(
@@ -41,7 +47,10 @@ val DarkExtendedColorScheme = ExtendedColorScheme(
     malIconContainer = malIconContainerDark,
     danishCardStart = danishCardStartDark,
     danishCardEnd = danishCardEndDark,
-    danishIconContainer = danishIconContainerDark
+    danishIconContainer = danishIconContainerDark,
+    malLoginGradientStart = malLoginGradientStartDark,
+    malLoginGradientEnd = malLoginGradientEndDark,
+    malLoginOutline = malLoginOutlineDark
 )
 
 val LocalExtendedColorScheme = staticCompositionLocalOf { LightExtendedColorScheme }

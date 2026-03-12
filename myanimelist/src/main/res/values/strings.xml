@@ -4,4 +4,7 @@
     <string name="search_for_user">Search by Username</string>
     <string name="login">Login</string>
     <string name="logout">Logout</string>
+    <string name="mal_title">MyAnimeList</string>
+    <string name="mal_sign_in_subtitle">Sign in via MyAnimeList</string>
+    <string name="continue_as_guest">Continue as Guest</string>
 </resources>
