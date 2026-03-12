@@ -27,7 +27,7 @@ fun MyLittleHelperNavHost(
             AppTheme {
                 HomeScreen(
                     navigateToMal = {
-                        navController.navigate(MalRoute.MalHome)
+                        navController.navigate(MalRoute.MalLogin)
                     },
                     navigateToDanish = {
                         navController.navigate(DanishRoute.DanishHome)
