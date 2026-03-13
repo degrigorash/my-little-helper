@@ -19,7 +19,7 @@ interface MalService {
         @Query("offset") offset: Int = 0,
         @Query("nsfw") nsfw: Boolean = true,
         @Query("status") status: String? = null,
-        @Query("fields") fields: String = "list_status{status},alternative_titles,synopsis,mean,rank,popularity,num_list_users,status,num_episodes,genres,studios,pictures,rating,nsfw"
+        @Query("fields") fields: String = "list_status{status,score,num_episodes_watched},alternative_titles,synopsis,mean,rank,popularity,num_list_users,status,num_episodes,start_date,end_date,genres,studios,pictures,rating,nsfw"
     ): Result<MalAnimeList>
 
     @GET("v2/users/{username}/mangalist")
