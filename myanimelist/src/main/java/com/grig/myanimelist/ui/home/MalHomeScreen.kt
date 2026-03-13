@@ -7,7 +7,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalUriHandler
 import com.grig.myanimelist.data.model.MalUserState
 import com.grig.myanimelist.ui.MalEmpty
 import com.grig.myanimelist.ui.MalError
@@ -19,7 +18,6 @@ fun MalHomeScreen(
     viewModel: MalHomeViewModel,
     navigateToLogin: () -> Unit
 ) {
-    val uriHandler = LocalUriHandler.current
     val userState by viewModel.malUserFlow.collectAsState(initial = MalUserState.Unauthorized)
     val activeTab by viewModel.activeTab.collectAsState()
     val animeFilter by viewModel.animeFilter.collectAsState()
@@ -39,8 +37,7 @@ fun MalHomeScreen(
             onLogoutClick = {
                 viewModel.malLogout()
                 navigateToLogin()
-            },
-            onLoginClick = { viewModel.malLogin { uriHandler.openUri(it) } }
+            }
         )
 
         TabToggle(
