@@ -36,6 +36,9 @@ class MalHomeViewModel @Inject constructor(
     private val _listState = MutableStateFlow<ListState>(ListState.Loading)
     val listState: StateFlow<ListState> = _listState.asStateFlow()
 
+    private val _guestUsername = MutableStateFlow("")
+    val guestUsername: StateFlow<String> = _guestUsername.asStateFlow()
+
     private var loadJob: Job? = null
 
     private var cachedAnimes: List<Pair<MalAnime, MalAnimeWatchingStatus?>> = emptyList()
@@ -43,7 +46,12 @@ class MalHomeViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            loadList()
+            val userState = malUserFlow.first()
+            if (userState is MalUserState.Authorized) {
+                loadList()
+            } else {
+                _listState.value = ListState.Empty
+            }
         }
     }
 
@@ -75,6 +83,14 @@ class MalHomeViewModel @Inject constructor(
         if (_activeTab.value == MalTab.Manga) applyMangaFilter()
     }
 
+    fun setGuestUsername(name: String) {
+        _guestUsername.value = name
+    }
+
+    fun searchGuestList() {
+        loadList()
+    }
+
     fun retry() {
         loadList()
     }
@@ -85,7 +101,17 @@ class MalHomeViewModel @Inject constructor(
             _listState.value = ListState.Loading
 
             val userState = malUserFlow.first()
-            val username = (userState as? MalUserState.Authorized)?.user?.name
+            val username = when (userState) {
+                is MalUserState.Authorized -> userState.user.name
+                is MalUserState.Unauthorized -> {
+                    val guest = _guestUsername.value.trim()
+                    if (guest.isEmpty()) {
+                        _listState.value = ListState.Empty
+                        return@launch
+                    }
+                    guest
+                }
+            }
 
             when (_activeTab.value) {
                 MalTab.Anime -> loadAnimeList(username)

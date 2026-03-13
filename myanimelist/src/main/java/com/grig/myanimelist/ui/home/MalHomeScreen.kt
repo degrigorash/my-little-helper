@@ -25,6 +25,7 @@ fun MalHomeScreen(
     val animeFilter by viewModel.animeFilter.collectAsState()
     val mangaFilter by viewModel.mangaFilter.collectAsState()
     val listState by viewModel.listState.collectAsState()
+    val guestUsername by viewModel.guestUsername.collectAsState()
     val authorized = userState is MalUserState.Authorized
     val user = (userState as? MalUserState.Authorized)?.user
 
@@ -32,6 +33,9 @@ fun MalHomeScreen(
         UserHeader(
             user = user,
             authorized = authorized,
+            guestUsername = guestUsername,
+            onGuestUsernameChange = viewModel::setGuestUsername,
+            onGuestSearch = viewModel::searchGuestList,
             onLogoutClick = {
                 viewModel.malLogout()
                 navigateToLogin()
