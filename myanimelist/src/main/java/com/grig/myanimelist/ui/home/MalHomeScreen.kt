@@ -16,7 +16,8 @@ import com.grig.myanimelist.ui.MalLoading
 @Composable
 fun MalHomeScreen(
     modifier: Modifier = Modifier,
-    viewModel: MalHomeViewModel
+    viewModel: MalHomeViewModel,
+    navigateToLogin: () -> Unit
 ) {
     val uriHandler = LocalUriHandler.current
     val userState by viewModel.malUserFlow.collectAsState(initial = MalUserState.Unauthorized)
@@ -31,7 +32,10 @@ fun MalHomeScreen(
         UserHeader(
             user = user,
             authorized = authorized,
-            onLogoutClick = { viewModel.malLogout() },
+            onLogoutClick = {
+                viewModel.malLogout()
+                navigateToLogin()
+            },
             onLoginClick = { viewModel.malLogin { uriHandler.openUri(it) } }
         )
 
