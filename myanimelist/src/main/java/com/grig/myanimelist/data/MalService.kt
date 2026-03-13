@@ -19,7 +19,7 @@ interface MalService {
         @Query("offset") offset: Int = 0,
         @Query("nsfw") nsfw: Boolean = true,
         @Query("status") status: String = "plan_to_watch",
-        @Query("fields") fields: String = "alternative_titles,synopsis,mean,rank,popularity,status,num_episodes,studios,pictures,rating,nsfw"
+        @Query("fields") fields: String = "alternative_titles,synopsis,mean,rank,popularity,num_list_users,status,num_episodes,genres,studios,pictures,rating,nsfw"
     ): Result<MalAnimeList>
 
     @GET("v2/users/{username}/mangalist")
@@ -29,6 +29,6 @@ interface MalService {
         @Query("offset") offset: Int = 0,
         @Query("nsfw") nsfw: Boolean = true,
         @Query("status") status: String = "plan_to_read",
-        @Query("fields") fields: String = "alternative_titles,synopsis,mean,rank,popularity,media_type,status,num_volumes,num_chapters,pictures,nsfw"
+        @Query("fields") fields: String = "alternative_titles,synopsis,mean,rank,popularity,num_list_users,media_type,status,num_volumes,num_chapters,genres,pictures,nsfw"
     ): Result<MalMangaList>
 }

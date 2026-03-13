@@ -2,15 +2,15 @@ package com.grig.myanimelist.data.model.manga
 
 import kotlinx.serialization.SerialName
 
-enum class MalMangaPublishStatus {
+enum class MalMangaPublishStatus(val displayName: String) {
     @SerialName("finished")
-    Finished,
+    Finished("Finished"),
     @SerialName("currently_publishing")
-    CurrentlyPublishing,
+    CurrentlyPublishing("Publishing"),
     @SerialName("not_yet_published")
-    NotYetPublished,
+    NotYetPublished("Upcoming"),
     @SerialName("on_hiatus")
-    OnHiatus,
+    OnHiatus("Hiatus"),
     @SerialName("discontinued")
-    Discontinued
+    Discontinued("Discontinued")
 }
