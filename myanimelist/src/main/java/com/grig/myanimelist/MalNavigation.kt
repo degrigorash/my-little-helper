@@ -27,7 +27,12 @@ fun NavGraphBuilder.malNavigation(
     composable<MalRoute.MalHome> {
         AppTheme {
             MalHomeScreen(
-                viewModel = hiltViewModel()
+                viewModel = hiltViewModel(),
+                navigateToLogin = {
+                    navController.navigate(MalRoute.MalLogin) {
+                        popUpTo<MalRoute.MalHome> { inclusive = true }
+                    }
+                }
             )
         }
     }

@@ -1,5 +1,7 @@
 package com.grig.mylittlehelper
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -23,24 +25,23 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        intent.data?.let {
-            when (it.host) {
-                MAL_AUTH_REDIRECT_HOST -> {
-                    malRepository.getAuthorizationCode(it)?.let { code ->
-                        lifecycleScope.launch {
-                            malRepository.auth(code)
-                            intent.data = null
-                        }
-                    }
-                }
-
-                else -> {}
-            }
-        }
-
+        handleMalAuthRedirect(intent.data)
         setContent {
             MyLittleHelperNavHost()
+        }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        handleMalAuthRedirect(intent.data)
+    }
+
+    private fun handleMalAuthRedirect(uri: Uri?) {
+        if (uri?.host != MAL_AUTH_REDIRECT_HOST) return
+        malRepository.getAuthorizationCode(uri)?.let { code ->
+            lifecycleScope.launch {
+                malRepository.auth(code)
+            }
         }
     }
 }
