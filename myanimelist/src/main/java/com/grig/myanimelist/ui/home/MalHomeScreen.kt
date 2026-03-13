@@ -51,8 +51,12 @@ fun MalHomeScreen(
         Box(modifier = Modifier.weight(1f)) {
             when (val state = listState) {
                 is ListState.Loading -> MalLoading()
-                is ListState.Empty -> MalEmpty()
-                is ListState.Error -> MalError()
+                is ListState.Empty -> MalEmpty(activeTab = activeTab)
+                is ListState.Error -> MalError(
+                    activeTab = activeTab,
+                    exception = state.exception,
+                    onRetry = { viewModel.retry() }
+                )
                 is ListState.AnimeContent -> AnimeList(animes = state.animes)
                 is ListState.MangaContent -> MangaList(mangas = state.mangas)
             }

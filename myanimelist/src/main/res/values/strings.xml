@@ -7,4 +7,17 @@
     <string name="mal_title">MyAnimeList</string>
     <string name="mal_sign_in_subtitle">Sign in via MyAnimeList</string>
     <string name="continue_as_guest">Continue as Guest</string>
+
+    <!-- Error state -->
+    <string name="error_no_internet">No Internet Connection</string>
+    <string name="error_something_went_wrong">Something Went Wrong</string>
+    <string name="error_no_internet_description">Please check your internet connection and try again.</string>
+    <string name="error_load_list_description">We couldn\'t load your %1$s list. Please check your connection and try again.</string>
+    <string name="error_try_again">Try Again</string>
+
+    <!-- Empty state -->
+    <string name="empty_title">No %1$s Yet</string>
+    <string name="empty_description">Start building your %1$s collection! Add titles to your list and track your progress.</string>
+    <string name="list_name_anime">anime</string>
+    <string name="list_name_manga">manga</string>
 </resources>
