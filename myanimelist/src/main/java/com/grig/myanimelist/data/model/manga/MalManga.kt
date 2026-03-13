@@ -1,6 +1,7 @@
 package com.grig.myanimelist.data.model.manga
 
 import com.grig.myanimelist.data.model.MalAlternativeTitles
+import com.grig.myanimelist.data.model.MalGenre
 import com.grig.myanimelist.data.model.MalNsfw
 import com.grig.myanimelist.data.model.MalPictures
 import kotlinx.serialization.SerialName
@@ -22,6 +23,8 @@ data class MalManga(
     val rank: Int? = null,
     @SerialName("popularity")
     val popularity: Int? = null,
+    @SerialName("num_list_users")
+    val numListUsers: Int? = null,
     @SerialName("media_type")
     val mediaType: MalMangaMediaType = MalMangaMediaType.Manga,
     @SerialName("status")
@@ -30,6 +33,8 @@ data class MalManga(
     val numVolumes: Int? = null,
     @SerialName("num_chapters")
     val numChapters: Int? = null,
+    @SerialName("genres")
+    val genres: List<MalGenre> = emptyList(),
     @SerialName("main_picture")
     val pictures: MalPictures? = null,
     @SerialName("nsfw")

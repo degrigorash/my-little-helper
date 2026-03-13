@@ -2,23 +2,23 @@ package com.grig.myanimelist.data.model.manga
 
 import kotlinx.serialization.SerialName
 
-enum class MalMangaMediaType {
+enum class MalMangaMediaType(val displayName: String) {
     @SerialName("manga")
-    Manga,
+    Manga("Manga"),
     @SerialName("light_novel")
-    LightNovel,
+    LightNovel("Light Novel"),
     @SerialName("one_shot")
-    OneShot,
+    OneShot("One-shot"),
     @SerialName("doujinshi")
-    Doujinshi,
+    Doujinshi("Doujinshi"),
     @SerialName("manhwa")
-    Manhwa,
+    Manhwa("Manhwa"),
     @SerialName("manhua")
-    Manhua,
+    Manhua("Manhua"),
     @SerialName("oel")
-    Oel,
+    Oel("OEL"),
     @SerialName("novel")
-    Novel,
+    Novel("Novel"),
     @SerialName("unknown")
-    Unknown
+    Unknown("Unknown")
 }
