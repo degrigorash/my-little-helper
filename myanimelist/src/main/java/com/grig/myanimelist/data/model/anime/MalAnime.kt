@@ -35,6 +35,10 @@ data class MalAnime(
     val genres: List<MalGenre> = emptyList(),
     @SerialName("studios")
     val studios: List<MalStudio> = emptyList(),
+    @SerialName("start_date")
+    val startDate: String? = null,
+    @SerialName("end_date")
+    val endDate: String? = null,
     @SerialName("main_picture")
     val pictures: MalPictures? = null,
     @SerialName("rating")

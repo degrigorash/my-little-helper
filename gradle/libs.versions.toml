@@ -1,7 +1,7 @@
 [versions]
 # App / SDK config
 compileSdk = "36"
-minSdk = "24"
+minSdk = "26"
 targetSdk = "36"
 versionCode = "3"
 versionName = "1.0.2"
