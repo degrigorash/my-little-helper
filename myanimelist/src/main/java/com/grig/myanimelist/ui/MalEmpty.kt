@@ -21,6 +21,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.grig.core.theme.AppThemeExtended
 import com.grig.myanimelist.R
 import com.grig.myanimelist.ui.home.MalTab
 
@@ -44,7 +45,7 @@ fun MalEmpty(activeTab: MalTab) {
             modifier = Modifier
                 .size(120.dp)
                 .background(
-                    color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.6f),
+                    color = AppThemeExtended.colorScheme.malIconContainer.copy(alpha = 0.2f),
                     shape = CircleShape
                 ),
             contentAlignment = Alignment.Center
@@ -53,7 +54,7 @@ fun MalEmpty(activeTab: MalTab) {
                 painter = painterResource(R.drawable.ic_video_library),
                 contentDescription = null,
                 modifier = Modifier.size(56.dp),
-                tint = MaterialTheme.colorScheme.primary
+                tint = AppThemeExtended.colorScheme.malCardStart
             )
         }
 

@@ -24,6 +24,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.grig.core.theme.AppThemeExtended
 import com.grig.myanimelist.R
 import com.grig.myanimelist.ui.home.MalTab
 import java.io.IOException
@@ -101,7 +102,8 @@ fun MalError(
             onClick = onRetry,
             shape = RoundedCornerShape(24.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.primary
+                containerColor = AppThemeExtended.colorScheme.malCardStart,
+                contentColor = AppThemeExtended.colorScheme.cardText
             )
         ) {
             Icon(
