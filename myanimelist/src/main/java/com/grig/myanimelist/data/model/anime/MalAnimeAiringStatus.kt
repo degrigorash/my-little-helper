@@ -2,11 +2,11 @@ package com.grig.myanimelist.data.model.anime
 
 import kotlinx.serialization.SerialName
 
-enum class MalAnimeAiringStatus {
+enum class MalAnimeAiringStatus(val displayName: String) {
     @SerialName("finished_airing")
-    FinishedAiring,
+    FinishedAiring("Finished"),
     @SerialName("currently_airing")
-    CurrentlyAiring,
+    CurrentlyAiring("Airing"),
     @SerialName("not_yet_aired")
-    NotYetAired
+    NotYetAired("Upcoming")
 }

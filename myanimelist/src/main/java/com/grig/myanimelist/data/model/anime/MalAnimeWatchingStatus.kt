@@ -2,15 +2,15 @@ package com.grig.myanimelist.data.model.anime
 
 import kotlinx.serialization.SerialName
 
-enum class MalAnimeWatchingStatus {
+enum class MalAnimeWatchingStatus(val apiValue: String, val displayName: String) {
     @SerialName("watching")
-    Watching,
+    Watching("watching", "Watching"),
     @SerialName("completed")
-    Completed,
+    Completed("completed", "Completed"),
     @SerialName("on_hold")
-    OnHold,
+    OnHold("on_hold", "On Hold"),
     @SerialName("dropped")
-    Dropped,
+    Dropped("dropped", "Dropped"),
     @SerialName("plan_to_watch")
-    PlanToWatch
+    PlanToWatch("plan_to_watch", "Plan to Watch")
 }

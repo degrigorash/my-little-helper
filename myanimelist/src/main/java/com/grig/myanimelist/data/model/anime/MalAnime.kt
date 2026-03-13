@@ -1,6 +1,7 @@
 package com.grig.myanimelist.data.model.anime
 
 import com.grig.myanimelist.data.model.MalAlternativeTitles
+import com.grig.myanimelist.data.model.MalGenre
 import com.grig.myanimelist.data.model.MalNsfw
 import com.grig.myanimelist.data.model.MalPictures
 import com.grig.myanimelist.data.model.MalRating
@@ -24,10 +25,14 @@ data class MalAnime(
     val rank: Int? = null,
     @SerialName("popularity")
     val popularity: Int? = null,
+    @SerialName("num_list_users")
+    val numListUsers: Int? = null,
     @SerialName("status")
     val status: MalAnimeAiringStatus = MalAnimeAiringStatus.NotYetAired,
     @SerialName("num_episodes")
     val numEpisodes: Int? = null,
+    @SerialName("genres")
+    val genres: List<MalGenre> = emptyList(),
     @SerialName("studios")
     val studios: List<MalStudio> = emptyList(),
     @SerialName("main_picture")

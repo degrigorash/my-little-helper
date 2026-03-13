@@ -2,15 +2,15 @@ package com.grig.myanimelist.data.model.manga
 
 import kotlinx.serialization.SerialName
 
-enum class MalMangaReadingStatus {
+enum class MalMangaReadingStatus(val apiValue: String, val displayName: String) {
     @SerialName("reading")
-    Reading,
+    Reading("reading", "Reading"),
     @SerialName("completed")
-    Completed,
+    Completed("completed", "Completed"),
     @SerialName("on_hold")
-    OnHold,
+    OnHold("on_hold", "On Hold"),
     @SerialName("dropped")
-    Dropped,
+    Dropped("dropped", "Dropped"),
     @SerialName("plan_to_read")
-    PlanToRead
+    PlanToRead("plan_to_read", "Plan to Read")
 }
