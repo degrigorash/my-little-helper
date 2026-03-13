@@ -12,5 +12,7 @@ data class MalMangaList(
 @Serializable
 data class MalMangaNode(
     @SerialName("node")
-    val manga: MalManga
+    val manga: MalManga,
+    @SerialName("list_status")
+    val listStatus: MalMangaListStatus? = null
 )

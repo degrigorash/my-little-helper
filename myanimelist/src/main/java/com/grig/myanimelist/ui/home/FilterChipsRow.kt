@@ -20,8 +20,8 @@ import com.grig.myanimelist.data.model.manga.MalMangaReadingStatus
 @Composable
 fun FilterChipsRow(
     activeTab: MalTab,
-    animeFilter: MalAnimeWatchingStatus,
-    mangaFilter: MalMangaReadingStatus,
+    animeFilter: Set<MalAnimeWatchingStatus>,
+    mangaFilter: Set<MalMangaReadingStatus>,
     onAnimeFilterSelected: (MalAnimeWatchingStatus) -> Unit,
     onMangaFilterSelected: (MalMangaReadingStatus) -> Unit
 ) {
@@ -33,7 +33,7 @@ fun FilterChipsRow(
         when (activeTab) {
             MalTab.Anime -> items(MalAnimeWatchingStatus.entries) { status ->
                 FilterChip(
-                    selected = status == animeFilter,
+                    selected = status in animeFilter,
                     onClick = { onAnimeFilterSelected(status) },
                     label = { Text(status.displayName) },
                     colors = FilterChipDefaults.filterChipColors(
@@ -45,7 +45,7 @@ fun FilterChipsRow(
 
             MalTab.Manga -> items(MalMangaReadingStatus.entries) { status ->
                 FilterChip(
-                    selected = status == mangaFilter,
+                    selected = status in mangaFilter,
                     onClick = { onMangaFilterSelected(status) },
                     label = { Text(status.displayName) },
                     colors = FilterChipDefaults.filterChipColors(
@@ -64,8 +64,8 @@ private fun FilterChipsRowAnimePreview() {
     AppTheme(darkTheme = false) {
         FilterChipsRow(
             activeTab = MalTab.Anime,
-            animeFilter = MalAnimeWatchingStatus.PlanToWatch,
-            mangaFilter = MalMangaReadingStatus.PlanToRead,
+            animeFilter = setOf(MalAnimeWatchingStatus.PlanToWatch),
+            mangaFilter = emptySet(),
             onAnimeFilterSelected = {},
             onMangaFilterSelected = {}
         )
@@ -78,8 +78,8 @@ private fun FilterChipsRowMangaPreview() {
     AppTheme(darkTheme = false) {
         FilterChipsRow(
             activeTab = MalTab.Manga,
-            animeFilter = MalAnimeWatchingStatus.PlanToWatch,
-            mangaFilter = MalMangaReadingStatus.Reading,
+            animeFilter = emptySet(),
+            mangaFilter = setOf(MalMangaReadingStatus.Reading),
             onAnimeFilterSelected = {},
             onMangaFilterSelected = {}
         )
