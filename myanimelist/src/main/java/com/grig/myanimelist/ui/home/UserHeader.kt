@@ -47,8 +47,7 @@ fun UserHeader(
     guestUsername: String,
     onGuestUsernameChange: (String) -> Unit,
     onGuestSearch: () -> Unit,
-    onLogoutClick: () -> Unit,
-    onLoginClick: () -> Unit
+    onLogoutClick: () -> Unit
 ) {
     val colors = AppThemeExtended.colorScheme
 
@@ -72,10 +71,10 @@ fun UserHeader(
                 onGuestSearch = onGuestSearch
             )
         }
-        IconButton(onClick = { if (authorized) onLogoutClick() else onLoginClick() }) {
+        IconButton(onClick = onLogoutClick) {
             Icon(
                 painter = painterResource(R.drawable.ic_logout),
-                contentDescription = if (authorized) "Logout" else "Login",
+                contentDescription = "Logout",
                 tint = colors.cardText
             )
         }
@@ -194,8 +193,7 @@ private fun UserHeaderAuthorizedPreview() {
             guestUsername = "",
             onGuestUsernameChange = {},
             onGuestSearch = {},
-            onLogoutClick = {},
-            onLoginClick = {}
+            onLogoutClick = {}
         )
     }
 }
@@ -210,8 +208,7 @@ private fun UserHeaderGuestPreview() {
             guestUsername = "",
             onGuestUsernameChange = {},
             onGuestSearch = {},
-            onLogoutClick = {},
-            onLoginClick = {}
+            onLogoutClick = {}
         )
     }
 }
@@ -226,8 +223,7 @@ private fun UserHeaderGuestWithUsernamePreview() {
             guestUsername = "Naruto_fan42",
             onGuestUsernameChange = {},
             onGuestSearch = {},
-            onLogoutClick = {},
-            onLoginClick = {}
+            onLogoutClick = {}
         )
     }
 }
@@ -242,8 +238,7 @@ private fun UserHeaderGuestDarkPreview() {
             guestUsername = "Naruto_fan42",
             onGuestUsernameChange = {},
             onGuestSearch = {},
-            onLogoutClick = {},
-            onLoginClick = {}
+            onLogoutClick = {}
         )
     }
 }
@@ -258,8 +253,7 @@ private fun UserHeaderDarkPreview() {
             guestUsername = "",
             onGuestUsernameChange = {},
             onGuestSearch = {},
-            onLogoutClick = {},
-            onLoginClick = {}
+            onLogoutClick = {}
         )
     }
 }
