@@ -55,7 +55,7 @@ class MalRepository @Inject constructor(
     suspend fun getUserAnimeList(
         username: String?,
         offset: Int,
-        status: String
+        status: String? = null
     ) = malService.getUserAnimeList(
         username = username ?: "@me",
         offset = offset,
@@ -65,7 +65,7 @@ class MalRepository @Inject constructor(
     suspend fun getUserMangaList(
         username: String?,
         offset: Int,
-        status: String
+        status: String? = null
     ) = malService.getUserMangaList(
         username = username ?: "@me",
         offset = offset,

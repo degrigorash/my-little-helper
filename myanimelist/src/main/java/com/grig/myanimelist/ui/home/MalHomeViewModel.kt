@@ -27,16 +27,19 @@ class MalHomeViewModel @Inject constructor(
     private val _activeTab = MutableStateFlow(MalTab.Anime)
     val activeTab: StateFlow<MalTab> = _activeTab.asStateFlow()
 
-    private val _animeFilter = MutableStateFlow(MalAnimeWatchingStatus.PlanToWatch)
-    val animeFilter: StateFlow<MalAnimeWatchingStatus> = _animeFilter.asStateFlow()
+    private val _animeFilter = MutableStateFlow<Set<MalAnimeWatchingStatus>>(emptySet())
+    val animeFilter: StateFlow<Set<MalAnimeWatchingStatus>> = _animeFilter.asStateFlow()
 
-    private val _mangaFilter = MutableStateFlow(MalMangaReadingStatus.PlanToRead)
-    val mangaFilter: StateFlow<MalMangaReadingStatus> = _mangaFilter.asStateFlow()
+    private val _mangaFilter = MutableStateFlow<Set<MalMangaReadingStatus>>(emptySet())
+    val mangaFilter: StateFlow<Set<MalMangaReadingStatus>> = _mangaFilter.asStateFlow()
 
     private val _listState = MutableStateFlow<ListState>(ListState.Loading)
     val listState: StateFlow<ListState> = _listState.asStateFlow()
 
     private var loadJob: Job? = null
+
+    private var cachedAnimes: List<Pair<MalAnime, MalAnimeWatchingStatus?>> = emptyList()
+    private var cachedMangas: List<Pair<MalManga, MalMangaReadingStatus?>> = emptyList()
 
     init {
         viewModelScope.launch {
@@ -61,15 +64,15 @@ class MalHomeViewModel @Inject constructor(
     }
 
     fun selectAnimeFilter(status: MalAnimeWatchingStatus) {
-        if (_animeFilter.value == status) return
-        _animeFilter.value = status
-        if (_activeTab.value == MalTab.Anime) loadList()
+        val current = _animeFilter.value
+        _animeFilter.value = if (status in current) current - status else current + status
+        if (_activeTab.value == MalTab.Anime) applyAnimeFilter()
     }
 
     fun selectMangaFilter(status: MalMangaReadingStatus) {
-        if (_mangaFilter.value == status) return
-        _mangaFilter.value = status
-        if (_activeTab.value == MalTab.Manga) loadList()
+        val current = _mangaFilter.value
+        _mangaFilter.value = if (status in current) current - status else current + status
+        if (_activeTab.value == MalTab.Manga) applyMangaFilter()
     }
 
     private fun loadList() {
@@ -88,14 +91,12 @@ class MalHomeViewModel @Inject constructor(
     }
 
     private suspend fun loadAnimeList(username: String?) {
-        val status = _animeFilter.value.apiValue
         var offset = 0
-        val animes = mutableListOf<MalAnime>()
+        val animes = mutableListOf<Pair<MalAnime, MalAnimeWatchingStatus?>>()
 
         var response = malRepository.getUserAnimeList(
             username = username,
-            offset = offset,
-            status = status
+            offset = offset
         )
         if (response.isFailure) {
             _listState.value = ListState.Error(response.exceptionOrNull())
@@ -105,53 +106,73 @@ class MalHomeViewModel @Inject constructor(
         while (response.isSuccess) {
             val body = response.getOrNull() ?: break
             if (body.data.isEmpty()) break
-            animes.addAll(body.data.map { it.anime })
+            animes.addAll(body.data.map { it.anime to it.listStatus?.status })
             offset += body.data.size
             if (body.data.size < 100) break
             response = malRepository.getUserAnimeList(
                 username = username,
-                offset = offset,
-                status = status
+                offset = offset
             )
         }
 
-        _listState.value = if (animes.isNotEmpty()) {
-            ListState.AnimeContent(animes.sortedByDescending { it.mean })
+        cachedAnimes = animes
+        applyAnimeFilter()
+    }
+
+    private suspend fun loadMangaList(username: String?) {
+        var offset = 0
+        val mangas = mutableListOf<Pair<MalManga, MalMangaReadingStatus?>>()
+
+        var response = malRepository.getUserMangaList(
+            username = username,
+            offset = offset
+        )
+        if (response.isFailure) {
+            _listState.value = ListState.Error(response.exceptionOrNull())
+            return
+        }
+
+        while (response.isSuccess) {
+            val body = response.getOrNull() ?: break
+            if (body.data.isEmpty()) break
+            mangas.addAll(body.data.map { it.manga to it.listStatus?.status })
+            offset += body.data.size
+            if (body.data.size < 100) break
+            response = malRepository.getUserMangaList(
+                username = username,
+                offset = offset
+            )
+        }
+
+        cachedMangas = mangas
+        applyMangaFilter()
+    }
+
+    private fun applyAnimeFilter() {
+        val filter = _animeFilter.value
+        val filtered = if (filter.isEmpty()) {
+            cachedAnimes.map { it.first }
+        } else {
+            cachedAnimes.filter { it.second in filter }.map { it.first }
+        }
+
+        _listState.value = if (filtered.isNotEmpty()) {
+            ListState.AnimeContent(filtered.sortedByDescending { it.mean })
         } else {
             ListState.Empty
         }
     }
 
-    private suspend fun loadMangaList(username: String?) {
-        val status = _mangaFilter.value.apiValue
-        var offset = 0
-        val mangas = mutableListOf<MalManga>()
-
-        var response = malRepository.getUserMangaList(
-            username = username,
-            offset = offset,
-            status = status
-        )
-        if (response.isFailure) {
-            _listState.value = ListState.Error(response.exceptionOrNull())
-            return
+    private fun applyMangaFilter() {
+        val filter = _mangaFilter.value
+        val filtered = if (filter.isEmpty()) {
+            cachedMangas.map { it.first }
+        } else {
+            cachedMangas.filter { it.second in filter }.map { it.first }
         }
 
-        while (response.isSuccess) {
-            val body = response.getOrNull() ?: break
-            if (body.data.isEmpty()) break
-            mangas.addAll(body.data.map { it.manga })
-            offset += body.data.size
-            if (body.data.size < 100) break
-            response = malRepository.getUserMangaList(
-                username = username,
-                offset = offset,
-                status = status
-            )
-        }
-
-        _listState.value = if (mangas.isNotEmpty()) {
-            ListState.MangaContent(mangas.sortedByDescending { it.mean })
+        _listState.value = if (filtered.isNotEmpty()) {
+            ListState.MangaContent(filtered.sortedByDescending { it.mean })
         } else {
             ListState.Empty
         }
