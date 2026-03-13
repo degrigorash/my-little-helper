@@ -1,9 +1,16 @@
+import java.util.Properties
+
 plugins {
     id("com.android.library")
     id("kotlinx-serialization")
     id("com.google.dagger.hilt.android")
     id("org.jetbrains.kotlin.plugin.compose")
     alias(libs.plugins.ksp)
+}
+
+val localProperties = Properties().apply {
+    val file = rootProject.file("local.properties")
+    if (file.exists()) load(file.inputStream())
 }
 
 android {
@@ -15,6 +22,12 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
+
+        buildConfigField(
+            "String",
+            "MAL_CLIENT_ID",
+            "\"${localProperties.getProperty("MAL_CLIENT_ID", "")}\""
+        )
     }
 
     buildTypes {
@@ -31,6 +44,7 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
     buildFeatures {
+        buildConfig = true
         compose = true
     }
     composeOptions {
