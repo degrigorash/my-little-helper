@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.sp
 import com.grig.core.theme.AppTheme
 import com.grig.myanimelist.R
 import com.grig.myanimelist.data.model.anime.MalAnimeAiringStatus
+import com.grig.myanimelist.data.model.anime.MalAnimeWatchingStatus
 import com.grig.myanimelist.data.model.manga.MalMangaPublishStatus
 
 @Composable
@@ -98,6 +99,14 @@ fun animeStatusColor(status: MalAnimeAiringStatus): Color = when (status) {
     MalAnimeAiringStatus.CurrentlyAiring -> Color(0xFF4CAF50)
     MalAnimeAiringStatus.FinishedAiring -> Color(0xFF78909C)
     MalAnimeAiringStatus.NotYetAired -> Color(0xFF42A5F5)
+}
+
+fun watchingStatusColor(status: MalAnimeWatchingStatus): Color = when (status) {
+    MalAnimeWatchingStatus.Watching -> Color(0xFF4CAF50)
+    MalAnimeWatchingStatus.Completed -> Color(0xFF42A5F5)
+    MalAnimeWatchingStatus.OnHold -> Color(0xFFFF9800)
+    MalAnimeWatchingStatus.Dropped -> Color(0xFFE53935)
+    MalAnimeWatchingStatus.PlanToWatch -> Color(0xFF78909C)
 }
 
 fun mangaStatusColor(status: MalMangaPublishStatus): Color = when (status) {
