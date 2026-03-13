@@ -29,6 +29,6 @@ interface MalService {
         @Query("offset") offset: Int = 0,
         @Query("nsfw") nsfw: Boolean = true,
         @Query("status") status: String? = null,
-        @Query("fields") fields: String = "list_status{status},alternative_titles,synopsis,mean,rank,popularity,num_list_users,media_type,status,num_volumes,num_chapters,genres,pictures,nsfw"
+        @Query("fields") fields: String = "list_status{status,score,num_chapters_read,num_volumes_read},alternative_titles,synopsis,mean,rank,popularity,num_list_users,media_type,status,num_volumes,num_chapters,start_date,end_date,authors{first_name,last_name},genres,pictures,nsfw"
     ): Result<MalMangaList>
 }

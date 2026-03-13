@@ -8,9 +8,13 @@ import com.grig.myanimelist.data.model.anime.MalAnime
 import com.grig.myanimelist.data.model.anime.MalAnimeAiringStatus
 import com.grig.myanimelist.data.model.anime.MalAnimeListStatus
 import com.grig.myanimelist.data.model.anime.MalAnimeWatchingStatus
+import com.grig.myanimelist.data.model.manga.MalAuthor
+import com.grig.myanimelist.data.model.manga.MalAuthorNode
 import com.grig.myanimelist.data.model.manga.MalManga
+import com.grig.myanimelist.data.model.manga.MalMangaListStatus
 import com.grig.myanimelist.data.model.manga.MalMangaMediaType
 import com.grig.myanimelist.data.model.manga.MalMangaPublishStatus
+import com.grig.myanimelist.data.model.manga.MalMangaReadingStatus
 
 internal val previewUser = MalUser(
     id = 1,
@@ -81,6 +85,9 @@ internal val previewManga = MalManga(
     mediaType = MalMangaMediaType.Manga,
     status = MalMangaPublishStatus.CurrentlyPublishing,
     numVolumes = 107,
+    numChapters = 1100,
+    startDate = "1997-07-22",
+    authors = listOf(MalAuthorNode(MalAuthor(1870, "Eiichiro", "Oda"), "Story & Art")),
     genres = listOf(MalGenre(1, "Adventure"))
 )
 
@@ -95,7 +102,31 @@ internal val previewMangaFinished = MalManga(
     mediaType = MalMangaMediaType.Manga,
     status = MalMangaPublishStatus.Finished,
     numVolumes = 27,
+    numChapters = 116,
+    startDate = "2001-07-12",
+    endDate = "2010-06-11",
+    authors = listOf(MalAuthorNode(MalAuthor(1874, "Hiromu", "Arakawa"), "Story & Art")),
     genres = listOf(MalGenre(1, "Action"))
+)
+
+internal val previewMangaCardData = MangaCardData(
+    manga = previewManga,
+    listStatus = MalMangaListStatus(
+        status = MalMangaReadingStatus.Reading,
+        score = 10,
+        numChaptersRead = 850,
+        numVolumesRead = 95
+    )
+)
+
+internal val previewMangaCardDataFinished = MangaCardData(
+    manga = previewMangaFinished,
+    listStatus = MalMangaListStatus(
+        status = MalMangaReadingStatus.Completed,
+        score = 9,
+        numChaptersRead = 116,
+        numVolumesRead = 27
+    )
 )
 
 internal val previewMangaList = listOf(previewManga, previewMangaFinished)

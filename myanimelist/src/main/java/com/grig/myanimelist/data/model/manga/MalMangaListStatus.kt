@@ -6,5 +6,11 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class MalMangaListStatus(
     @SerialName("status")
-    val status: MalMangaReadingStatus = MalMangaReadingStatus.PlanToRead
+    val status: MalMangaReadingStatus = MalMangaReadingStatus.PlanToRead,
+    @SerialName("score")
+    val score: Int? = null,
+    @SerialName("num_chapters_read")
+    val numChaptersRead: Int? = null,
+    @SerialName("num_volumes_read")
+    val numVolumesRead: Int? = null
 )
