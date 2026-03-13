@@ -75,6 +75,10 @@ class MalHomeViewModel @Inject constructor(
         if (_activeTab.value == MalTab.Manga) applyMangaFilter()
     }
 
+    fun retry() {
+        loadList()
+    }
+
     private fun loadList() {
         loadJob?.cancel()
         loadJob = viewModelScope.launch {

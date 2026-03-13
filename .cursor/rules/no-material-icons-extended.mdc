@@ -1,0 +1,26 @@
+---
+description: Do not use the deprecated material-icons-extended library
+globs: "**/*.kt"
+alwaysApply: false
+---
+
+# No material-icons-extended
+
+The `androidx.compose.material:material-icons-extended` library is deprecated and must not be used.
+
+- Never add `material-icons-extended` as a dependency in any `build.gradle.kts` or `libs.versions.toml`.
+- Never import from `androidx.compose.material.icons` (e.g. `Icons.Outlined.*`, `Icons.Filled.*`).
+- Instead, use vector drawable XML resources in `res/drawable/` and load them with `painterResource(R.drawable.ic_*)`.
+
+```kotlin
+// BAD
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Refresh
+
+Icon(imageVector = Icons.Outlined.Refresh, contentDescription = null)
+
+// GOOD
+import androidx.compose.ui.res.painterResource
+
+Icon(painter = painterResource(R.drawable.ic_refresh), contentDescription = null)
+```
