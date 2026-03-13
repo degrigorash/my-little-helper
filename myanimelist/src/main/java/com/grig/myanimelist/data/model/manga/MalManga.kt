@@ -33,6 +33,12 @@ data class MalManga(
     val numVolumes: Int? = null,
     @SerialName("num_chapters")
     val numChapters: Int? = null,
+    @SerialName("start_date")
+    val startDate: String? = null,
+    @SerialName("end_date")
+    val endDate: String? = null,
+    @SerialName("authors")
+    val authors: List<MalAuthorNode> = emptyList(),
     @SerialName("genres")
     val genres: List<MalGenre> = emptyList(),
     @SerialName("main_picture")

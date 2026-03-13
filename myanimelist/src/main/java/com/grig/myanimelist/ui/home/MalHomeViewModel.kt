@@ -8,6 +8,7 @@ import com.grig.myanimelist.data.model.anime.MalAnime
 import com.grig.myanimelist.data.model.anime.MalAnimeListStatus
 import com.grig.myanimelist.data.model.anime.MalAnimeWatchingStatus
 import com.grig.myanimelist.data.model.manga.MalManga
+import com.grig.myanimelist.data.model.manga.MalMangaListStatus
 import com.grig.myanimelist.data.model.manga.MalMangaReadingStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -43,7 +44,7 @@ class MalHomeViewModel @Inject constructor(
     private var loadJob: Job? = null
 
     private var cachedAnimes: List<Pair<MalAnime, MalAnimeListStatus?>> = emptyList()
-    private var cachedMangas: List<Pair<MalManga, MalMangaReadingStatus?>> = emptyList()
+    private var cachedMangas: List<Pair<MalManga, MalMangaListStatus?>> = emptyList()
 
     init {
         viewModelScope.launch {
@@ -152,7 +153,7 @@ class MalHomeViewModel @Inject constructor(
 
     private suspend fun loadMangaList(username: String?) {
         var offset = 0
-        val mangas = mutableListOf<Pair<MalManga, MalMangaReadingStatus?>>()
+        val mangas = mutableListOf<Pair<MalManga, MalMangaListStatus?>>()
 
         var response = malRepository.getUserMangaList(
             username = username,
@@ -166,7 +167,7 @@ class MalHomeViewModel @Inject constructor(
         while (response.isSuccess) {
             val body = response.getOrNull() ?: break
             if (body.data.isEmpty()) break
-            mangas.addAll(body.data.map { it.manga to it.listStatus?.status })
+            mangas.addAll(body.data.map { it.manga to it.listStatus })
             offset += body.data.size
             if (body.data.size < 100) break
             response = malRepository.getUserMangaList(
@@ -201,13 +202,17 @@ class MalHomeViewModel @Inject constructor(
     private fun applyMangaFilter() {
         val filter = _mangaFilter.value
         val filtered = if (filter.isEmpty()) {
-            cachedMangas.map { it.first }
+            cachedMangas
         } else {
-            cachedMangas.filter { it.second in filter }.map { it.first }
+            cachedMangas.filter { it.second?.status in filter }
         }
 
-        _listState.value = if (filtered.isNotEmpty()) {
-            ListState.MangaContent(filtered.sortedByDescending { it.mean })
+        val cardData = filtered
+            .map { MangaCardData(it.first, it.second) }
+            .sortedByDescending { it.manga.mean }
+
+        _listState.value = if (cardData.isNotEmpty()) {
+            ListState.MangaContent(cardData)
         } else {
             ListState.Empty
         }
