@@ -26,10 +26,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
 import coil.compose.AsyncImage
@@ -90,7 +88,24 @@ fun AnimeCard(data: AnimeCardData) {
 
                 Spacer(modifier = Modifier.height(4.dp))
 
-                InfoLine(data = data)
+                val studioNames = anime.studios.joinToString(", ") { it.name }
+                if (studioNames.isNotEmpty()) {
+                    Text(
+                        text = studioNames,
+                        style = MaterialTheme.typography.bodySmall,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                }
+
+                val epText = buildEpisodeProgress(data)
+                if (epText != null) {
+                    Text(
+                        text = epText,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(top = 2.dp)
+                    )
+                }
 
                 val airedText = buildAiredText(anime.startDate, anime.endDate)
                 if (airedText != null) {
@@ -196,50 +211,21 @@ private fun StatsRowWithMyScore(
     }
 }
 
-@Composable
-private fun InfoLine(data: AnimeCardData) {
-    val anime = data.anime
-    val studioNames = anime.studios.joinToString(", ") { it.name }
+private fun buildEpisodeProgress(data: AnimeCardData): String? {
     val watched = data.listStatus?.numEpisodesWatched
-    val total = anime.numEpisodes?.takeIf { it > 0 }
-    val epText = when {
-        watched != null && total != null -> "$watched/$total ep"
-        watched != null -> "$watched ep watched"
-        total != null -> "$total ep"
+    val total = data.anime.numEpisodes?.takeIf { it > 0 }
+    return when {
+        watched != null && total != null -> "$watched/$total episodes"
+        watched != null -> "$watched episodes watched"
+        total != null -> "$total episodes"
         else -> null
     }
-
-    if (studioNames.isEmpty() && epText == null) return
-
-    val secondaryColor = MaterialTheme.colorScheme.onSurfaceVariant
-    val style = MaterialTheme.typography.bodySmall
-
-    Text(
-        text = buildAnnotatedString {
-            if (studioNames.isNotEmpty()) {
-                withStyle(style.copy(fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.onSurface).toSpanStyle()) {
-                    append(studioNames)
-                }
-                if (epText != null) {
-                    withStyle(style.copy(color = secondaryColor).toSpanStyle()) {
-                        append(" \u00B7 $epText")
-                    }
-                }
-            } else if (epText != null) {
-                withStyle(style.copy(color = secondaryColor).toSpanStyle()) {
-                    append(epText)
-                }
-            }
-        },
-        maxLines = 1,
-        overflow = TextOverflow.Ellipsis
-    )
 }
 
-private val apiDateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-private val displayDateFormat = DateTimeFormatter.ofPattern("MMM d, yyyy", Locale.ENGLISH)
+internal val apiDateFormat: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+internal val displayDateFormat: DateTimeFormatter = DateTimeFormatter.ofPattern("MMM d, yyyy", Locale.ENGLISH)
 
-private fun formatApiDate(raw: String): String? {
+internal fun formatApiDate(raw: String): String? {
     return try {
         val padded = when (raw.length) {
             4 -> "$raw-01-01"
@@ -252,7 +238,7 @@ private fun formatApiDate(raw: String): String? {
     }
 }
 
-private fun buildAiredText(startDate: String?, endDate: String?): String? {
+internal fun buildAiredText(startDate: String?, endDate: String?): String? {
     val start = startDate?.let { formatApiDate(it) }
     val end = endDate?.let { formatApiDate(it) }
     return when {

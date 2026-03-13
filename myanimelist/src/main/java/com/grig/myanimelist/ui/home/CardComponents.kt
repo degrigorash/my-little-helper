@@ -25,6 +25,7 @@ import com.grig.myanimelist.R
 import com.grig.myanimelist.data.model.anime.MalAnimeAiringStatus
 import com.grig.myanimelist.data.model.anime.MalAnimeWatchingStatus
 import com.grig.myanimelist.data.model.manga.MalMangaPublishStatus
+import com.grig.myanimelist.data.model.manga.MalMangaReadingStatus
 
 @Composable
 fun StatsRow(
@@ -107,6 +108,14 @@ fun watchingStatusColor(status: MalAnimeWatchingStatus): Color = when (status) {
     MalAnimeWatchingStatus.OnHold -> Color(0xFFFF9800)
     MalAnimeWatchingStatus.Dropped -> Color(0xFFE53935)
     MalAnimeWatchingStatus.PlanToWatch -> Color(0xFF78909C)
+}
+
+fun readingStatusColor(status: MalMangaReadingStatus): Color = when (status) {
+    MalMangaReadingStatus.Reading -> Color(0xFF4CAF50)
+    MalMangaReadingStatus.Completed -> Color(0xFF42A5F5)
+    MalMangaReadingStatus.OnHold -> Color(0xFFFF9800)
+    MalMangaReadingStatus.Dropped -> Color(0xFFE53935)
+    MalMangaReadingStatus.PlanToRead -> Color(0xFF78909C)
 }
 
 fun mangaStatusColor(status: MalMangaPublishStatus): Color = when (status) {
