@@ -16,12 +16,15 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.grig.core.theme.AppTheme
+import com.grig.core.theme.AppThemeExtended
 
 @Composable
 fun TabToggle(
     activeTab: MalTab,
     onTabSelected: (MalTab) -> Unit
 ) {
+    val colors = AppThemeExtended.colorScheme
+
     Surface(
         modifier = Modifier
             .fillMaxWidth()
@@ -37,7 +40,7 @@ fun TabToggle(
                         .weight(1f)
                         .clickable { onTabSelected(tab) },
                     shape = RoundedCornerShape(50),
-                    color = if (selected) MaterialTheme.colorScheme.primary else Color.Transparent
+                    color = if (selected) colors.malCardStart else Color.Transparent
                 ) {
                     Text(
                         text = tab.name,
@@ -47,7 +50,7 @@ fun TabToggle(
                         textAlign = TextAlign.Center,
                         fontWeight = FontWeight.SemiBold,
                         color = if (selected) {
-                            MaterialTheme.colorScheme.onPrimary
+                            colors.cardText
                         } else {
                             MaterialTheme.colorScheme.onSurfaceVariant
                         }

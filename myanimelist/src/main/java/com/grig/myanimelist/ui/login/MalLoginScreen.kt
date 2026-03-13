@@ -110,7 +110,7 @@ private fun MalLoginContent(
                     .clip(RoundedCornerShape(20.dp))
                     .background(
                         brush = Brush.linearGradient(
-                            listOf(colors.malLoginGradientStart, colors.malLoginGradientEnd)
+                            listOf(colors.malCardStart, colors.malCardEnd)
                         )
                     ),
                 contentAlignment = Alignment.Center
@@ -157,7 +157,7 @@ private fun MalLoginContent(
                         .fillMaxSize()
                         .background(
                             brush = Brush.horizontalGradient(
-                                listOf(colors.malLoginGradientStart, colors.malLoginGradientEnd)
+                                listOf(colors.malCardStart, colors.malCardEnd)
                             ),
                             shape = RoundedCornerShape(28.dp)
                         ),
@@ -180,7 +180,7 @@ private fun MalLoginContent(
                     .fillMaxWidth()
                     .height(56.dp),
                 shape = RoundedCornerShape(28.dp),
-                border = BorderStroke(1.dp, colors.malLoginOutline)
+                border = BorderStroke(1.dp, colors.malIconContainer)
             ) {
                 Text(
                     text = stringResource(R.string.continue_as_guest),

@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.grig.core.theme.AppTheme
+import com.grig.core.theme.AppThemeExtended
 import com.grig.myanimelist.data.model.anime.MalAnimeWatchingStatus
 import com.grig.myanimelist.data.model.manga.MalMangaReadingStatus
 
@@ -25,6 +26,8 @@ fun FilterChipsRow(
     onAnimeFilterSelected: (MalAnimeWatchingStatus) -> Unit,
     onMangaFilterSelected: (MalMangaReadingStatus) -> Unit
 ) {
+    val colors = AppThemeExtended.colorScheme
+
     LazyRow(
         modifier = Modifier.fillMaxWidth(),
         contentPadding = PaddingValues(horizontal = 16.dp),
@@ -37,8 +40,8 @@ fun FilterChipsRow(
                     onClick = { onAnimeFilterSelected(status) },
                     label = { Text(status.displayName) },
                     colors = FilterChipDefaults.filterChipColors(
-                        selectedContainerColor = MaterialTheme.colorScheme.primary,
-                        selectedLabelColor = MaterialTheme.colorScheme.onPrimary
+                        selectedContainerColor = colors.malCardStart,
+                        selectedLabelColor = colors.cardText
                     )
                 )
             }
@@ -49,8 +52,8 @@ fun FilterChipsRow(
                     onClick = { onMangaFilterSelected(status) },
                     label = { Text(status.displayName) },
                     colors = FilterChipDefaults.filterChipColors(
-                        selectedContainerColor = MaterialTheme.colorScheme.primary,
-                        selectedLabelColor = MaterialTheme.colorScheme.onPrimary
+                        selectedContainerColor = colors.malCardStart,
+                        selectedLabelColor = colors.cardText
                     )
                 )
             }
