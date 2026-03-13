@@ -4,15 +4,22 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -23,6 +30,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -36,6 +44,9 @@ import com.grig.myanimelist.data.model.MalUser
 fun UserHeader(
     user: MalUser?,
     authorized: Boolean,
+    guestUsername: String,
+    onGuestUsernameChange: (String) -> Unit,
+    onGuestSearch: () -> Unit,
     onLogoutClick: () -> Unit,
     onLoginClick: () -> Unit
 ) {
@@ -52,21 +63,13 @@ fun UserHeader(
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        UserAvatar(user = user)
-        Spacer(modifier = Modifier.width(12.dp))
-        Column(modifier = Modifier.weight(1f)) {
-            Text(
-                text = user?.name ?: "Guest",
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold,
-                color = colors.cardText,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-            Text(
-                text = if (user?.isSupporter == true) "Premium Member" else "Member",
-                style = MaterialTheme.typography.bodyMedium,
-                color = colors.cardText.copy(alpha = 0.7f)
+        if (authorized) {
+            AuthorizedContent(user = user)
+        } else {
+            GuestContent(
+                guestUsername = guestUsername,
+                onGuestUsernameChange = onGuestUsernameChange,
+                onGuestSearch = onGuestSearch
             )
         }
         IconButton(onClick = { if (authorized) onLogoutClick() else onLoginClick() }) {
@@ -77,6 +80,73 @@ fun UserHeader(
             )
         }
     }
+}
+
+@Composable
+private fun RowScope.AuthorizedContent(user: MalUser?) {
+    val colors = AppThemeExtended.colorScheme
+    UserAvatar(user = user)
+    Spacer(modifier = Modifier.width(12.dp))
+    Column(modifier = Modifier.weight(1f)) {
+        Text(
+            text = user?.name ?: "Guest",
+            style = MaterialTheme.typography.titleLarge,
+            fontWeight = FontWeight.Bold,
+            color = colors.cardText,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
+        Text(
+            text = if (user?.isSupporter == true) "Premium Member" else "Member",
+            style = MaterialTheme.typography.bodyMedium,
+            color = colors.cardText.copy(alpha = 0.7f)
+        )
+    }
+}
+
+@Composable
+private fun RowScope.GuestContent(
+    guestUsername: String,
+    onGuestUsernameChange: (String) -> Unit,
+    onGuestSearch: () -> Unit
+) {
+    val colors = AppThemeExtended.colorScheme
+    OutlinedTextField(
+        value = guestUsername,
+        onValueChange = onGuestUsernameChange,
+        modifier = Modifier
+            .weight(1f)
+            .height(48.dp),
+        placeholder = {
+            Text(
+                text = "MAL username",
+                style = MaterialTheme.typography.bodyMedium,
+                color = colors.cardText.copy(alpha = 0.5f)
+            )
+        },
+        textStyle = MaterialTheme.typography.bodyMedium.copy(
+            color = colors.cardText,
+            fontWeight = FontWeight.SemiBold
+        ),
+        singleLine = true,
+        shape = RoundedCornerShape(24.dp),
+        colors = OutlinedTextFieldDefaults.colors(
+            focusedBorderColor = colors.cardText,
+            unfocusedBorderColor = colors.cardText.copy(alpha = 0.5f),
+            cursorColor = colors.cardText
+        ),
+        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+        keyboardActions = KeyboardActions(onSearch = { onGuestSearch() }),
+        trailingIcon = {
+            IconButton(onClick = onGuestSearch) {
+                Icon(
+                    painter = painterResource(R.drawable.ic_search),
+                    contentDescription = "Search",
+                    tint = colors.cardText
+                )
+            }
+        }
+    )
 }
 
 @Composable
@@ -121,6 +191,9 @@ private fun UserHeaderAuthorizedPreview() {
         UserHeader(
             user = previewUser,
             authorized = true,
+            guestUsername = "",
+            onGuestUsernameChange = {},
+            onGuestSearch = {},
             onLogoutClick = {},
             onLoginClick = {}
         )
@@ -134,6 +207,41 @@ private fun UserHeaderGuestPreview() {
         UserHeader(
             user = null,
             authorized = false,
+            guestUsername = "",
+            onGuestUsernameChange = {},
+            onGuestSearch = {},
+            onLogoutClick = {},
+            onLoginClick = {}
+        )
+    }
+}
+
+@Preview(name = "Guest with username")
+@Composable
+private fun UserHeaderGuestWithUsernamePreview() {
+    AppTheme(darkTheme = false) {
+        UserHeader(
+            user = null,
+            authorized = false,
+            guestUsername = "Naruto_fan42",
+            onGuestUsernameChange = {},
+            onGuestSearch = {},
+            onLogoutClick = {},
+            onLoginClick = {}
+        )
+    }
+}
+
+@Preview(name = "Guest Dark")
+@Composable
+private fun UserHeaderGuestDarkPreview() {
+    AppTheme(darkTheme = true) {
+        UserHeader(
+            user = null,
+            authorized = false,
+            guestUsername = "Naruto_fan42",
+            onGuestUsernameChange = {},
+            onGuestSearch = {},
             onLogoutClick = {},
             onLoginClick = {}
         )
@@ -147,6 +255,9 @@ private fun UserHeaderDarkPreview() {
         UserHeader(
             user = previewUser,
             authorized = true,
+            guestUsername = "",
+            onGuestUsernameChange = {},
+            onGuestSearch = {},
             onLogoutClick = {},
             onLoginClick = {}
         )
