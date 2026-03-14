@@ -2,6 +2,7 @@ package com.grig.myanimelist.ui.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.grig.myanimelist.data.FilterPreferencesManager
 import com.grig.myanimelist.data.MalRepository
 import com.grig.myanimelist.data.model.MalUserState
 import com.grig.myanimelist.data.model.anime.MalAnime
@@ -21,7 +22,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MalHomeViewModel @Inject constructor(
-    private val malRepository: MalRepository
+    private val malRepository: MalRepository,
+    private val filterPreferences: FilterPreferencesManager
 ) : ViewModel() {
 
     val malUserFlow = malRepository.userFlow
@@ -48,6 +50,9 @@ class MalHomeViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
+            _animeFilter.value = filterPreferences.loadAnimeFilter()
+            _mangaFilter.value = filterPreferences.loadMangaFilter()
+
             val userState = malUserFlow.first()
             if (userState is MalUserState.Authorized) {
                 loadList()
@@ -75,13 +80,17 @@ class MalHomeViewModel @Inject constructor(
 
     fun selectAnimeFilter(status: MalAnimeWatchingStatus) {
         val current = _animeFilter.value
-        _animeFilter.value = if (status in current) current - status else current + status
+        val updated = if (status in current) current - status else current + status
+        _animeFilter.value = updated
+        viewModelScope.launch { filterPreferences.saveAnimeFilter(updated) }
         if (_activeTab.value == MalTab.Anime) applyAnimeFilter()
     }
 
     fun selectMangaFilter(status: MalMangaReadingStatus) {
         val current = _mangaFilter.value
-        _mangaFilter.value = if (status in current) current - status else current + status
+        val updated = if (status in current) current - status else current + status
+        _mangaFilter.value = updated
+        viewModelScope.launch { filterPreferences.saveMangaFilter(updated) }
         if (_activeTab.value == MalTab.Manga) applyMangaFilter()
     }
 
