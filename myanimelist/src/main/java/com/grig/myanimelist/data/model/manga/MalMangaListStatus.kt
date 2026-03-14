@@ -12,5 +12,7 @@ data class MalMangaListStatus(
     @SerialName("num_chapters_read")
     val numChaptersRead: Int? = null,
     @SerialName("num_volumes_read")
-    val numVolumesRead: Int? = null
+    val numVolumesRead: Int? = null,
+    @SerialName("finish_date")
+    val finishDate: String? = null
 )

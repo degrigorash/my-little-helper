@@ -46,6 +46,9 @@ class MalHomeViewModel @Inject constructor(
     private val _editSheetAnime = MutableStateFlow<AnimeCardData?>(null)
     val editSheetAnime: StateFlow<AnimeCardData?> = _editSheetAnime.asStateFlow()
 
+    private val _editSheetManga = MutableStateFlow<MangaCardData?>(null)
+    val editSheetManga: StateFlow<MangaCardData?> = _editSheetManga.asStateFlow()
+
     private var loadJob: Job? = null
 
     private var cachedAnimes: List<Pair<MalAnime, MalAnimeListStatus?>> = emptyList()
@@ -250,5 +253,27 @@ class MalHomeViewModel @Inject constructor(
         cachedAnimes = cachedAnimes.filter { it.first.id != animeId }
         applyAnimeFilter()
         _editSheetAnime.value = null
+    }
+
+    fun onMangaClick(data: MangaCardData) {
+        _editSheetManga.value = data
+    }
+
+    fun dismissMangaEditSheet() {
+        _editSheetManga.value = null
+    }
+
+    fun onMangaUpdated(mangaId: Int, newStatus: MalMangaListStatus) {
+        cachedMangas = cachedMangas.map { (manga, status) ->
+            if (manga.id == mangaId) manga to newStatus else manga to status
+        }
+        applyMangaFilter()
+        _editSheetManga.value = null
+    }
+
+    fun onMangaDeleted(mangaId: Int) {
+        cachedMangas = cachedMangas.filter { it.first.id != mangaId }
+        applyMangaFilter()
+        _editSheetManga.value = null
     }
 }
