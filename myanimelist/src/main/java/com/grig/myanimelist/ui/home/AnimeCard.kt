@@ -40,23 +40,27 @@ import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 @Composable
-fun AnimeList(animes: List<AnimeCardData>) {
+fun AnimeList(
+    animes: List<AnimeCardData>,
+    onAnimeClick: ((AnimeCardData) -> Unit)? = null
+) {
     LazyColumn(
         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         items(animes, key = { it.anime.id }) { data ->
-            AnimeCard(data = data)
+            AnimeCard(data = data, onClick = onAnimeClick?.let { { it(data) } })
         }
     }
 }
 
 @Composable
-fun AnimeCard(data: AnimeCardData) {
+fun AnimeCard(data: AnimeCardData, onClick: (() -> Unit)? = null) {
     val anime = data.anime
     val listStatus = data.listStatus
 
     Card(
+        onClick = { onClick?.invoke() },
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
