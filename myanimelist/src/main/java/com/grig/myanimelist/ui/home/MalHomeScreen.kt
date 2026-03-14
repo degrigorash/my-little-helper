@@ -17,6 +17,8 @@ import com.grig.myanimelist.ui.MalError
 import com.grig.myanimelist.ui.MalLoading
 import com.grig.myanimelist.ui.animeedit.EditAnimeBottomSheet
 import com.grig.myanimelist.ui.animeedit.EditAnimeViewModel
+import com.grig.myanimelist.ui.mangaedit.EditMangaBottomSheet
+import com.grig.myanimelist.ui.mangaedit.EditMangaViewModel
 
 @Composable
 fun MalHomeScreen(
@@ -31,6 +33,7 @@ fun MalHomeScreen(
     val listState by viewModel.listState.collectAsState()
     val guestUsername by viewModel.guestUsername.collectAsState()
     val editSheetAnime by viewModel.editSheetAnime.collectAsState()
+    val editSheetManga by viewModel.editSheetManga.collectAsState()
     val authorized = userState is MalUserState.Authorized
     val user = (userState as? MalUserState.Authorized)?.user
 
@@ -77,7 +80,10 @@ fun MalHomeScreen(
                     animes = state.animes,
                     onAnimeClick = if (authorized) viewModel::onAnimeClick else null
                 )
-                is ListState.MangaContent -> MangaList(mangas = state.mangas)
+                is ListState.MangaContent -> MangaList(
+                    mangas = state.mangas,
+                    onMangaClick = if (authorized) viewModel::onMangaClick else null
+                )
             }
         }
     }
@@ -93,6 +99,21 @@ fun MalHomeScreen(
             },
             onDeleted = {
                 viewModel.onAnimeDeleted(data.anime.id)
+            }
+        )
+    }
+
+    editSheetManga?.let { data ->
+        val editViewModel: EditMangaViewModel = hiltViewModel()
+        EditMangaBottomSheet(
+            data = data,
+            viewModel = editViewModel,
+            onDismiss = viewModel::dismissMangaEditSheet,
+            onSaved = { event ->
+                viewModel.onMangaUpdated(data.manga.id, event.updatedStatus)
+            },
+            onDeleted = {
+                viewModel.onMangaDeleted(data.manga.id)
             }
         )
     }

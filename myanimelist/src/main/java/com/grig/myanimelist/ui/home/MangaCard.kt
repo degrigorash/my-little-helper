@@ -36,23 +36,27 @@ import com.grig.myanimelist.R
 import com.grig.myanimelist.data.model.MalNsfw
 
 @Composable
-fun MangaList(mangas: List<MangaCardData>) {
+fun MangaList(
+    mangas: List<MangaCardData>,
+    onMangaClick: ((MangaCardData) -> Unit)? = null
+) {
     LazyColumn(
         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         items(mangas, key = { it.manga.id }) { data ->
-            MangaCard(data = data)
+            MangaCard(data = data, onClick = onMangaClick?.let { { it(data) } })
         }
     }
 }
 
 @Composable
-fun MangaCard(data: MangaCardData) {
+fun MangaCard(data: MangaCardData, onClick: (() -> Unit)? = null) {
     val manga = data.manga
     val listStatus = data.listStatus
 
     Card(
+        onClick = { onClick?.invoke() },
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
