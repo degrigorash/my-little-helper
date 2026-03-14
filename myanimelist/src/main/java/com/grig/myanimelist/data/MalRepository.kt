@@ -62,6 +62,23 @@ class MalRepository @Inject constructor(
         status = status
     )
 
+    suspend fun updateAnimeListStatus(
+        animeId: Int,
+        status: String? = null,
+        score: Int? = null,
+        numWatchedEpisodes: Int? = null,
+        finishDate: String? = null
+    ) = malService.updateAnimeListStatus(
+        animeId = animeId,
+        status = status,
+        score = score,
+        numWatchedEpisodes = numWatchedEpisodes,
+        finishDate = finishDate
+    )
+
+    suspend fun deleteAnimeListItem(animeId: Int) =
+        malService.deleteAnimeListItem(animeId)
+
     suspend fun getUserMangaList(
         username: String?,
         offset: Int,

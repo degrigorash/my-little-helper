@@ -2,8 +2,13 @@ package com.grig.myanimelist.data
 
 import com.grig.myanimelist.data.model.MalUser
 import com.grig.myanimelist.data.model.anime.MalAnimeList
+import com.grig.myanimelist.data.model.anime.MalAnimeListStatus
 import com.grig.myanimelist.data.model.manga.MalMangaList
+import retrofit2.http.DELETE
+import retrofit2.http.Field
+import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
+import retrofit2.http.PATCH
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -19,8 +24,23 @@ interface MalService {
         @Query("offset") offset: Int = 0,
         @Query("nsfw") nsfw: Boolean = true,
         @Query("status") status: String? = null,
-        @Query("fields") fields: String = "list_status{status,score,num_episodes_watched},alternative_titles,synopsis,mean,rank,popularity,num_list_users,status,num_episodes,start_date,end_date,genres,studios,pictures,rating,nsfw"
+        @Query("fields") fields: String = "list_status{status,score,num_episodes_watched,finish_date},alternative_titles,synopsis,mean,rank,popularity,num_list_users,status,num_episodes,start_date,end_date,genres,studios,pictures,rating,nsfw"
     ): Result<MalAnimeList>
+
+    @FormUrlEncoded
+    @PATCH("v2/anime/{anime_id}/my_list_status")
+    suspend fun updateAnimeListStatus(
+        @Path("anime_id") animeId: Int,
+        @Field("status") status: String? = null,
+        @Field("score") score: Int? = null,
+        @Field("num_watched_episodes") numWatchedEpisodes: Int? = null,
+        @Field("finish_date") finishDate: String? = null
+    ): Result<MalAnimeListStatus>
+
+    @DELETE("v2/anime/{anime_id}/my_list_status")
+    suspend fun deleteAnimeListItem(
+        @Path("anime_id") animeId: Int
+    ): Result<Unit>
 
     @GET("v2/users/{username}/mangalist")
     suspend fun getUserMangaList(

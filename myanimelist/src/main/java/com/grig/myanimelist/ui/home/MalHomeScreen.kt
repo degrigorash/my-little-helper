@@ -10,10 +10,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.grig.myanimelist.data.model.MalUserState
 import com.grig.myanimelist.ui.MalEmpty
 import com.grig.myanimelist.ui.MalError
 import com.grig.myanimelist.ui.MalLoading
+import com.grig.myanimelist.ui.animeedit.EditAnimeBottomSheet
+import com.grig.myanimelist.ui.animeedit.EditAnimeViewModel
 
 @Composable
 fun MalHomeScreen(
@@ -27,6 +30,7 @@ fun MalHomeScreen(
     val mangaFilter by viewModel.mangaFilter.collectAsState()
     val listState by viewModel.listState.collectAsState()
     val guestUsername by viewModel.guestUsername.collectAsState()
+    val editSheetAnime by viewModel.editSheetAnime.collectAsState()
     val authorized = userState is MalUserState.Authorized
     val user = (userState as? MalUserState.Authorized)?.user
 
@@ -69,9 +73,27 @@ fun MalHomeScreen(
                     exception = state.exception,
                     onRetry = { viewModel.retry() }
                 )
-                is ListState.AnimeContent -> AnimeList(animes = state.animes)
+                is ListState.AnimeContent -> AnimeList(
+                    animes = state.animes,
+                    onAnimeClick = if (authorized) viewModel::onAnimeClick else null
+                )
                 is ListState.MangaContent -> MangaList(mangas = state.mangas)
             }
         }
+    }
+
+    editSheetAnime?.let { data ->
+        val editViewModel: EditAnimeViewModel = hiltViewModel()
+        EditAnimeBottomSheet(
+            data = data,
+            viewModel = editViewModel,
+            onDismiss = viewModel::dismissEditSheet,
+            onSaved = { event ->
+                viewModel.onAnimeUpdated(data.anime.id, event.updatedStatus)
+            },
+            onDeleted = {
+                viewModel.onAnimeDeleted(data.anime.id)
+            }
+        )
     }
 }
