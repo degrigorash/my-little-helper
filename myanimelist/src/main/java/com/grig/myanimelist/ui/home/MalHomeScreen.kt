@@ -1,8 +1,11 @@
 package com.grig.myanimelist.ui.home
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -27,7 +30,11 @@ fun MalHomeScreen(
     val authorized = userState is MalUserState.Authorized
     val user = (userState as? MalUserState.Authorized)?.user
 
-    Column(modifier = modifier.fillMaxSize()) {
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+    ) {
         UserHeader(
             user = user,
             authorized = authorized,
@@ -53,7 +60,7 @@ fun MalHomeScreen(
             onMangaFilterSelected = { viewModel.selectMangaFilter(it) }
         )
 
-        Box(modifier = Modifier.weight(1f)) {
+        Box(modifier = Modifier.weight(1f).navigationBarsPadding()) {
             when (val state = listState) {
                 is ListState.Loading -> MalLoading()
                 is ListState.Empty -> MalEmpty(activeTab = activeTab)

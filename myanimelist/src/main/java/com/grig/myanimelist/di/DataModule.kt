@@ -34,4 +34,17 @@ class DataModule {
         scope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
         produceFile = { appContext.preferencesDataStoreFile("AUTH_DATA_STORE") }
     )
+
+    @Singleton
+    @Provides
+    @Named("FilterDataStore")
+    fun provideFilterDataStore(
+        @ApplicationContext appContext: Context
+    ): DataStore<Preferences> = PreferenceDataStoreFactory.create(
+        corruptionHandler = ReplaceFileCorruptionHandler(
+            produceNewData = { emptyPreferences() }
+        ),
+        scope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
+        produceFile = { appContext.preferencesDataStoreFile("FILTER_DATA_STORE") }
+    )
 }
