@@ -89,6 +89,25 @@ class MalRepository @Inject constructor(
         status = status
     )
 
+    suspend fun updateMangaListStatus(
+        mangaId: Int,
+        status: String? = null,
+        score: Int? = null,
+        numChaptersRead: Int? = null,
+        numVolumesRead: Int? = null,
+        finishDate: String? = null
+    ) = malService.updateMangaListStatus(
+        mangaId = mangaId,
+        status = status,
+        score = score,
+        numChaptersRead = numChaptersRead,
+        numVolumesRead = numVolumesRead,
+        finishDate = finishDate
+    )
+
+    suspend fun deleteMangaListItem(mangaId: Int) =
+        malService.deleteMangaListItem(mangaId)
+
     suspend fun logout() {
         userManager.logout()
     }
