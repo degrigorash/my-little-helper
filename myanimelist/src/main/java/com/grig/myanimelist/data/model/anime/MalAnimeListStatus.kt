@@ -10,5 +10,7 @@ data class MalAnimeListStatus(
     @SerialName("score")
     val score: Int? = null,
     @SerialName("num_episodes_watched")
-    val numEpisodesWatched: Int? = null
+    val numEpisodesWatched: Int? = null,
+    @SerialName("finish_date")
+    val finishDate: String? = null
 )
