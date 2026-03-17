@@ -1,0 +1,39 @@
+---
+description: Jetpack Compose file organization - one logical concern per file, add previews
+globs: "**/*.kt"
+alwaysApply: false
+---
+
+# Composable File Organization
+
+Split Composable UI code into separate files by logical concern. Do not put an entire screen, its sub-components, and detail views into a single file.
+
+## Rules
+
+- **Screen file** (`*Screen.kt`): Only the top-level screen composable that wires ViewModel state to child components. No `private` child composables here.
+- **Sub-components**: Extract each logical UI section (search bar, result list, detail view, etc.) into its own file.
+- **Shared components**: If two or more screens use an identical composable (differing only by a parameter like placeholder text), extract it into a shared file rather than duplicating.
+- **Previews**: Add `@Preview` composables (light + dark at minimum) for every public composable that accepts plain data parameters (not ViewModels). Place previews in the same file as the composable they preview.
+- **Preview data**: Keep preview/sample data in a dedicated `PreviewData.kt` file per feature package.
+
+## File naming conventions
+
+| Concern | File name |
+|---------|-----------|
+| Screen orchestration | `AnimeSearchScreen.kt` |
+| Search result list/item | `AnimeSearchResults.kt` |
+| Detail/info content | `AnimeDetailContent.kt` |
+| Shared search bar | `MalSearchBar.kt` |
+| State & models | `AnimeSearchState.kt` |
+| ViewModel | `AnimeSearchViewModel.kt` |
+
+```kotlin
+// BAD - everything in one file
+// AnimeSearchScreen.kt (400+ lines with SearchBar, ResultItem, DetailContent, previews)
+
+// GOOD - split by concern
+// AnimeSearchScreen.kt   → screen + ViewModel wiring only
+// AnimeSearchResults.kt  → result list + item composable + previews
+// AnimeDetailContent.kt  → detail view composable + previews
+// MalSearchBar.kt        → shared search bar + previews
+```

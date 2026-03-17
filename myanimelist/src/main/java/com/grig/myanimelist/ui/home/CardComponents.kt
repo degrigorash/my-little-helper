@@ -49,7 +49,8 @@ fun StatsRow(
                 Text(
                     text = String.format("%.1f", mean),
                     style = MaterialTheme.typography.labelMedium,
-                    fontWeight = FontWeight.SemiBold
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onSurface
                 )
             }
         }
