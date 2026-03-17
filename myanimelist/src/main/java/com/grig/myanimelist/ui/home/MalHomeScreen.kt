@@ -32,6 +32,7 @@ fun MalHomeScreen(
     val activeTab by viewModel.activeTab.collectAsState()
     val animeFilter by viewModel.animeFilter.collectAsState()
     val mangaFilter by viewModel.mangaFilter.collectAsState()
+    val upcomingFilter by viewModel.upcomingFilter.collectAsState()
     val listState by viewModel.listState.collectAsState()
     val guestUsername by viewModel.guestUsername.collectAsState()
     val editSheetAnime by viewModel.editSheetAnime.collectAsState()
@@ -71,8 +72,10 @@ fun MalHomeScreen(
             activeTab = activeTab,
             animeFilter = animeFilter,
             mangaFilter = mangaFilter,
+            upcomingFilter = upcomingFilter,
             onAnimeFilterSelected = { viewModel.selectAnimeFilter(it) },
-            onMangaFilterSelected = { viewModel.selectMangaFilter(it) }
+            onMangaFilterSelected = { viewModel.selectMangaFilter(it) },
+            onUpcomingFilterToggle = { viewModel.toggleUpcomingFilter() }
         )
 
         Box(modifier = Modifier.weight(1f).navigationBarsPadding()) {
