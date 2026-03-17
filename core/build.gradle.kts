@@ -42,4 +42,8 @@ dependencies {
     implementation(libs.material)
 
     implementation(libs.retrofit)
+
+    testImplementation(libs.junit)
+    testImplementation(libs.mockk)
+    testImplementation(libs.coroutines.test)
 }
