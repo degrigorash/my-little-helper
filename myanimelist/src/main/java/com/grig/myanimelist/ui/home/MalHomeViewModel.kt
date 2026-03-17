@@ -6,10 +6,12 @@ import com.grig.myanimelist.data.FilterPreferencesManager
 import com.grig.myanimelist.data.MalRepository
 import com.grig.myanimelist.data.model.MalUserState
 import com.grig.myanimelist.data.model.anime.MalAnime
+import com.grig.myanimelist.data.model.anime.MalAnimeAiringStatus
 import com.grig.myanimelist.data.model.anime.MalAnimeListStatus
 import com.grig.myanimelist.data.model.anime.MalAnimeWatchingStatus
 import com.grig.myanimelist.data.model.manga.MalManga
 import com.grig.myanimelist.data.model.manga.MalMangaListStatus
+import com.grig.myanimelist.data.model.manga.MalMangaPublishStatus
 import com.grig.myanimelist.data.model.manga.MalMangaReadingStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -37,6 +39,9 @@ class MalHomeViewModel @Inject constructor(
     private val _mangaFilter = MutableStateFlow<Set<MalMangaReadingStatus>>(emptySet())
     val mangaFilter: StateFlow<Set<MalMangaReadingStatus>> = _mangaFilter.asStateFlow()
 
+    private val _upcomingFilter = MutableStateFlow(false)
+    val upcomingFilter: StateFlow<Boolean> = _upcomingFilter.asStateFlow()
+
     private val _listState = MutableStateFlow<ListState>(ListState.Loading)
     val listState: StateFlow<ListState> = _listState.asStateFlow()
 
@@ -58,6 +63,7 @@ class MalHomeViewModel @Inject constructor(
         viewModelScope.launch {
             _animeFilter.value = filterPreferences.loadAnimeFilter()
             _mangaFilter.value = filterPreferences.loadMangaFilter()
+            _upcomingFilter.value = filterPreferences.loadUpcomingFilter()
 
             val userState = malUserFlow.first()
             if (userState is MalUserState.Authorized) {
@@ -90,6 +96,16 @@ class MalHomeViewModel @Inject constructor(
         _animeFilter.value = updated
         viewModelScope.launch { filterPreferences.saveAnimeFilter(updated) }
         if (_activeTab.value == MalTab.Anime) applyAnimeFilter()
+    }
+
+    fun toggleUpcomingFilter() {
+        val updated = !_upcomingFilter.value
+        _upcomingFilter.value = updated
+        viewModelScope.launch { filterPreferences.saveUpcomingFilter(updated) }
+        when (_activeTab.value) {
+            MalTab.Anime -> applyAnimeFilter()
+            MalTab.Manga -> applyMangaFilter()
+        }
     }
 
     fun selectMangaFilter(status: MalMangaReadingStatus) {
@@ -197,10 +213,13 @@ class MalHomeViewModel @Inject constructor(
 
     private fun applyAnimeFilter() {
         val filter = _animeFilter.value
-        val filtered = if (filter.isEmpty()) {
+        var filtered = if (filter.isEmpty()) {
             cachedAnimes
         } else {
             cachedAnimes.filter { it.second?.status in filter }
+        }
+        if (_upcomingFilter.value) {
+            filtered = filtered.filter { it.first.status == MalAnimeAiringStatus.NotYetAired }
         }
 
         val cardData = filtered
@@ -216,10 +235,13 @@ class MalHomeViewModel @Inject constructor(
 
     private fun applyMangaFilter() {
         val filter = _mangaFilter.value
-        val filtered = if (filter.isEmpty()) {
+        var filtered = if (filter.isEmpty()) {
             cachedMangas
         } else {
             cachedMangas.filter { it.second?.status in filter }
+        }
+        if (_upcomingFilter.value) {
+            filtered = filtered.filter { it.first.status == MalMangaPublishStatus.NotYetPublished }
         }
 
         val cardData = filtered

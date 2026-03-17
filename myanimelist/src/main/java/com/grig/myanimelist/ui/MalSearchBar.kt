@@ -89,12 +89,14 @@ fun MalSearchBar(
                 keyboardController?.hide()
             }),
             trailingIcon = {
-                IconButton(onClick = { keyboardController?.hide() }) {
-                    Icon(
-                        painter = painterResource(R.drawable.ic_search),
-                        contentDescription = "Search",
-                        tint = colors.cardText.copy(alpha = 0.7f)
-                    )
+                if (query.isNotEmpty()) {
+                    IconButton(onClick = { onQueryChange("") }) {
+                        Icon(
+                            painter = painterResource(R.drawable.ic_close),
+                            contentDescription = "Clear",
+                            tint = colors.cardText.copy(alpha = 0.7f)
+                        )
+                    }
                 }
             }
         )
