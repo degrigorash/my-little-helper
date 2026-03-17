@@ -52,6 +52,18 @@ class MalRepository @Inject constructor(
         return uri?.getQueryParameter("code")
     }
 
+    suspend fun searchAnime(query: String) =
+        malService.searchAnime(query)
+
+    suspend fun getAnimeDetails(animeId: Int) =
+        malService.getAnimeDetails(animeId)
+
+    suspend fun searchManga(query: String) =
+        malService.searchManga(query)
+
+    suspend fun getMangaDetails(mangaId: Int) =
+        malService.getMangaDetails(mangaId)
+
     suspend fun getUserAnimeList(
         username: String?,
         offset: Int,

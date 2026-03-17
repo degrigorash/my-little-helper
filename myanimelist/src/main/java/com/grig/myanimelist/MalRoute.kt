@@ -9,4 +9,10 @@ sealed class MalRoute {
 
     @Serializable
     data object MalHome : MalRoute()
+
+    @Serializable
+    data object AnimeSearch : MalRoute()
+
+    @Serializable
+    data object MangaSearch : MalRoute()
 }

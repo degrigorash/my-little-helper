@@ -2,6 +2,7 @@ package com.grig.myanimelist.data
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringSetPreferencesKey
 import com.grig.myanimelist.data.model.anime.MalAnimeWatchingStatus
@@ -42,8 +43,19 @@ class FilterPreferencesManager @Inject constructor(
         }
     }
 
+    suspend fun loadUpcomingFilter(): Boolean {
+        return dataStore.data.map { it[UPCOMING_FILTER] ?: false }.first()
+    }
+
+    suspend fun saveUpcomingFilter(enabled: Boolean) {
+        dataStore.edit { prefs ->
+            prefs[UPCOMING_FILTER] = enabled
+        }
+    }
+
     companion object {
         private val ANIME_FILTER = stringSetPreferencesKey("anime_filter")
         private val MANGA_FILTER = stringSetPreferencesKey("manga_filter")
+        private val UPCOMING_FILTER = booleanPreferencesKey("upcoming_filter")
     }
 }

@@ -83,7 +83,8 @@ fun MangaCard(data: MangaCardData, onClick: (() -> Unit)? = null) {
                 Text(
                     text = manga.title,
                     style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface
                 )
 
                 Spacer(modifier = Modifier.height(4.dp))
@@ -96,7 +97,8 @@ fun MangaCard(data: MangaCardData, onClick: (() -> Unit)? = null) {
                     Text(
                         text = authorNames,
                         style = MaterialTheme.typography.bodySmall,
-                        fontWeight = FontWeight.SemiBold
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
 
@@ -176,7 +178,8 @@ private fun MangaStatsRow(
                 Text(
                     text = String.format("%.1f", mean),
                     style = MaterialTheme.typography.labelMedium,
-                    fontWeight = FontWeight.SemiBold
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onSurface
                 )
             }
         }
