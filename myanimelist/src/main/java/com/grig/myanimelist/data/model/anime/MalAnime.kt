@@ -16,9 +16,9 @@ data class MalAnime(
     @SerialName("title")
     val title: String,
     @SerialName("alternative_titles")
-    val alternativeTitles: MalAlternativeTitles,
+    val alternativeTitles: MalAlternativeTitles = MalAlternativeTitles(),
     @SerialName("synopsis")
-    val synopsis: String,
+    val synopsis: String = "",
     @SerialName("mean")
     val mean: Float? = null,
     @SerialName("rank")
@@ -44,5 +44,7 @@ data class MalAnime(
     @SerialName("rating")
     val rating: MalRating? = null,
     @SerialName("nsfw")
-    val nsfw: MalNsfw = MalNsfw.Safe
+    val nsfw: MalNsfw = MalNsfw.Safe,
+    @SerialName("my_list_status")
+    val myListStatus: MalAnimeListStatus? = null
 )

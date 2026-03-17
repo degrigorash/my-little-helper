@@ -24,7 +24,9 @@ import com.grig.myanimelist.ui.mangaedit.EditMangaViewModel
 fun MalHomeScreen(
     modifier: Modifier = Modifier,
     viewModel: MalHomeViewModel,
-    navigateToLogin: () -> Unit
+    navigateToLogin: () -> Unit,
+    navigateToAnimeSearch: () -> Unit,
+    navigateToMangaSearch: () -> Unit
 ) {
     val userState by viewModel.malUserFlow.collectAsState(initial = MalUserState.Unauthorized)
     val activeTab by viewModel.activeTab.collectAsState()
@@ -48,6 +50,12 @@ fun MalHomeScreen(
             guestUsername = guestUsername,
             onGuestUsernameChange = viewModel::setGuestUsername,
             onGuestSearch = viewModel::searchGuestList,
+            onSearchClick = {
+                when (activeTab) {
+                    MalTab.Anime -> navigateToAnimeSearch()
+                    MalTab.Manga -> navigateToMangaSearch()
+                }
+            },
             onLogoutClick = {
                 viewModel.malLogout()
                 navigateToLogin()

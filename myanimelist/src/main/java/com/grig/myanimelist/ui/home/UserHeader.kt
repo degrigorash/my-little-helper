@@ -49,6 +49,7 @@ fun UserHeader(
     guestUsername: String,
     onGuestUsernameChange: (String) -> Unit,
     onGuestSearch: () -> Unit,
+    onSearchClick: () -> Unit,
     onLogoutClick: () -> Unit
 ) {
     val colors = AppThemeExtended.colorScheme
@@ -72,6 +73,13 @@ fun UserHeader(
                 guestUsername = guestUsername,
                 onGuestUsernameChange = onGuestUsernameChange,
                 onGuestSearch = onGuestSearch
+            )
+        }
+        IconButton(onClick = onSearchClick) {
+            Icon(
+                painter = painterResource(R.drawable.ic_search),
+                contentDescription = "Search",
+                tint = colors.cardText
             )
         }
         IconButton(onClick = onLogoutClick) {
@@ -203,6 +211,7 @@ private fun UserHeaderAuthorizedPreview() {
             guestUsername = "",
             onGuestUsernameChange = {},
             onGuestSearch = {},
+            onSearchClick = {},
             onLogoutClick = {}
         )
     }
@@ -218,6 +227,7 @@ private fun UserHeaderGuestPreview() {
             guestUsername = "",
             onGuestUsernameChange = {},
             onGuestSearch = {},
+            onSearchClick = {},
             onLogoutClick = {}
         )
     }
@@ -233,6 +243,7 @@ private fun UserHeaderGuestWithUsernamePreview() {
             guestUsername = "Naruto_fan42",
             onGuestUsernameChange = {},
             onGuestSearch = {},
+            onSearchClick = {},
             onLogoutClick = {}
         )
     }
@@ -248,6 +259,7 @@ private fun UserHeaderGuestDarkPreview() {
             guestUsername = "Naruto_fan42",
             onGuestUsernameChange = {},
             onGuestSearch = {},
+            onSearchClick = {},
             onLogoutClick = {}
         )
     }
@@ -263,6 +275,7 @@ private fun UserHeaderDarkPreview() {
             guestUsername = "",
             onGuestUsernameChange = {},
             onGuestSearch = {},
+            onSearchClick = {},
             onLogoutClick = {}
         )
     }

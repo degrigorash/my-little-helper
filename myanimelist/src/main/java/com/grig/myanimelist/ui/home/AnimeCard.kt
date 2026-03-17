@@ -87,7 +87,8 @@ fun AnimeCard(data: AnimeCardData, onClick: (() -> Unit)? = null) {
                 Text(
                     text = anime.title,
                     style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface
                 )
 
                 Spacer(modifier = Modifier.height(4.dp))
@@ -97,7 +98,8 @@ fun AnimeCard(data: AnimeCardData, onClick: (() -> Unit)? = null) {
                     Text(
                         text = studioNames,
                         style = MaterialTheme.typography.bodySmall,
-                        fontWeight = FontWeight.SemiBold
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
 
@@ -177,7 +179,8 @@ private fun StatsRowWithMyScore(
                 Text(
                     text = String.format("%.1f", mean),
                     style = MaterialTheme.typography.labelMedium,
-                    fontWeight = FontWeight.SemiBold
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onSurface
                 )
             }
         }
