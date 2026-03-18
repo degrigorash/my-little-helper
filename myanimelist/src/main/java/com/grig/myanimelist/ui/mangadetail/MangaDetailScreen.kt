@@ -1,6 +1,5 @@
-package com.grig.myanimelist.ui.mangasearch
+package com.grig.myanimelist.ui.mangadetail
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -9,39 +8,34 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import com.grig.myanimelist.ui.MalSearchBar
+import com.grig.core.theme.AppThemeExtended
+import com.grig.myanimelist.R
+import com.grig.myanimelist.ui.mangasearch.MangaDetailContent
 
 @Composable
-fun MangaSearchScreen(
-    viewModel: MangaSearchViewModel,
-    navigateBack: () -> Unit,
-    onListChanged: () -> Unit = {}
+fun MangaDetailScreen(
+    viewModel: MangaDetailViewModel,
+    navigateBack: () -> Unit
 ) {
     val state by viewModel.state.collectAsState()
-    val keyboardController = LocalSoftwareKeyboardController.current
+    val colors = AppThemeExtended.colorScheme
     val authorized by produceState(initialValue = false) {
         value = viewModel.isAuthorized()
-    }
-
-    LaunchedEffect(Unit) {
-        viewModel.state.collect { s ->
-            if (s.listChanged) {
-                onListChanged()
-            }
-        }
     }
 
     Column(
@@ -49,15 +43,24 @@ fun MangaSearchScreen(
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {
-        MalSearchBar(
-            query = state.query,
-            onQueryChange = viewModel::onQueryChange,
-            onBack = navigateBack,
-            placeholder = "Search manga..."
-        )
-
-        AnimatedVisibility(visible = state.isSearching) {
-            LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(
+                    brush = Brush.linearGradient(
+                        listOf(colors.malCardStart, colors.malCardEnd)
+                    )
+                )
+                .statusBarsPadding()
+                .padding(horizontal = 4.dp, vertical = 8.dp)
+        ) {
+            IconButton(onClick = navigateBack) {
+                Icon(
+                    painter = painterResource(R.drawable.ic_arrow_back),
+                    contentDescription = "Back",
+                    tint = colors.cardText
+                )
+            }
         }
 
         Box(
@@ -67,16 +70,16 @@ fun MangaSearchScreen(
                 .navigationBarsPadding()
         ) {
             when {
-                state.isLoadingDetail -> {
+                state.isLoading -> {
                     CircularProgressIndicator(
                         modifier = Modifier
                             .size(48.dp)
                             .align(Alignment.Center)
                     )
                 }
-                state.selectedManga != null -> {
+                state.manga != null -> {
                     MangaDetailContent(
-                        manga = state.selectedManga!!,
+                        manga = state.manga!!,
                         authorized = authorized,
                         isInMyList = state.isInMyList,
                         isUpdatingList = state.isUpdatingList,
@@ -84,37 +87,11 @@ fun MangaSearchScreen(
                         onDeleteFromList = viewModel::deleteFromMyList
                     )
                 }
-                state.isSearching -> {
-                    CircularProgressIndicator(
-                        modifier = Modifier
-                            .size(48.dp)
-                            .align(Alignment.Center)
-                    )
-                }
-                state.searchResults.isNotEmpty() -> {
-                    MangaSearchResultsList(
-                        results = state.searchResults,
-                        onItemClick = {
-                            keyboardController?.hide()
-                            viewModel.onMangaSelected(it.id)
-                        }
-                    )
-                }
                 state.error != null -> {
                     Text(
                         text = state.error!!,
                         color = MaterialTheme.colorScheme.error,
                         style = MaterialTheme.typography.bodyMedium,
-                        modifier = Modifier
-                            .align(Alignment.Center)
-                            .padding(32.dp)
-                    )
-                }
-                state.query.length >= 3 && !state.isSearching -> {
-                    Text(
-                        text = "No results found",
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier
                             .align(Alignment.Center)
                             .padding(32.dp)

@@ -15,6 +15,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -27,7 +28,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.grig.myanimelist.ui.home.AnimeCardData
+import com.grig.myanimelist.ui.animelist.AnimeCardData
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -36,7 +37,8 @@ fun EditAnimeBottomSheet(
     viewModel: EditAnimeViewModel,
     onDismiss: () -> Unit,
     onSaved: (EditAnimeEvent.Saved) -> Unit,
-    onDeleted: () -> Unit
+    onDeleted: () -> Unit,
+    onOpenDetail: () -> Unit
 ) {
     val state by viewModel.state.collectAsState()
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
@@ -144,6 +146,15 @@ fun EditAnimeBottomSheet(
                 ) {
                     Text("Delete")
                 }
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            OutlinedButton(
+                onClick = onOpenDetail,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("View Details")
             }
 
             Spacer(modifier = Modifier.height(16.dp))

@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.grig.myanimelist.data.MalRepository
 import com.grig.myanimelist.data.model.manga.MalMangaReadingStatus
-import com.grig.myanimelist.ui.home.MangaCardData
+import com.grig.myanimelist.ui.mangalist.MangaCardData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow

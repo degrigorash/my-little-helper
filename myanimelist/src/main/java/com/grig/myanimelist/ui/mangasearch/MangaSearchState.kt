@@ -9,6 +9,7 @@ data class MangaSearchState(
     val selectedManga: MalManga? = null,
     val isLoadingDetail: Boolean = false,
     val isUpdatingList: Boolean = false,
+    val listChanged: Boolean = false,
     val error: String? = null
 ) {
     val isInMyList: Boolean

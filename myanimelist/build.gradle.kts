@@ -73,6 +73,7 @@ dependencies {
     implementation(libs.compose.activity)
     implementation(libs.compose.viewmodel)
     implementation(libs.compose.ui)
+    implementation(libs.compose.foundation)
     implementation(libs.compose.navigation)
     implementation(libs.compose.navigation.hilt)
     implementation(libs.compose.ui.tooling.preview)

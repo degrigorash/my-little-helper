@@ -152,15 +152,14 @@ private fun RowScope.GuestContent(
             onGuestSearch()
         }),
         trailingIcon = {
-            IconButton(onClick = {
-                keyboardController?.hide()
-                onGuestSearch()
-            }) {
-                Icon(
-                    painter = painterResource(R.drawable.ic_search),
-                    contentDescription = "Search",
-                    tint = colors.cardText
-                )
+            if (guestUsername.isNotEmpty()) {
+                IconButton(onClick = { onGuestUsernameChange("") }) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_close),
+                        contentDescription = "Clear",
+                        tint = colors.cardText.copy(alpha = 0.7f)
+                    )
+                }
             }
         }
     )

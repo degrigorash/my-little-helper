@@ -1,4 +1,4 @@
-package com.grig.myanimelist.ui.home
+package com.grig.myanimelist.ui.animelist
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -21,23 +21,24 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.grig.core.theme.AppTheme
 import com.grig.myanimelist.R
 import com.grig.myanimelist.data.model.MalNsfw
 import com.grig.myanimelist.data.model.MalRating
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-import java.util.Locale
+import com.grig.myanimelist.ui.home.StatusBadge
+import com.grig.myanimelist.ui.home.animeStatusColor
+import com.grig.myanimelist.ui.home.buildAiredText
+import com.grig.myanimelist.ui.home.formatMemberCount
+import com.grig.myanimelist.ui.home.watchingStatusColor
 
 @Composable
 fun AnimeList(
@@ -74,10 +75,7 @@ fun AnimeCard(data: AnimeCardData, onClick: (() -> Unit)? = null) {
                 contentDescription = null,
                 modifier = Modifier
                     .size(100.dp)
-                    .clip(RoundedCornerShape(12.dp))
-                    .blur(
-                        if (anime.nsfw == MalNsfw.Nsfw || anime.rating == MalRating.Rx) 10.dp else 0.dp
-                    ),
+                    .clip(RoundedCornerShape(12.dp)),
                 contentScale = ContentScale.Crop
             )
             Spacer(modifier = Modifier.width(12.dp))
@@ -225,32 +223,6 @@ private fun buildEpisodeProgress(data: AnimeCardData): String? {
         watched != null && total != null -> "$watched/$total episodes"
         watched != null -> "$watched episodes watched"
         total != null -> "$total episodes"
-        else -> null
-    }
-}
-
-internal val apiDateFormat: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-internal val displayDateFormat: DateTimeFormatter = DateTimeFormatter.ofPattern("MMM d, yyyy", Locale.ENGLISH)
-
-internal fun formatApiDate(raw: String): String? {
-    return try {
-        val padded = when (raw.length) {
-            4 -> "$raw-01-01"
-            7 -> "$raw-01"
-            else -> raw
-        }
-        LocalDate.parse(padded, apiDateFormat).format(displayDateFormat)
-    } catch (_: Exception) {
-        raw
-    }
-}
-
-internal fun buildAiredText(startDate: String?, endDate: String?): String? {
-    val start = startDate?.let { formatApiDate(it) }
-    val end = endDate?.let { formatApiDate(it) }
-    return when {
-        start != null && end != null -> "$start to $end"
-        start != null -> "$start"
         else -> null
     }
 }
