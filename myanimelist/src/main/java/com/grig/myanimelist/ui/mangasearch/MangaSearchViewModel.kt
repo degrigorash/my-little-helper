@@ -128,7 +128,9 @@ class MangaSearchViewModel @Inject constructor(
         val result = malRepository.getMangaDetails(mangaId)
         result.fold(
             onSuccess = { manga ->
-                _state.update { it.copy(selectedManga = manga, isUpdatingList = false) }
+                _state.update {
+                    it.copy(selectedManga = manga, isUpdatingList = false, listChanged = true)
+                }
             },
             onFailure = {
                 _state.update { it.copy(isUpdatingList = false) }

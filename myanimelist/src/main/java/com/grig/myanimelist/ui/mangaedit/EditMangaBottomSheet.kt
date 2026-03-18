@@ -30,7 +30,7 @@ import androidx.compose.ui.unit.dp
 import com.grig.myanimelist.ui.animeedit.ConfirmationDialog
 import com.grig.myanimelist.ui.animeedit.FinishDateRow
 import com.grig.myanimelist.ui.animeedit.ScoreDropdown
-import com.grig.myanimelist.ui.home.MangaCardData
+import com.grig.myanimelist.ui.mangalist.MangaCardData
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

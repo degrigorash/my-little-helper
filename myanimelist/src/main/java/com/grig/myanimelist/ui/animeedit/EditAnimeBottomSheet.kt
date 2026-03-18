@@ -27,7 +27,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.grig.myanimelist.ui.home.AnimeCardData
+import com.grig.myanimelist.ui.animelist.AnimeCardData
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

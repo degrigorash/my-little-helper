@@ -1,4 +1,4 @@
-package com.grig.myanimelist.ui.home
+package com.grig.myanimelist.ui.mangalist
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -28,12 +28,17 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.grig.core.theme.AppTheme
 import com.grig.myanimelist.R
 import com.grig.myanimelist.data.model.MalNsfw
+import com.grig.myanimelist.ui.home.StatusBadge
+import com.grig.myanimelist.ui.home.buildAiredText
+import com.grig.myanimelist.ui.home.formatMemberCount
+import com.grig.myanimelist.ui.home.mangaStatusColor
+import com.grig.myanimelist.ui.home.readingStatusColor
 
 @Composable
 fun MangaList(

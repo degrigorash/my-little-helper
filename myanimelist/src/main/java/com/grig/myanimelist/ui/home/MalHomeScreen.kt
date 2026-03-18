@@ -1,44 +1,64 @@
 package com.grig.myanimelist.ui.home
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.grig.myanimelist.data.model.MalUserState
-import com.grig.myanimelist.ui.MalEmpty
-import com.grig.myanimelist.ui.MalError
-import com.grig.myanimelist.ui.MalLoading
-import com.grig.myanimelist.ui.animeedit.EditAnimeBottomSheet
-import com.grig.myanimelist.ui.animeedit.EditAnimeViewModel
-import com.grig.myanimelist.ui.mangaedit.EditMangaBottomSheet
-import com.grig.myanimelist.ui.mangaedit.EditMangaViewModel
+import com.grig.myanimelist.ui.animelist.AnimeListPage
+import com.grig.myanimelist.ui.animelist.AnimeListViewModel
+import com.grig.myanimelist.ui.mangalist.MangaListPage
+import com.grig.myanimelist.ui.mangalist.MangaListViewModel
+import kotlinx.coroutines.launch
 
 @Composable
 fun MalHomeScreen(
     modifier: Modifier = Modifier,
-    viewModel: MalHomeViewModel,
+    homeViewModel: MalHomeViewModel,
+    animeListViewModel: AnimeListViewModel,
+    mangaListViewModel: MangaListViewModel,
     navigateToLogin: () -> Unit,
     navigateToAnimeSearch: () -> Unit,
     navigateToMangaSearch: () -> Unit
 ) {
-    val userState by viewModel.malUserFlow.collectAsState(initial = MalUserState.Unauthorized)
-    val activeTab by viewModel.activeTab.collectAsState()
-    val animeFilter by viewModel.animeFilter.collectAsState()
-    val mangaFilter by viewModel.mangaFilter.collectAsState()
-    val upcomingFilter by viewModel.upcomingFilter.collectAsState()
-    val listState by viewModel.listState.collectAsState()
-    val guestUsername by viewModel.guestUsername.collectAsState()
-    val editSheetAnime by viewModel.editSheetAnime.collectAsState()
-    val editSheetManga by viewModel.editSheetManga.collectAsState()
+    val userState by homeViewModel.malUserFlow.collectAsState(initial = MalUserState.Unauthorized)
+    val activeTab by homeViewModel.activeTab.collectAsState()
+    val guestUsername by homeViewModel.guestUsername.collectAsState()
     val authorized = userState is MalUserState.Authorized
     val user = (userState as? MalUserState.Authorized)?.user
+
+    LaunchedEffect(guestUsername) {
+        animeListViewModel.setGuestUsername(guestUsername)
+        mangaListViewModel.setGuestUsername(guestUsername)
+    }
+
+    val pagerState = rememberPagerState(
+        initialPage = MalTab.entries.indexOf(activeTab)
+    ) { MalTab.entries.size }
+    val coroutineScope = rememberCoroutineScope()
+
+    LaunchedEffect(pagerState) {
+        snapshotFlow { pagerState.currentPage }.collect { page ->
+            homeViewModel.selectTab(MalTab.entries[page])
+        }
+    }
+
+    LaunchedEffect(activeTab) {
+        val targetPage = MalTab.entries.indexOf(activeTab)
+        if (pagerState.currentPage != targetPage) {
+            pagerState.animateScrollToPage(targetPage)
+        }
+    }
 
     Column(
         modifier = modifier
@@ -49,8 +69,11 @@ fun MalHomeScreen(
             user = user,
             authorized = authorized,
             guestUsername = guestUsername,
-            onGuestUsernameChange = viewModel::setGuestUsername,
-            onGuestSearch = viewModel::searchGuestList,
+            onGuestUsernameChange = homeViewModel::setGuestUsername,
+            onGuestSearch = {
+                animeListViewModel.searchGuestList()
+                mangaListViewModel.searchGuestList()
+            },
             onSearchClick = {
                 when (activeTab) {
                     MalTab.Anime -> navigateToAnimeSearch()
@@ -58,74 +81,37 @@ fun MalHomeScreen(
                 }
             },
             onLogoutClick = {
-                viewModel.malLogout()
+                homeViewModel.malLogout()
                 navigateToLogin()
             }
         )
 
         TabToggle(
             activeTab = activeTab,
-            onTabSelected = { viewModel.selectTab(it) }
+            onTabSelected = { tab ->
+                homeViewModel.selectTab(tab)
+                coroutineScope.launch {
+                    pagerState.animateScrollToPage(MalTab.entries.indexOf(tab))
+                }
+            }
         )
 
-        FilterChipsRow(
-            activeTab = activeTab,
-            animeFilter = animeFilter,
-            mangaFilter = mangaFilter,
-            upcomingFilter = upcomingFilter,
-            onAnimeFilterSelected = { viewModel.selectAnimeFilter(it) },
-            onMangaFilterSelected = { viewModel.selectMangaFilter(it) },
-            onUpcomingFilterToggle = { viewModel.toggleUpcomingFilter() }
-        )
-
-        Box(modifier = Modifier.weight(1f).navigationBarsPadding()) {
-            when (val state = listState) {
-                is ListState.Loading -> MalLoading()
-                is ListState.Empty -> MalEmpty(activeTab = activeTab)
-                is ListState.Error -> MalError(
-                    activeTab = activeTab,
-                    exception = state.exception,
-                    onRetry = { viewModel.retry() }
+        HorizontalPager(
+            state = pagerState,
+            modifier = Modifier
+                .weight(1f)
+                .navigationBarsPadding()
+        ) { page ->
+            when (page) {
+                0 -> AnimeListPage(
+                    viewModel = animeListViewModel,
+                    authorized = authorized
                 )
-                is ListState.AnimeContent -> AnimeList(
-                    animes = state.animes,
-                    onAnimeClick = if (authorized) viewModel::onAnimeClick else null
-                )
-                is ListState.MangaContent -> MangaList(
-                    mangas = state.mangas,
-                    onMangaClick = if (authorized) viewModel::onMangaClick else null
+                1 -> MangaListPage(
+                    viewModel = mangaListViewModel,
+                    authorized = authorized
                 )
             }
         }
-    }
-
-    editSheetAnime?.let { data ->
-        val editViewModel: EditAnimeViewModel = hiltViewModel()
-        EditAnimeBottomSheet(
-            data = data,
-            viewModel = editViewModel,
-            onDismiss = viewModel::dismissEditSheet,
-            onSaved = { event ->
-                viewModel.onAnimeUpdated(data.anime.id, event.updatedStatus)
-            },
-            onDeleted = {
-                viewModel.onAnimeDeleted(data.anime.id)
-            }
-        )
-    }
-
-    editSheetManga?.let { data ->
-        val editViewModel: EditMangaViewModel = hiltViewModel()
-        EditMangaBottomSheet(
-            data = data,
-            viewModel = editViewModel,
-            onDismiss = viewModel::dismissMangaEditSheet,
-            onSaved = { event ->
-                viewModel.onMangaUpdated(data.manga.id, event.updatedStatus)
-            },
-            onDeleted = {
-                viewModel.onMangaDeleted(data.manga.id)
-            }
-        )
     }
 }

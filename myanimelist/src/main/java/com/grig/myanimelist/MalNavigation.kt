@@ -1,14 +1,21 @@
 package com.grig.myanimelist
 
+import androidx.compose.runtime.LaunchedEffect
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import com.grig.core.theme.AppTheme
+import com.grig.myanimelist.ui.animelist.AnimeListViewModel
 import com.grig.myanimelist.ui.animesearch.AnimeSearchScreen
 import com.grig.myanimelist.ui.home.MalHomeScreen
+import com.grig.myanimelist.ui.home.MalHomeViewModel
 import com.grig.myanimelist.ui.login.MalLoginScreen
+import com.grig.myanimelist.ui.mangalist.MangaListViewModel
 import com.grig.myanimelist.ui.mangasearch.MangaSearchScreen
+
+const val ANIME_LIST_CHANGED = "anime_list_changed"
+const val MANGA_LIST_CHANGED = "manga_list_changed"
 
 fun NavGraphBuilder.malNavigation(
     navController: NavHostController
@@ -26,10 +33,34 @@ fun NavGraphBuilder.malNavigation(
             )
         }
     }
-    composable<MalRoute.MalHome> {
+    composable<MalRoute.MalHome> { backStackEntry ->
+        val homeViewModel: MalHomeViewModel = hiltViewModel()
+        val animeListViewModel: AnimeListViewModel = hiltViewModel()
+        val mangaListViewModel: MangaListViewModel = hiltViewModel()
+        val savedStateHandle = backStackEntry.savedStateHandle
+
+        LaunchedEffect(Unit) {
+            savedStateHandle.getStateFlow(ANIME_LIST_CHANGED, false).collect { changed ->
+                if (changed) {
+                    savedStateHandle[ANIME_LIST_CHANGED] = false
+                    animeListViewModel.refresh()
+                }
+            }
+        }
+        LaunchedEffect(Unit) {
+            savedStateHandle.getStateFlow(MANGA_LIST_CHANGED, false).collect { changed ->
+                if (changed) {
+                    savedStateHandle[MANGA_LIST_CHANGED] = false
+                    mangaListViewModel.refresh()
+                }
+            }
+        }
+
         AppTheme {
             MalHomeScreen(
-                viewModel = hiltViewModel(),
+                homeViewModel = homeViewModel,
+                animeListViewModel = animeListViewModel,
+                mangaListViewModel = mangaListViewModel,
                 navigateToLogin = {
                     navController.navigate(MalRoute.MalLogin) {
                         popUpTo<MalRoute.MalHome> { inclusive = true }
@@ -48,7 +79,12 @@ fun NavGraphBuilder.malNavigation(
         AppTheme {
             AnimeSearchScreen(
                 viewModel = hiltViewModel(),
-                navigateBack = { navController.popBackStack() }
+                navigateBack = { navController.popBackStack() },
+                onListChanged = {
+                    navController.previousBackStackEntry
+                        ?.savedStateHandle
+                        ?.set(ANIME_LIST_CHANGED, true)
+                }
             )
         }
     }
@@ -56,7 +92,12 @@ fun NavGraphBuilder.malNavigation(
         AppTheme {
             MangaSearchScreen(
                 viewModel = hiltViewModel(),
-                navigateBack = { navController.popBackStack() }
+                navigateBack = { navController.popBackStack() },
+                onListChanged = {
+                    navController.previousBackStackEntry
+                        ?.savedStateHandle
+                        ?.set(MANGA_LIST_CHANGED, true)
+                }
             )
         }
     }
