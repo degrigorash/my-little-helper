@@ -18,13 +18,11 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
 import com.grig.myanimelist.ui.MalSearchBar
-import kotlinx.coroutines.flow.filter
 
 @Composable
 fun MangaSearchScreen(
@@ -39,9 +37,11 @@ fun MangaSearchScreen(
     }
 
     LaunchedEffect(Unit) {
-        snapshotFlow { viewModel.state.value.listChanged }
-            .filter { it }
-            .collect { onListChanged() }
+        viewModel.state.collect { s ->
+            if (s.listChanged) {
+                onListChanged()
+            }
+        }
     }
 
     Column(
