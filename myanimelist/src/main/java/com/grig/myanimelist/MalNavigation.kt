@@ -6,11 +6,13 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import com.grig.core.theme.AppTheme
+import com.grig.myanimelist.ui.animedetail.AnimeDetailScreen
 import com.grig.myanimelist.ui.animelist.AnimeListViewModel
 import com.grig.myanimelist.ui.animesearch.AnimeSearchScreen
 import com.grig.myanimelist.ui.home.MalHomeScreen
 import com.grig.myanimelist.ui.home.MalHomeViewModel
 import com.grig.myanimelist.ui.login.MalLoginScreen
+import com.grig.myanimelist.ui.mangadetail.MangaDetailScreen
 import com.grig.myanimelist.ui.mangalist.MangaListViewModel
 import com.grig.myanimelist.ui.mangasearch.MangaSearchScreen
 
@@ -71,6 +73,12 @@ fun NavGraphBuilder.malNavigation(
                 },
                 navigateToMangaSearch = {
                     navController.navigate(MalRoute.MangaSearch)
+                },
+                navigateToAnimeDetail = { animeId ->
+                    navController.navigate(MalRoute.AnimeDetail(animeId))
+                },
+                navigateToMangaDetail = { mangaId ->
+                    navController.navigate(MalRoute.MangaDetail(mangaId))
                 }
             )
         }
@@ -98,6 +106,22 @@ fun NavGraphBuilder.malNavigation(
                         ?.savedStateHandle
                         ?.set(MANGA_LIST_CHANGED, true)
                 }
+            )
+        }
+    }
+    composable<MalRoute.AnimeDetail> {
+        AppTheme {
+            AnimeDetailScreen(
+                viewModel = hiltViewModel(),
+                navigateBack = { navController.popBackStack() }
+            )
+        }
+    }
+    composable<MalRoute.MangaDetail> {
+        AppTheme {
+            MangaDetailScreen(
+                viewModel = hiltViewModel(),
+                navigateBack = { navController.popBackStack() }
             )
         }
     }

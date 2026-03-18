@@ -29,7 +29,9 @@ fun MalHomeScreen(
     mangaListViewModel: MangaListViewModel,
     navigateToLogin: () -> Unit,
     navigateToAnimeSearch: () -> Unit,
-    navigateToMangaSearch: () -> Unit
+    navigateToMangaSearch: () -> Unit,
+    navigateToAnimeDetail: (Int) -> Unit,
+    navigateToMangaDetail: (Int) -> Unit
 ) {
     val userState by homeViewModel.malUserFlow.collectAsState(initial = MalUserState.Unauthorized)
     val activeTab by homeViewModel.activeTab.collectAsState()
@@ -105,11 +107,13 @@ fun MalHomeScreen(
             when (page) {
                 0 -> AnimeListPage(
                     viewModel = animeListViewModel,
-                    authorized = authorized
+                    authorized = authorized,
+                    onOpenDetail = navigateToAnimeDetail
                 )
                 1 -> MangaListPage(
                     viewModel = mangaListViewModel,
-                    authorized = authorized
+                    authorized = authorized,
+                    onOpenDetail = navigateToMangaDetail
                 )
             }
         }

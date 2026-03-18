@@ -15,6 +15,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -39,7 +40,8 @@ fun EditMangaBottomSheet(
     viewModel: EditMangaViewModel,
     onDismiss: () -> Unit,
     onSaved: (EditMangaEvent.Saved) -> Unit,
-    onDeleted: () -> Unit
+    onDeleted: () -> Unit,
+    onOpenDetail: () -> Unit
 ) {
     val state by viewModel.state.collectAsState()
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
@@ -155,6 +157,15 @@ fun EditMangaBottomSheet(
                 ) {
                     Text("Delete")
                 }
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            OutlinedButton(
+                onClick = onOpenDetail,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("View Details")
             }
 
             Spacer(modifier = Modifier.height(16.dp))

@@ -33,7 +33,8 @@ import com.grig.myanimelist.ui.mangaedit.EditMangaViewModel
 @Composable
 fun MangaListPage(
     viewModel: MangaListViewModel,
-    authorized: Boolean
+    authorized: Boolean,
+    onOpenDetail: (Int) -> Unit
 ) {
     val listState by viewModel.listState.collectAsState()
     val statusFilter by viewModel.statusFilter.collectAsState()
@@ -66,7 +67,11 @@ fun MangaListPage(
                 )
                 is MangaListState.Content -> MangaList(
                     mangas = state.mangas,
-                    onMangaClick = if (authorized) viewModel::onMangaClick else null
+                    onMangaClick = if (authorized) {
+                        viewModel::onMangaClick
+                    } else {
+                        { data -> onOpenDetail(data.manga.id) }
+                    }
                 )
             }
         }
@@ -83,6 +88,10 @@ fun MangaListPage(
             },
             onDeleted = {
                 viewModel.onMangaDeleted(data.manga.id)
+            },
+            onOpenDetail = {
+                viewModel.dismissEditSheet()
+                onOpenDetail(data.manga.id)
             }
         )
     }

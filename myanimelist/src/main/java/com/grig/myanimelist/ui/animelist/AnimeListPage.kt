@@ -33,7 +33,8 @@ import com.grig.myanimelist.ui.home.UpcomingFilterButton
 @Composable
 fun AnimeListPage(
     viewModel: AnimeListViewModel,
-    authorized: Boolean
+    authorized: Boolean,
+    onOpenDetail: (Int) -> Unit
 ) {
     val listState by viewModel.listState.collectAsState()
     val statusFilter by viewModel.statusFilter.collectAsState()
@@ -66,7 +67,11 @@ fun AnimeListPage(
                 )
                 is AnimeListState.Content -> AnimeList(
                     animes = state.animes,
-                    onAnimeClick = if (authorized) viewModel::onAnimeClick else null
+                    onAnimeClick = if (authorized) {
+                        viewModel::onAnimeClick
+                    } else {
+                        { data -> onOpenDetail(data.anime.id) }
+                    }
                 )
             }
         }
@@ -83,6 +88,10 @@ fun AnimeListPage(
             },
             onDeleted = {
                 viewModel.onAnimeDeleted(data.anime.id)
+            },
+            onOpenDetail = {
+                viewModel.dismissEditSheet()
+                onOpenDetail(data.anime.id)
             }
         )
     }

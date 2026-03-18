@@ -21,7 +21,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -75,10 +74,7 @@ fun MangaCard(data: MangaCardData, onClick: (() -> Unit)? = null) {
                 contentDescription = null,
                 modifier = Modifier
                     .size(100.dp)
-                    .clip(RoundedCornerShape(12.dp))
-                    .blur(
-                        if (manga.nsfw == MalNsfw.Nsfw) 10.dp else 0.dp
-                    ),
+                    .clip(RoundedCornerShape(12.dp)),
                 contentScale = ContentScale.Crop
             )
             Spacer(modifier = Modifier.width(12.dp))
