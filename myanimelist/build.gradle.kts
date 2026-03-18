@@ -26,7 +26,7 @@ android {
         buildConfigField(
             "String",
             "MAL_CLIENT_ID",
-            "\"${localProperties.getProperty("MAL_CLIENT_ID", "")}\""
+            "\"${localProperties.getProperty("MAL_CLIENT_ID") ?: System.getenv("MAL_CLIENT_ID") ?: ""}\""
         )
     }
 
