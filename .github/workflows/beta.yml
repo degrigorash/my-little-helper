@@ -1,12 +1,12 @@
-name: Release to Play Store
+name: Beta APK
 
 on:
   push:
     branches:
-      - 'release/*'
+      - 'beta/*'
 
 jobs:
-  release:
+  build:
     runs-on: ubuntu-latest
 
     steps:
@@ -25,8 +25,8 @@ jobs:
       - name: Decode keystore
         run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > $GITHUB_WORKSPACE/release.keystore
 
-      - name: Build release AAB
-        run: ./gradlew bundleRelease
+      - name: Build release APK
+        run: ./gradlew assembleRelease
         env:
           KEYSTORE_PATH: ${{ github.workspace }}/release.keystore
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
@@ -34,11 +34,8 @@ jobs:
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
           MAL_CLIENT_ID: ${{ secrets.MAL_CLIENT_ID }}
 
-      - name: Upload AAB to Play Store
-        uses: r0adkll/upload-google-play@v1
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
         with:
-          serviceAccountJsonPlainText: ${{ secrets.PLAY_STORE_SERVICE_ACCOUNT_JSON }}
-          packageName: com.grig.mylittlehelper
-          releaseFiles: app/build/outputs/bundle/release/app-release.aab
-          track: production
-          status: draft
+          name: beta-apk
+          path: app/build/outputs/apk/release/app-release.apk
