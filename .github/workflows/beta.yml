@@ -3,7 +3,7 @@ name: Beta APK
 on:
   push:
     branches:
-      - beta
+      - 'beta/*'
 
 jobs:
   build:
