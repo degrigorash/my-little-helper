@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -32,8 +33,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.grig.core.theme.AppTheme
 import com.grig.myanimelist.R
-import com.grig.myanimelist.data.model.MalNsfw
-import com.grig.myanimelist.data.model.MalRating
+import com.grig.myanimelist.ui.home.ListSearchBar
 import com.grig.myanimelist.ui.home.StatusBadge
 import com.grig.myanimelist.ui.home.animeStatusColor
 import com.grig.myanimelist.ui.home.buildAiredText
@@ -43,12 +43,23 @@ import com.grig.myanimelist.ui.home.watchingStatusColor
 @Composable
 fun AnimeList(
     animes: List<AnimeCardData>,
-    onAnimeClick: ((AnimeCardData) -> Unit)? = null
+    onAnimeClick: ((AnimeCardData) -> Unit)? = null,
+    searchQuery: String = "",
+    onSearchQueryChange: (String) -> Unit = {}
 ) {
+    val listState = rememberLazyListState(initialFirstVisibleItemIndex = 1)
+
     LazyColumn(
+        state = listState,
         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
+        item(key = "search_bar") {
+            ListSearchBar(
+                query = searchQuery,
+                onQueryChange = onSearchQueryChange
+            )
+        }
         items(animes, key = { it.anime.id }) { data ->
             AnimeCard(data = data, onClick = onAnimeClick?.let { { it(data) } })
         }

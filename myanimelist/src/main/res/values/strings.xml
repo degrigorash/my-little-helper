@@ -15,6 +15,10 @@
     <string name="error_load_list_description">We couldn\'t load your %1$s list. Please check your connection and try again.</string>
     <string name="error_try_again">Try Again</string>
 
+    <!-- Search bar -->
+    <string name="filter_by_name">Filter by name…</string>
+    <string name="clear">Clear</string>
+
     <!-- Empty state -->
     <string name="empty_title">No %1$s Yet</string>
     <string name="empty_description">Start building your %1$s collection! Add titles to your list and track your progress.</string>

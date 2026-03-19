@@ -39,6 +39,7 @@ fun AnimeListPage(
     val listState by viewModel.listState.collectAsState()
     val statusFilter by viewModel.statusFilter.collectAsState()
     val upcomingFilter by viewModel.upcomingFilter.collectAsState()
+    val searchQuery by viewModel.searchQuery.collectAsState()
     val isRefreshing by viewModel.isRefreshing.collectAsState()
     val editSheetAnime by viewModel.editSheetAnime.collectAsState()
 
@@ -71,7 +72,9 @@ fun AnimeListPage(
                         viewModel::onAnimeClick
                     } else {
                         { data -> onOpenDetail(data.anime.id) }
-                    }
+                    },
+                    searchQuery = searchQuery,
+                    onSearchQueryChange = viewModel::onSearchQueryChange
                 )
             }
         }
@@ -128,3 +131,4 @@ private fun AnimeFilterChipsRow(
         }
     }
 }
+
