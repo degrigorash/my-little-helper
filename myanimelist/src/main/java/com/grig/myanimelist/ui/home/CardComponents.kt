@@ -1,31 +1,46 @@
 package com.grig.myanimelist.ui.home
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.grig.core.theme.AppTheme
+import com.grig.core.theme.AppThemeExtended
 import com.grig.myanimelist.R
 import com.grig.myanimelist.data.model.anime.MalAnimeAiringStatus
 import com.grig.myanimelist.data.model.anime.MalAnimeWatchingStatus
 import com.grig.myanimelist.data.model.manga.MalMangaPublishStatus
 import com.grig.myanimelist.data.model.manga.MalMangaReadingStatus
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 @Composable
 fun StatsRow(
@@ -162,3 +177,99 @@ private fun StatusBadgeFinishedPreview() {
         )
     }
 }
+
+val apiDateFormat: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+val displayDateFormat: DateTimeFormatter = DateTimeFormatter.ofPattern("MMM d, yyyy", Locale.ENGLISH)
+
+fun formatApiDate(raw: String): String? {
+    return try {
+        val padded = when (raw.length) {
+            4 -> "$raw-01-01"
+            7 -> "$raw-01"
+            else -> raw
+        }
+        LocalDate.parse(padded, apiDateFormat).format(displayDateFormat)
+    } catch (_: Exception) {
+        raw
+    }
+}
+
+fun buildAiredText(startDate: String?, endDate: String?): String? {
+    val start = startDate?.let { formatApiDate(it) }
+    val end = endDate?.let { formatApiDate(it) }
+    return when {
+        start != null && end != null -> "$start to $end"
+        start != null -> "$start"
+        else -> null
+    }
+}
+
+@Composable
+fun ListSearchBar(
+    query: String,
+    onQueryChange: (String) -> Unit
+) {
+    OutlinedTextField(
+        value = query,
+        onValueChange = onQueryChange,
+        placeholder = { Text(stringResource(R.string.filter_by_name)) },
+        leadingIcon = {
+            Icon(
+                painter = painterResource(R.drawable.ic_search),
+                contentDescription = null,
+                modifier = Modifier.size(20.dp)
+            )
+        },
+        trailingIcon = {
+            if (query.isNotEmpty()) {
+                IconButton(onClick = { onQueryChange("") }) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_close),
+                        contentDescription = stringResource(R.string.clear),
+                        modifier = Modifier.size(20.dp)
+                    )
+                }
+            }
+        },
+        singleLine = true,
+        shape = MaterialTheme.shapes.medium,
+        colors = OutlinedTextFieldDefaults.colors(
+            unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
+        ),
+        textStyle = MaterialTheme.typography.bodyMedium,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp)
+    )
+}
+
+@Composable
+fun UpcomingFilterButton(
+    selected: Boolean,
+    onClick: () -> Unit
+) {
+    val colors = AppThemeExtended.colorScheme
+
+    Box(
+        modifier = Modifier
+            .size(32.dp)
+            .clip(CircleShape)
+            .then(
+                if (selected) {
+                    Modifier.background(colors.malCardStart)
+                } else {
+                    Modifier.border(1.dp, MaterialTheme.colorScheme.outline, CircleShape)
+                }
+            )
+            .clickable(onClick = onClick),
+        contentAlignment = Alignment.Center
+    ) {
+        Icon(
+            painter = painterResource(R.drawable.ic_upcoming),
+            contentDescription = "Upcoming",
+            modifier = Modifier.size(18.dp),
+            tint = if (selected) colors.cardText else MaterialTheme.colorScheme.onSurfaceVariant
+        )
+    }
+}
+

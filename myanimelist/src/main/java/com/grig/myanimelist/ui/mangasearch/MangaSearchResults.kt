@@ -32,9 +32,9 @@ import com.grig.core.theme.AppTheme
 import com.grig.myanimelist.data.model.manga.MalManga
 import com.grig.myanimelist.ui.home.StatusBadge
 import com.grig.myanimelist.ui.home.mangaStatusColor
-import com.grig.myanimelist.ui.home.previewManga
-import com.grig.myanimelist.ui.home.previewMangaFinished
-import com.grig.myanimelist.ui.home.previewMangaList
+import com.grig.myanimelist.ui.mangalist.previewManga
+import com.grig.myanimelist.ui.mangalist.previewMangaFinished
+import com.grig.myanimelist.ui.mangalist.previewMangaList
 
 @Composable
 fun MangaSearchResultsList(

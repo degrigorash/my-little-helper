@@ -32,9 +32,9 @@ import com.grig.core.theme.AppTheme
 import com.grig.myanimelist.data.model.anime.MalAnime
 import com.grig.myanimelist.ui.home.StatusBadge
 import com.grig.myanimelist.ui.home.animeStatusColor
-import com.grig.myanimelist.ui.home.previewAnime
-import com.grig.myanimelist.ui.home.previewAnimeFinished
-import com.grig.myanimelist.ui.home.previewAnimeList
+import com.grig.myanimelist.ui.animelist.previewAnime
+import com.grig.myanimelist.ui.animelist.previewAnimeFinished
+import com.grig.myanimelist.ui.animelist.previewAnimeList
 
 @Composable
 fun AnimeSearchResultsList(

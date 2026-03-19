@@ -1,4 +1,4 @@
-package com.grig.myanimelist.ui.home
+package com.grig.myanimelist.ui.mangalist
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -21,29 +22,44 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.grig.core.theme.AppTheme
 import com.grig.myanimelist.R
-import com.grig.myanimelist.data.model.MalNsfw
+import com.grig.myanimelist.ui.home.ListSearchBar
+import com.grig.myanimelist.ui.home.StatusBadge
+import com.grig.myanimelist.ui.home.buildAiredText
+import com.grig.myanimelist.ui.home.formatMemberCount
+import com.grig.myanimelist.ui.home.mangaStatusColor
+import com.grig.myanimelist.ui.home.readingStatusColor
 
 @Composable
 fun MangaList(
     mangas: List<MangaCardData>,
-    onMangaClick: ((MangaCardData) -> Unit)? = null
+    onMangaClick: ((MangaCardData) -> Unit)? = null,
+    searchQuery: String = "",
+    onSearchQueryChange: (String) -> Unit = {}
 ) {
+    val listState = rememberLazyListState(initialFirstVisibleItemIndex = 1)
+
     LazyColumn(
+        state = listState,
         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
+        item(key = "search_bar") {
+            ListSearchBar(
+                query = searchQuery,
+                onQueryChange = onSearchQueryChange
+            )
+        }
         items(mangas, key = { it.manga.id }) { data ->
             MangaCard(data = data, onClick = onMangaClick?.let { { it(data) } })
         }
@@ -70,10 +86,7 @@ fun MangaCard(data: MangaCardData, onClick: (() -> Unit)? = null) {
                 contentDescription = null,
                 modifier = Modifier
                     .size(100.dp)
-                    .clip(RoundedCornerShape(12.dp))
-                    .blur(
-                        if (manga.nsfw == MalNsfw.Nsfw) 10.dp else 0.dp
-                    ),
+                    .clip(RoundedCornerShape(12.dp)),
                 contentScale = ContentScale.Crop
             )
             Spacer(modifier = Modifier.width(12.dp))

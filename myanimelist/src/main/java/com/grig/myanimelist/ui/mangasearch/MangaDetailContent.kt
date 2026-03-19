@@ -39,7 +39,7 @@ import com.grig.myanimelist.ui.home.StatusBadge
 import com.grig.myanimelist.ui.home.StatsRow
 import com.grig.myanimelist.ui.home.buildAiredText
 import com.grig.myanimelist.ui.home.mangaStatusColor
-import com.grig.myanimelist.ui.home.previewManga
+import com.grig.myanimelist.ui.mangalist.previewManga
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable

@@ -9,6 +9,7 @@ data class AnimeSearchState(
     val selectedAnime: MalAnime? = null,
     val isLoadingDetail: Boolean = false,
     val isUpdatingList: Boolean = false,
+    val listChanged: Boolean = false,
     val error: String? = null
 ) {
     val isInMyList: Boolean

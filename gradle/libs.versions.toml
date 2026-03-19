@@ -3,8 +3,8 @@
 compileSdk = "36"
 minSdk = "26"
 targetSdk = "36"
-versionCode = "8"
-versionName = "2.0.4"
+versionCode = "10"
+versionName = "2.0.6"
 
 kotlin = "2.3.10"
 core-ktx = "1.17.0"
@@ -59,6 +59,7 @@ compose-activity = { group = "androidx.activity", name = "activity-compose", ver
 compose-viewmodel = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "compose-viewmodel" }
 material = { group = "androidx.compose.material3", name = "material3", version.ref = "material3" }
 compose-ui = { group = "androidx.compose.ui", name = "ui", version.ref = "compose" }
+compose-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "compose" }
 compose-navigation = { group = "androidx.navigation", name = "navigation-compose", version.ref = "compose-navigation" }
 compose-navigation-hilt = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "compose-navigation-hilt" }
 compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview", version.ref = "compose" }
