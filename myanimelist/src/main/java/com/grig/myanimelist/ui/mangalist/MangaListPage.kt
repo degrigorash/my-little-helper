@@ -39,6 +39,7 @@ fun MangaListPage(
     val listState by viewModel.listState.collectAsState()
     val statusFilter by viewModel.statusFilter.collectAsState()
     val upcomingFilter by viewModel.upcomingFilter.collectAsState()
+    val searchQuery by viewModel.searchQuery.collectAsState()
     val isRefreshing by viewModel.isRefreshing.collectAsState()
     val editSheetManga by viewModel.editSheetManga.collectAsState()
 
@@ -71,7 +72,9 @@ fun MangaListPage(
                         viewModel::onMangaClick
                     } else {
                         { data -> onOpenDetail(data.manga.id) }
-                    }
+                    },
+                    searchQuery = searchQuery,
+                    onSearchQueryChange = viewModel::onSearchQueryChange
                 )
             }
         }
@@ -128,3 +131,4 @@ private fun MangaFilterChipsRow(
         }
     }
 }
+

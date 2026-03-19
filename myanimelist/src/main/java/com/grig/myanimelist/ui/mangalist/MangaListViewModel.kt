@@ -33,6 +33,9 @@ class MangaListViewModel @Inject constructor(
     private val _upcomingFilter = MutableStateFlow(false)
     val upcomingFilter: StateFlow<Boolean> = _upcomingFilter.asStateFlow()
 
+    private val _searchQuery = MutableStateFlow("")
+    val searchQuery: StateFlow<String> = _searchQuery.asStateFlow()
+
     private val _isRefreshing = MutableStateFlow(false)
     val isRefreshing: StateFlow<Boolean> = _isRefreshing.asStateFlow()
 
@@ -77,6 +80,11 @@ class MangaListViewModel @Inject constructor(
         val updated = !_upcomingFilter.value
         _upcomingFilter.value = updated
         viewModelScope.launch { filterPreferences.saveUpcomingFilter(updated) }
+        applyFilter()
+    }
+
+    fun onSearchQueryChange(query: String) {
+        _searchQuery.value = query
         applyFilter()
     }
 
@@ -141,7 +149,14 @@ class MangaListViewModel @Inject constructor(
         val filter = _statusFilter.value
         var filtered = if (filter.isEmpty()) cached else cached.filter { it.second?.status in filter }
         if (_upcomingFilter.value) {
-            filtered = filtered.filter { it.first.status == MalMangaPublishStatus.NotYetPublished }
+            filtered = filtered.filter {
+                it.first.status == MalMangaPublishStatus.NotYetPublished ||
+                    it.first.status == MalMangaPublishStatus.CurrentlyPublishing
+            }
+        }
+        val query = _searchQuery.value
+        if (query.isNotBlank()) {
+            filtered = filtered.filter { it.first.title.contains(query, ignoreCase = true) }
         }
 
         val cardData = filtered
