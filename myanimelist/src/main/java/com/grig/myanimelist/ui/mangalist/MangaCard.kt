@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.grig.core.theme.AppTheme
 import com.grig.myanimelist.R
+import com.grig.myanimelist.ui.home.FilteredEmptyItem
 import com.grig.myanimelist.ui.home.ListSearchBar
 import com.grig.myanimelist.ui.home.StatusBadge
 import com.grig.myanimelist.ui.home.buildAiredText
@@ -59,6 +60,11 @@ fun MangaList(
                 query = searchQuery,
                 onQueryChange = onSearchQueryChange
             )
+        }
+        if (mangas.isEmpty()) {
+            item(key = "filtered_empty") {
+                FilteredEmptyItem()
+            }
         }
         items(mangas, key = { it.manga.id }) { data ->
             MangaCard(data = data, onClick = onMangaClick?.let { { it(data) } })

@@ -24,4 +24,8 @@
     <string name="empty_description">Start building your %1$s collection! Add titles to your list and track your progress.</string>
     <string name="list_name_anime">anime</string>
     <string name="list_name_manga">manga</string>
+
+    <!-- Filtered empty state -->
+    <string name="no_filter_results">No matches found</string>
+    <string name="no_filter_results_description">Try a different name or adjust your filters.</string>
 </resources>
