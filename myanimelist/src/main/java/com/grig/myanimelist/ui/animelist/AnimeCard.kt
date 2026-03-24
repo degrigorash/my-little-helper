@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.grig.core.theme.AppTheme
 import com.grig.myanimelist.R
+import com.grig.myanimelist.ui.home.FilteredEmptyItem
 import com.grig.myanimelist.ui.home.ListSearchBar
 import com.grig.myanimelist.ui.home.StatusBadge
 import com.grig.myanimelist.ui.home.animeStatusColor
@@ -59,6 +60,11 @@ fun AnimeList(
                 query = searchQuery,
                 onQueryChange = onSearchQueryChange
             )
+        }
+        if (animes.isEmpty()) {
+            item(key = "filtered_empty") {
+                FilteredEmptyItem()
+            }
         }
         items(animes, key = { it.anime.id }) { data ->
             AnimeCard(data = data, onClick = onAnimeClick?.let { { it(data) } })

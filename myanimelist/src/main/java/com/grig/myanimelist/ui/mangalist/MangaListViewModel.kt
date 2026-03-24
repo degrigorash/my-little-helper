@@ -156,7 +156,12 @@ class MangaListViewModel @Inject constructor(
         }
         val query = _searchQuery.value
         if (query.isNotBlank()) {
-            filtered = filtered.filter { it.first.title.contains(query, ignoreCase = true) }
+            filtered = filtered.filter { (manga, _) ->
+                manga.title.contains(query, ignoreCase = true) ||
+                    manga.alternativeTitles.en?.contains(query, ignoreCase = true) == true ||
+                    manga.alternativeTitles.ja?.contains(query, ignoreCase = true) == true ||
+                    manga.alternativeTitles.synonyms.any { it.contains(query, ignoreCase = true) }
+            }
         }
 
         val cardData = filtered
@@ -165,6 +170,8 @@ class MangaListViewModel @Inject constructor(
 
         _listState.value = if (cardData.isNotEmpty()) {
             MangaListState.Content(cardData)
+        } else if (cached.isNotEmpty()) {
+            MangaListState.Content(emptyList())
         } else {
             MangaListState.Empty
         }
