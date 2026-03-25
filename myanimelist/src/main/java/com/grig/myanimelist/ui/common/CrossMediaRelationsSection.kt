@@ -88,10 +88,22 @@ fun CrossMediaRelationsSection(
                             overflow = TextOverflow.Ellipsis
                         )
                         Spacer(modifier = Modifier.height(4.dp))
-                        StatusBadge(
-                            text = resolved.relation,
-                            color = MaterialTheme.colorScheme.secondary
-                        )
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            StatusBadge(
+                                text = resolved.relation,
+                                color = MaterialTheme.colorScheme.secondary
+                            )
+                            if (resolved.year != null) {
+                                Text(
+                                    text = resolved.year,
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            }
+                        }
                     }
                 }
             }
@@ -106,8 +118,8 @@ private fun CrossMediaRelationsSectionPreview() {
         CrossMediaRelationsSection(
             title = "Related Manga",
             relations = listOf(
-                ResolvedRelation(malId = 11, name = "Naruto", type = "manga", relation = "Adaptation"),
-                ResolvedRelation(malId = 86129, name = "Naruto Hiden Series", type = "manga", relation = "Adaptation")
+                ResolvedRelation(malId = 11, name = "Naruto", type = "manga", relation = "Adaptation", year = "1999"),
+                ResolvedRelation(malId = 86129, name = "Naruto Hiden Series", type = "manga", relation = "Adaptation", year = "2015")
             ),
             isLoading = false,
             onClick = {}
@@ -135,7 +147,7 @@ private fun CrossMediaRelationsSectionDarkPreview() {
         CrossMediaRelationsSection(
             title = "Related Manga",
             relations = listOf(
-                ResolvedRelation(malId = 11, name = "Naruto", type = "manga", relation = "Adaptation")
+                ResolvedRelation(malId = 11, name = "Naruto", type = "manga", relation = "Adaptation", year = "1999")
             ),
             isLoading = false,
             onClick = {}

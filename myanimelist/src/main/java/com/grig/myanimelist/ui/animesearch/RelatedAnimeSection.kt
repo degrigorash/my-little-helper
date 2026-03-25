@@ -1,6 +1,7 @@
 package com.grig.myanimelist.ui.animesearch
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -74,10 +75,23 @@ fun RelatedAnimeSection(
                         overflow = TextOverflow.Ellipsis
                     )
                     Spacer(modifier = Modifier.height(4.dp))
-                    StatusBadge(
-                        text = related.relationTypeFormatted,
-                        color = MaterialTheme.colorScheme.tertiary
-                    )
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        StatusBadge(
+                            text = related.relationTypeFormatted,
+                            color = MaterialTheme.colorScheme.tertiary
+                        )
+                        val year = related.node.startDate?.take(4)
+                        if (year != null) {
+                            Text(
+                                text = year,
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                    }
                 }
             }
         }

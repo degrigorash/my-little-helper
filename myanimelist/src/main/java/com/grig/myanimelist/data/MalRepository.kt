@@ -3,7 +3,9 @@ package com.grig.myanimelist.data
 import android.net.Uri
 import com.grig.myanimelist.clientApiId
 import com.grig.myanimelist.data.model.MalUserState
+import com.grig.myanimelist.data.model.anime.MalAnime
 import com.grig.myanimelist.data.model.jikan.ResolvedRelation
+import com.grig.myanimelist.data.model.manga.MalManga
 import com.grig.myanimelist.tools.generateCodeVerifier
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -132,7 +134,7 @@ class MalRepository @Inject constructor(
             ?.filter { (_, entry) -> entry.type == "manga" }
             ?: return emptyList()
 
-        return resolveImages(rawRelations, isManga = true)
+        return resolveDetails(rawRelations, isManga = true)
     }
 
     suspend fun getMangaRelatedAnime(mangaId: Int): List<ResolvedRelation> {
@@ -142,31 +144,44 @@ class MalRepository @Inject constructor(
             ?.filter { (_, entry) -> entry.type == "anime" }
             ?: return emptyList()
 
-        return resolveImages(rawRelations, isManga = false)
+        return resolveDetails(rawRelations, isManga = false)
     }
 
-    private suspend fun resolveImages(
+    private suspend fun resolveDetails(
         relations: List<Pair<String, com.grig.myanimelist.data.model.jikan.JikanRelationEntry>>,
         isManga: Boolean
     ): List<ResolvedRelation> = coroutineScope {
+        val fields = "main_picture,start_date"
         relations.map { (relation, entry) ->
             async {
-                val imageUrl = try {
-                    val detail = if (isManga) {
-                        jikanService.getMangaById(entry.malId)
+                val detail = try {
+                    if (isManga) {
+                        malService.getMangaDetails(entry.malId, fields = fields).getOrNull()
                     } else {
-                        jikanService.getAnimeById(entry.malId)
+                        malService.getAnimeDetails(entry.malId, fields = fields).getOrNull()
                     }
-                    detail.getOrNull()?.data?.images?.jpg?.imageUrl
                 } catch (_: Exception) {
                     null
                 }
+
+                val imageUrl = when (detail) {
+                    is MalAnime -> detail.pictures?.medium ?: detail.pictures?.large
+                    is MalManga -> detail.pictures?.medium ?: detail.pictures?.large
+                    else -> null
+                }
+                val year = when (detail) {
+                    is MalAnime -> detail.startDate?.take(4)
+                    is MalManga -> detail.startDate?.take(4)
+                    else -> null
+                }
+
                 ResolvedRelation(
                     malId = entry.malId,
                     name = entry.name,
                     type = entry.type,
                     relation = relation,
-                    imageUrl = imageUrl
+                    imageUrl = imageUrl,
+                    year = year
                 )
             }
         }.awaitAll()
