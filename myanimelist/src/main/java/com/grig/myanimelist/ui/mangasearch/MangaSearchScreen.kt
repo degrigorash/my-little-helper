@@ -81,7 +81,8 @@ fun MangaSearchScreen(
                         isInMyList = state.isInMyList,
                         isUpdatingList = state.isUpdatingList,
                         onAddToList = viewModel::addToMyList,
-                        onDeleteFromList = viewModel::deleteFromMyList
+                        onDeleteFromList = viewModel::deleteFromMyList,
+                        onRelatedMangaClick = viewModel::onMangaSelected
                     )
                 }
                 state.isSearching -> {

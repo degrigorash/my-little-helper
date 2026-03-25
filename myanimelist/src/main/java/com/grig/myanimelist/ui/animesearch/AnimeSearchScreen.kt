@@ -81,7 +81,8 @@ fun AnimeSearchScreen(
                         isInMyList = state.isInMyList,
                         isUpdatingList = state.isUpdatingList,
                         onAddToList = viewModel::addToMyList,
-                        onDeleteFromList = viewModel::deleteFromMyList
+                        onDeleteFromList = viewModel::deleteFromMyList,
+                        onRelatedAnimeClick = viewModel::onAnimeSelected
                     )
                 }
                 state.isSearching -> {
