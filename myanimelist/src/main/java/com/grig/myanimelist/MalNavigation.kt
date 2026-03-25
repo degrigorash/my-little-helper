@@ -92,6 +92,9 @@ fun NavGraphBuilder.malNavigation(
                     navController.previousBackStackEntry
                         ?.savedStateHandle
                         ?.set(ANIME_LIST_CHANGED, true)
+                },
+                navigateToMangaDetail = { mangaId ->
+                    navController.navigate(MalRoute.MangaDetail(mangaId))
                 }
             )
         }
@@ -105,6 +108,9 @@ fun NavGraphBuilder.malNavigation(
                     navController.previousBackStackEntry
                         ?.savedStateHandle
                         ?.set(MANGA_LIST_CHANGED, true)
+                },
+                navigateToAnimeDetail = { animeId ->
+                    navController.navigate(MalRoute.AnimeDetail(animeId))
                 }
             )
         }
@@ -116,6 +122,9 @@ fun NavGraphBuilder.malNavigation(
                 navigateBack = { navController.popBackStack() },
                 navigateToAnimeDetail = { animeId ->
                     navController.navigate(MalRoute.AnimeDetail(animeId))
+                },
+                navigateToMangaDetail = { mangaId ->
+                    navController.navigate(MalRoute.MangaDetail(mangaId))
                 }
             )
         }
@@ -127,6 +136,9 @@ fun NavGraphBuilder.malNavigation(
                 navigateBack = { navController.popBackStack() },
                 navigateToMangaDetail = { mangaId ->
                     navController.navigate(MalRoute.MangaDetail(mangaId))
+                },
+                navigateToAnimeDetail = { animeId ->
+                    navController.navigate(MalRoute.AnimeDetail(animeId))
                 }
             )
         }

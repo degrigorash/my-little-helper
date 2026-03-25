@@ -3,7 +3,11 @@ package com.grig.myanimelist.data
 import android.net.Uri
 import com.grig.myanimelist.clientApiId
 import com.grig.myanimelist.data.model.MalUserState
+import com.grig.myanimelist.data.model.jikan.ResolvedRelation
 import com.grig.myanimelist.tools.generateCodeVerifier
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import timber.log.Timber
 import javax.inject.Inject
@@ -13,6 +17,7 @@ import javax.inject.Singleton
 class MalRepository @Inject constructor(
     private val malAuthService: MalAuthService,
     private val malService: MalService,
+    private val jikanService: JikanService,
     private val userManager: UserManager
 ) {
 
@@ -119,6 +124,53 @@ class MalRepository @Inject constructor(
 
     suspend fun deleteMangaListItem(mangaId: Int) =
         malService.deleteMangaListItem(mangaId)
+
+    suspend fun getAnimeRelatedManga(animeId: Int): List<ResolvedRelation> {
+        val rawRelations = jikanService.getAnimeRelations(animeId).getOrNull()
+            ?.data
+            ?.flatMap { group -> group.entry.map { group.relation to it } }
+            ?.filter { (_, entry) -> entry.type == "manga" }
+            ?: return emptyList()
+
+        return resolveImages(rawRelations, isManga = true)
+    }
+
+    suspend fun getMangaRelatedAnime(mangaId: Int): List<ResolvedRelation> {
+        val rawRelations = jikanService.getMangaRelations(mangaId).getOrNull()
+            ?.data
+            ?.flatMap { group -> group.entry.map { group.relation to it } }
+            ?.filter { (_, entry) -> entry.type == "anime" }
+            ?: return emptyList()
+
+        return resolveImages(rawRelations, isManga = false)
+    }
+
+    private suspend fun resolveImages(
+        relations: List<Pair<String, com.grig.myanimelist.data.model.jikan.JikanRelationEntry>>,
+        isManga: Boolean
+    ): List<ResolvedRelation> = coroutineScope {
+        relations.map { (relation, entry) ->
+            async {
+                val imageUrl = try {
+                    val detail = if (isManga) {
+                        jikanService.getMangaById(entry.malId)
+                    } else {
+                        jikanService.getAnimeById(entry.malId)
+                    }
+                    detail.getOrNull()?.data?.images?.jpg?.imageUrl
+                } catch (_: Exception) {
+                    null
+                }
+                ResolvedRelation(
+                    malId = entry.malId,
+                    name = entry.name,
+                    type = entry.type,
+                    relation = relation,
+                    imageUrl = imageUrl
+                )
+            }
+        }.awaitAll()
+    }
 
     suspend fun logout() {
         userManager.logout()

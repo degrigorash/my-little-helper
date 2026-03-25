@@ -28,7 +28,8 @@ import com.grig.myanimelist.ui.MalSearchBar
 fun AnimeSearchScreen(
     viewModel: AnimeSearchViewModel,
     navigateBack: () -> Unit,
-    onListChanged: () -> Unit = {}
+    onListChanged: () -> Unit = {},
+    navigateToMangaDetail: (Int) -> Unit = {}
 ) {
     val state by viewModel.state.collectAsState()
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -82,7 +83,10 @@ fun AnimeSearchScreen(
                         isUpdatingList = state.isUpdatingList,
                         onAddToList = viewModel::addToMyList,
                         onDeleteFromList = viewModel::deleteFromMyList,
-                        onRelatedAnimeClick = viewModel::onAnimeSelected
+                        onRelatedAnimeClick = viewModel::onAnimeSelected,
+                        relatedManga = state.relatedManga,
+                        isLoadingRelatedManga = state.isLoadingRelatedManga,
+                        onRelatedMangaClick = navigateToMangaDetail
                     )
                 }
                 state.isSearching -> {

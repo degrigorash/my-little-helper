@@ -62,7 +62,9 @@ class MangaSearchViewModel @Inject constructor(
             it.copy(
                 searchResults = emptyList(),
                 isLoadingDetail = true,
-                error = null
+                error = null,
+                relatedAnime = emptyList(),
+                isLoadingRelatedAnime = false
             )
         }
         viewModelScope.launch {
@@ -80,6 +82,15 @@ class MangaSearchViewModel @Inject constructor(
                     }
                 }
             )
+        }
+        loadRelatedAnime(mangaId)
+    }
+
+    private fun loadRelatedAnime(mangaId: Int) {
+        _state.update { it.copy(isLoadingRelatedAnime = true) }
+        viewModelScope.launch {
+            val relations = malRepository.getMangaRelatedAnime(mangaId)
+            _state.update { it.copy(relatedAnime = relations, isLoadingRelatedAnime = false) }
         }
     }
 
