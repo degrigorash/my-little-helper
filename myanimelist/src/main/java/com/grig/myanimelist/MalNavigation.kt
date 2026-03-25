@@ -121,10 +121,14 @@ fun NavGraphBuilder.malNavigation(
                 viewModel = hiltViewModel(),
                 navigateBack = { navController.popBackStack() },
                 navigateToAnimeDetail = { animeId ->
-                    navController.navigate(MalRoute.AnimeDetail(animeId))
+                    navController.navigate(MalRoute.AnimeDetail(animeId)) {
+                        popUpTo<MalRoute.AnimeDetail> { inclusive = true }
+                    }
                 },
                 navigateToMangaDetail = { mangaId ->
-                    navController.navigate(MalRoute.MangaDetail(mangaId))
+                    navController.navigate(MalRoute.MangaDetail(mangaId)) {
+                        popUpTo<MalRoute.AnimeDetail> { inclusive = true }
+                    }
                 }
             )
         }
@@ -135,10 +139,14 @@ fun NavGraphBuilder.malNavigation(
                 viewModel = hiltViewModel(),
                 navigateBack = { navController.popBackStack() },
                 navigateToMangaDetail = { mangaId ->
-                    navController.navigate(MalRoute.MangaDetail(mangaId))
+                    navController.navigate(MalRoute.MangaDetail(mangaId)) {
+                        popUpTo<MalRoute.MangaDetail> { inclusive = true }
+                    }
                 },
                 navigateToAnimeDetail = { animeId ->
-                    navController.navigate(MalRoute.AnimeDetail(animeId))
+                    navController.navigate(MalRoute.AnimeDetail(animeId)) {
+                        popUpTo<MalRoute.MangaDetail> { inclusive = true }
+                    }
                 }
             )
         }
