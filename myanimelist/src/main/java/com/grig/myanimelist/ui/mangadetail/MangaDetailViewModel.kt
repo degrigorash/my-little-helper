@@ -7,6 +7,7 @@ import androidx.navigation.toRoute
 import com.grig.myanimelist.MalRoute
 import com.grig.myanimelist.data.MalRepository
 import com.grig.myanimelist.data.model.MalUserState
+import com.grig.myanimelist.data.model.jikan.ResolvedRelation
 import com.grig.myanimelist.data.model.manga.MalManga
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,7 +23,9 @@ data class MangaDetailState(
     val isLoading: Boolean = true,
     val isUpdatingList: Boolean = false,
     val listChanged: Boolean = false,
-    val error: String? = null
+    val error: String? = null,
+    val relatedAnime: List<ResolvedRelation> = emptyList(),
+    val isLoadingRelatedAnime: Boolean = false
 ) {
     val isInMyList: Boolean
         get() = manga?.myListStatus != null
@@ -41,6 +44,7 @@ class MangaDetailViewModel @Inject constructor(
 
     init {
         loadDetail()
+        loadRelatedAnime()
     }
 
     private fun loadDetail() {
@@ -57,6 +61,14 @@ class MangaDetailViewModel @Inject constructor(
                     }
                 }
             )
+        }
+    }
+
+    private fun loadRelatedAnime() {
+        _state.update { it.copy(isLoadingRelatedAnime = true) }
+        viewModelScope.launch {
+            val relations = malRepository.getMangaRelatedAnime(mangaId)
+            _state.update { it.copy(relatedAnime = relations, isLoadingRelatedAnime = false) }
         }
     }
 

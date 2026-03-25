@@ -33,8 +33,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.grig.core.theme.AppTheme
+import com.grig.myanimelist.data.model.jikan.ResolvedRelation
 import com.grig.myanimelist.data.model.manga.MalManga
 import com.grig.myanimelist.ui.animeedit.ConfirmationDialog
+import com.grig.myanimelist.ui.common.CrossMediaRelationsSection
 import com.grig.myanimelist.ui.home.StatusBadge
 import com.grig.myanimelist.ui.home.StatsRow
 import com.grig.myanimelist.ui.home.buildAiredText
@@ -49,7 +51,11 @@ fun MangaDetailContent(
     isInMyList: Boolean,
     isUpdatingList: Boolean,
     onAddToList: () -> Unit,
-    onDeleteFromList: () -> Unit
+    onDeleteFromList: () -> Unit,
+    onRelatedMangaClick: (Int) -> Unit = {},
+    relatedAnime: List<ResolvedRelation> = emptyList(),
+    isLoadingRelatedAnime: Boolean = false,
+    onRelatedAnimeClick: (Int) -> Unit = {}
 ) {
     var showDeleteConfirm by remember { mutableStateOf(false) }
 
@@ -211,6 +217,20 @@ fun MangaDetailContent(
                 }
             }
         }
+
+        if (manga.relatedManga.isNotEmpty()) {
+            RelatedMangaSection(
+                relatedManga = manga.relatedManga,
+                onRelatedMangaClick = onRelatedMangaClick
+            )
+        }
+
+        CrossMediaRelationsSection(
+            title = "Related Anime",
+            relations = relatedAnime,
+            isLoading = isLoadingRelatedAnime,
+            onClick = onRelatedAnimeClick
+        )
 
         Spacer(modifier = Modifier.height(16.dp))
     }
