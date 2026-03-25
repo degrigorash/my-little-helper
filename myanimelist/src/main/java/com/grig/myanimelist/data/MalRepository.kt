@@ -3,7 +3,13 @@ package com.grig.myanimelist.data
 import android.net.Uri
 import com.grig.myanimelist.clientApiId
 import com.grig.myanimelist.data.model.MalUserState
+import com.grig.myanimelist.data.model.anime.MalAnime
+import com.grig.myanimelist.data.model.jikan.ResolvedRelation
+import com.grig.myanimelist.data.model.manga.MalManga
 import com.grig.myanimelist.tools.generateCodeVerifier
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import timber.log.Timber
 import javax.inject.Inject
@@ -13,6 +19,7 @@ import javax.inject.Singleton
 class MalRepository @Inject constructor(
     private val malAuthService: MalAuthService,
     private val malService: MalService,
+    private val jikanService: JikanService,
     private val userManager: UserManager
 ) {
 
@@ -119,6 +126,66 @@ class MalRepository @Inject constructor(
 
     suspend fun deleteMangaListItem(mangaId: Int) =
         malService.deleteMangaListItem(mangaId)
+
+    suspend fun getAnimeRelatedManga(animeId: Int): List<ResolvedRelation> {
+        val rawRelations = jikanService.getAnimeRelations(animeId).getOrNull()
+            ?.data
+            ?.flatMap { group -> group.entry.map { group.relation to it } }
+            ?.filter { (_, entry) -> entry.type == "manga" }
+            ?: return emptyList()
+
+        return resolveDetails(rawRelations, isManga = true)
+    }
+
+    suspend fun getMangaRelatedAnime(mangaId: Int): List<ResolvedRelation> {
+        val rawRelations = jikanService.getMangaRelations(mangaId).getOrNull()
+            ?.data
+            ?.flatMap { group -> group.entry.map { group.relation to it } }
+            ?.filter { (_, entry) -> entry.type == "anime" }
+            ?: return emptyList()
+
+        return resolveDetails(rawRelations, isManga = false)
+    }
+
+    private suspend fun resolveDetails(
+        relations: List<Pair<String, com.grig.myanimelist.data.model.jikan.JikanRelationEntry>>,
+        isManga: Boolean
+    ): List<ResolvedRelation> = coroutineScope {
+        val fields = "main_picture,start_date"
+        relations.map { (relation, entry) ->
+            async {
+                val detail = try {
+                    if (isManga) {
+                        malService.getMangaDetails(entry.malId, fields = fields).getOrNull()
+                    } else {
+                        malService.getAnimeDetails(entry.malId, fields = fields).getOrNull()
+                    }
+                } catch (_: Exception) {
+                    null
+                }
+
+                val imageUrl = when (detail) {
+                    is MalAnime -> detail.pictures?.medium ?: detail.pictures?.large
+                    is MalManga -> detail.pictures?.medium ?: detail.pictures?.large
+                    else -> null
+                }
+                val year = when (detail) {
+                    is MalAnime -> detail.startDate?.take(4)
+                    is MalManga -> detail.startDate?.take(4)
+                    else -> null
+                }
+
+                ResolvedRelation(
+                    malId = entry.malId,
+                    name = entry.name,
+                    type = entry.type,
+                    relation = relation,
+                    imageUrl = imageUrl,
+                    year = year
+                )
+            }
+        }.awaitAll()
+    }
 
     suspend fun logout() {
         userManager.logout()

@@ -92,6 +92,9 @@ fun NavGraphBuilder.malNavigation(
                     navController.previousBackStackEntry
                         ?.savedStateHandle
                         ?.set(ANIME_LIST_CHANGED, true)
+                },
+                navigateToMangaDetail = { mangaId ->
+                    navController.navigate(MalRoute.MangaDetail(mangaId))
                 }
             )
         }
@@ -105,6 +108,9 @@ fun NavGraphBuilder.malNavigation(
                     navController.previousBackStackEntry
                         ?.savedStateHandle
                         ?.set(MANGA_LIST_CHANGED, true)
+                },
+                navigateToAnimeDetail = { animeId ->
+                    navController.navigate(MalRoute.AnimeDetail(animeId))
                 }
             )
         }
@@ -113,7 +119,17 @@ fun NavGraphBuilder.malNavigation(
         AppTheme {
             AnimeDetailScreen(
                 viewModel = hiltViewModel(),
-                navigateBack = { navController.popBackStack() }
+                navigateBack = { navController.popBackStack() },
+                navigateToAnimeDetail = { animeId ->
+                    navController.navigate(MalRoute.AnimeDetail(animeId)) {
+                        popUpTo<MalRoute.AnimeDetail> { inclusive = true }
+                    }
+                },
+                navigateToMangaDetail = { mangaId ->
+                    navController.navigate(MalRoute.MangaDetail(mangaId)) {
+                        popUpTo<MalRoute.AnimeDetail> { inclusive = true }
+                    }
+                }
             )
         }
     }
@@ -121,7 +137,17 @@ fun NavGraphBuilder.malNavigation(
         AppTheme {
             MangaDetailScreen(
                 viewModel = hiltViewModel(),
-                navigateBack = { navController.popBackStack() }
+                navigateBack = { navController.popBackStack() },
+                navigateToMangaDetail = { mangaId ->
+                    navController.navigate(MalRoute.MangaDetail(mangaId)) {
+                        popUpTo<MalRoute.MangaDetail> { inclusive = true }
+                    }
+                },
+                navigateToAnimeDetail = { animeId ->
+                    navController.navigate(MalRoute.AnimeDetail(animeId)) {
+                        popUpTo<MalRoute.MangaDetail> { inclusive = true }
+                    }
+                }
             )
         }
     }

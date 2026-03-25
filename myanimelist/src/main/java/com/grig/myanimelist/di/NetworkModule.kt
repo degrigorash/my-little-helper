@@ -1,6 +1,7 @@
 package com.grig.myanimelist.di
 
 import com.grig.core.network.ResultCallAdapterFactory
+import com.grig.myanimelist.data.JikanService
 import com.grig.myanimelist.data.MalAuthService
 import com.grig.myanimelist.data.MalService
 import com.grig.myanimelist.data.UserManager
@@ -76,4 +77,23 @@ class NetworkModule {
     fun provideMalService(
         @Named("Mal") retrofit: Retrofit
     ): MalService = retrofit.create(MalService::class.java)
+
+    @OptIn(ExperimentalSerializationApi::class)
+    @Singleton
+    @Provides
+    @Named("Jikan")
+    fun provideJikanRetrofit(
+        okHttpClientBuilder: OkHttpClient.Builder
+    ): Retrofit = Retrofit.Builder()
+        .client(okHttpClientBuilder.build())
+        .baseUrl("https://api.jikan.moe/")
+        .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
+        .addCallAdapterFactory(ResultCallAdapterFactory())
+        .build()
+
+    @Singleton
+    @Provides
+    fun provideJikanService(
+        @Named("Jikan") retrofit: Retrofit
+    ): JikanService = retrofit.create(JikanService::class.java)
 }

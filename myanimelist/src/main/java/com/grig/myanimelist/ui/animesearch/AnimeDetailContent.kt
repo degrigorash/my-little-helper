@@ -34,7 +34,9 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.grig.core.theme.AppTheme
 import com.grig.myanimelist.data.model.anime.MalAnime
+import com.grig.myanimelist.data.model.jikan.ResolvedRelation
 import com.grig.myanimelist.ui.animeedit.ConfirmationDialog
+import com.grig.myanimelist.ui.common.CrossMediaRelationsSection
 import com.grig.myanimelist.ui.home.StatusBadge
 import com.grig.myanimelist.ui.home.StatsRow
 import com.grig.myanimelist.ui.home.animeStatusColor
@@ -49,7 +51,11 @@ fun AnimeDetailContent(
     isInMyList: Boolean,
     isUpdatingList: Boolean,
     onAddToList: () -> Unit,
-    onDeleteFromList: () -> Unit
+    onDeleteFromList: () -> Unit,
+    onRelatedAnimeClick: (Int) -> Unit = {},
+    relatedManga: List<ResolvedRelation> = emptyList(),
+    isLoadingRelatedManga: Boolean = false,
+    onRelatedMangaClick: (Int) -> Unit = {}
 ) {
     var showDeleteConfirm by remember { mutableStateOf(false) }
 
@@ -203,6 +209,20 @@ fun AnimeDetailContent(
                 }
             }
         }
+
+        if (anime.relatedAnime.isNotEmpty()) {
+            RelatedAnimeSection(
+                relatedAnime = anime.relatedAnime,
+                onRelatedAnimeClick = onRelatedAnimeClick
+            )
+        }
+
+        CrossMediaRelationsSection(
+            title = "Related Manga",
+            relations = relatedManga,
+            isLoading = isLoadingRelatedManga,
+            onClick = onRelatedMangaClick
+        )
 
         Spacer(modifier = Modifier.height(16.dp))
     }

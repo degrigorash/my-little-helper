@@ -1,5 +1,6 @@
 package com.grig.myanimelist.ui.mangasearch
 
+import com.grig.myanimelist.data.model.jikan.ResolvedRelation
 import com.grig.myanimelist.data.model.manga.MalManga
 
 data class MangaSearchState(
@@ -10,7 +11,9 @@ data class MangaSearchState(
     val isLoadingDetail: Boolean = false,
     val isUpdatingList: Boolean = false,
     val listChanged: Boolean = false,
-    val error: String? = null
+    val error: String? = null,
+    val relatedAnime: List<ResolvedRelation> = emptyList(),
+    val isLoadingRelatedAnime: Boolean = false
 ) {
     val isInMyList: Boolean
         get() = selectedManga?.myListStatus != null
