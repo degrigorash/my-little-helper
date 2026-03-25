@@ -30,7 +30,7 @@ interface MalService {
     @GET("v2/anime/{anime_id}")
     suspend fun getAnimeDetails(
         @Path("anime_id") animeId: Int,
-        @Query("fields") fields: String = "alternative_titles,synopsis,mean,rank,popularity,num_list_users,status,num_episodes,start_date,end_date,genres,studios,main_picture,rating,nsfw,my_list_status{status,score,num_episodes_watched,finish_date}"
+        @Query("fields") fields: String = "alternative_titles,synopsis,mean,rank,popularity,num_list_users,status,num_episodes,start_date,end_date,genres,studios,main_picture,rating,nsfw,my_list_status{status,score,num_episodes_watched,finish_date},related_anime{main_picture,relation_type,relation_type_formatted}"
     ): Result<MalAnime>
 
     @GET("v2/manga")
@@ -43,7 +43,7 @@ interface MalService {
     @GET("v2/manga/{manga_id}")
     suspend fun getMangaDetails(
         @Path("manga_id") mangaId: Int,
-        @Query("fields") fields: String = "alternative_titles,synopsis,mean,rank,popularity,num_list_users,media_type,status,num_volumes,num_chapters,start_date,end_date,authors{first_name,last_name},genres,main_picture,nsfw,my_list_status{status,score,num_chapters_read,num_volumes_read,finish_date}"
+        @Query("fields") fields: String = "alternative_titles,synopsis,mean,rank,popularity,num_list_users,media_type,status,num_volumes,num_chapters,start_date,end_date,authors{first_name,last_name},genres,main_picture,nsfw,my_list_status{status,score,num_chapters_read,num_volumes_read,finish_date},related_manga{main_picture,relation_type,relation_type_formatted}"
     ): Result<MalManga>
 
     @GET("v2/users/{username}/animelist")

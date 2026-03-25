@@ -30,7 +30,8 @@ import com.grig.myanimelist.ui.animesearch.AnimeDetailContent
 @Composable
 fun AnimeDetailScreen(
     viewModel: AnimeDetailViewModel,
-    navigateBack: () -> Unit
+    navigateBack: () -> Unit,
+    navigateToAnimeDetail: (Int) -> Unit = {}
 ) {
     val state by viewModel.state.collectAsState()
     val colors = AppThemeExtended.colorScheme
@@ -84,7 +85,8 @@ fun AnimeDetailScreen(
                         isInMyList = state.isInMyList,
                         isUpdatingList = state.isUpdatingList,
                         onAddToList = viewModel::addToMyList,
-                        onDeleteFromList = viewModel::deleteFromMyList
+                        onDeleteFromList = viewModel::deleteFromMyList,
+                        onRelatedAnimeClick = navigateToAnimeDetail
                     )
                 }
                 state.error != null -> {

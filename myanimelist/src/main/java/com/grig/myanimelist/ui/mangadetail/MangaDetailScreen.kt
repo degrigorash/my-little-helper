@@ -30,7 +30,8 @@ import com.grig.myanimelist.ui.mangasearch.MangaDetailContent
 @Composable
 fun MangaDetailScreen(
     viewModel: MangaDetailViewModel,
-    navigateBack: () -> Unit
+    navigateBack: () -> Unit,
+    navigateToMangaDetail: (Int) -> Unit = {}
 ) {
     val state by viewModel.state.collectAsState()
     val colors = AppThemeExtended.colorScheme
@@ -84,7 +85,8 @@ fun MangaDetailScreen(
                         isInMyList = state.isInMyList,
                         isUpdatingList = state.isUpdatingList,
                         onAddToList = viewModel::addToMyList,
-                        onDeleteFromList = viewModel::deleteFromMyList
+                        onDeleteFromList = viewModel::deleteFromMyList,
+                        onRelatedMangaClick = navigateToMangaDetail
                     )
                 }
                 state.error != null -> {

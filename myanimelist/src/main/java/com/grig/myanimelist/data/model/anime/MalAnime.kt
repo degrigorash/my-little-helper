@@ -46,5 +46,7 @@ data class MalAnime(
     @SerialName("nsfw")
     val nsfw: MalNsfw = MalNsfw.Safe,
     @SerialName("my_list_status")
-    val myListStatus: MalAnimeListStatus? = null
+    val myListStatus: MalAnimeListStatus? = null,
+    @SerialName("related_anime")
+    val relatedAnime: List<MalRelatedAnime> = emptyList()
 )

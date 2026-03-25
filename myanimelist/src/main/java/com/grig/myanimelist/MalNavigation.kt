@@ -113,7 +113,10 @@ fun NavGraphBuilder.malNavigation(
         AppTheme {
             AnimeDetailScreen(
                 viewModel = hiltViewModel(),
-                navigateBack = { navController.popBackStack() }
+                navigateBack = { navController.popBackStack() },
+                navigateToAnimeDetail = { animeId ->
+                    navController.navigate(MalRoute.AnimeDetail(animeId))
+                }
             )
         }
     }
@@ -121,7 +124,10 @@ fun NavGraphBuilder.malNavigation(
         AppTheme {
             MangaDetailScreen(
                 viewModel = hiltViewModel(),
-                navigateBack = { navController.popBackStack() }
+                navigateBack = { navController.popBackStack() },
+                navigateToMangaDetail = { mangaId ->
+                    navController.navigate(MalRoute.MangaDetail(mangaId))
+                }
             )
         }
     }
