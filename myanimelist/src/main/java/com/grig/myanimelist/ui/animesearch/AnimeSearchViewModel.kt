@@ -11,7 +11,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -20,66 +19,60 @@ class AnimeSearchViewModel @Inject constructor(
     private val malRepository: MalRepository
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow(AnimeSearchState())
+    private val _state = MutableStateFlow<AnimeSearchState>(AnimeSearchState.Idle())
     val state: StateFlow<AnimeSearchState> = _state.asStateFlow()
 
     private var searchJob: Job? = null
 
     fun onQueryChange(query: String) {
-        _state.update { it.copy(query = query, selectedAnime = null, error = null) }
         searchJob?.cancel()
         if (query.length < 3) {
-            _state.update { it.copy(searchResults = emptyList(), isSearching = false) }
+            _state.value = AnimeSearchState.Idle(query = query, listChanged = _state.value.listChanged)
             return
         }
-        _state.update { it.copy(isSearching = true, searchResults = emptyList()) }
+        _state.value = AnimeSearchState.Searching(query = query, listChanged = _state.value.listChanged)
         searchJob = viewModelScope.launch {
             delay(400)
             val result = malRepository.searchAnime(query)
             result.fold(
                 onSuccess = { list ->
-                    _state.update {
-                        it.copy(
-                            searchResults = list.data.map { node -> node.anime },
-                            isSearching = false
-                        )
+                    val results = list.data.map { node -> node.anime }
+                    if (results.isEmpty()) {
+                        _state.value = AnimeSearchState.NoResults(query = query, listChanged = _state.value.listChanged)
+                    } else {
+                        _state.value = AnimeSearchState.Results(query = query, listChanged = _state.value.listChanged, results = results)
                     }
                 },
                 onFailure = { error ->
-                    _state.update {
-                        it.copy(
-                            isSearching = false,
-                            error = error.message ?: "Search failed"
-                        )
-                    }
+                    _state.value = AnimeSearchState.Error(
+                        query = query,
+                        listChanged = _state.value.listChanged,
+                        message = error.message ?: "Search failed"
+                    )
                 }
             )
         }
     }
 
     fun onAnimeSelected(animeId: Int) {
-        _state.update {
-            it.copy(
-                searchResults = emptyList(),
-                isLoadingDetail = true,
-                error = null,
-                relatedManga = emptyList(),
-                isLoadingRelatedManga = false
-            )
-        }
+        val current = _state.value
+        _state.value = AnimeSearchState.LoadingDetail(query = current.query, listChanged = current.listChanged)
         viewModelScope.launch {
             val result = malRepository.getAnimeDetails(animeId)
             result.fold(
                 onSuccess = { anime ->
-                    _state.update { it.copy(selectedAnime = anime, isLoadingDetail = false) }
+                    _state.value = AnimeSearchState.Detail(
+                        query = current.query,
+                        listChanged = current.listChanged,
+                        anime = anime
+                    )
                 },
                 onFailure = { error ->
-                    _state.update {
-                        it.copy(
-                            isLoadingDetail = false,
-                            error = error.message ?: "Failed to load details"
-                        )
-                    }
+                    _state.value = AnimeSearchState.Error(
+                        query = current.query,
+                        listChanged = current.listChanged,
+                        message = error.message ?: "Failed to load details"
+                    )
                 }
             )
         }
@@ -87,16 +80,19 @@ class AnimeSearchViewModel @Inject constructor(
     }
 
     private fun loadRelatedManga(animeId: Int) {
-        _state.update { it.copy(isLoadingRelatedManga = true) }
         viewModelScope.launch {
             val relations = malRepository.getAnimeRelatedManga(animeId)
-            _state.update { it.copy(relatedManga = relations, isLoadingRelatedManga = false) }
+            val current = _state.value
+            if (current is AnimeSearchState.Detail) {
+                _state.value = current.copy(relatedManga = relations, isLoadingRelatedManga = false)
+            }
         }
     }
 
     fun addToMyList() {
-        val animeId = _state.value.selectedAnime?.id ?: return
-        _state.update { it.copy(isUpdatingList = true, error = null) }
+        val current = _state.value as? AnimeSearchState.Detail ?: return
+        val animeId = current.anime.id
+        _state.value = current.copy(isUpdatingList = true)
         viewModelScope.launch {
             val result = malRepository.updateAnimeListStatus(
                 animeId = animeId,
@@ -105,31 +101,24 @@ class AnimeSearchViewModel @Inject constructor(
             result.fold(
                 onSuccess = { refreshDetail(animeId) },
                 onFailure = { error ->
-                    _state.update {
-                        it.copy(
-                            isUpdatingList = false,
-                            error = error.message ?: "Failed to add"
-                        )
-                    }
+                    val state = _state.value as? AnimeSearchState.Detail ?: return@fold
+                    _state.value = state.copy(isUpdatingList = false)
                 }
             )
         }
     }
 
     fun deleteFromMyList() {
-        val animeId = _state.value.selectedAnime?.id ?: return
-        _state.update { it.copy(isUpdatingList = true, error = null) }
+        val current = _state.value as? AnimeSearchState.Detail ?: return
+        val animeId = current.anime.id
+        _state.value = current.copy(isUpdatingList = true)
         viewModelScope.launch {
             val result = malRepository.deleteAnimeListItem(animeId)
             result.fold(
                 onSuccess = { refreshDetail(animeId) },
                 onFailure = { error ->
-                    _state.update {
-                        it.copy(
-                            isUpdatingList = false,
-                            error = error.message ?: "Failed to delete"
-                        )
-                    }
+                    val state = _state.value as? AnimeSearchState.Detail ?: return@fold
+                    _state.value = state.copy(isUpdatingList = false)
                 }
             )
         }
@@ -139,12 +128,19 @@ class AnimeSearchViewModel @Inject constructor(
         val result = malRepository.getAnimeDetails(animeId)
         result.fold(
             onSuccess = { anime ->
-                _state.update {
-                    it.copy(selectedAnime = anime, isUpdatingList = false, listChanged = true)
-                }
+                val current = _state.value as? AnimeSearchState.Detail
+                _state.value = AnimeSearchState.Detail(
+                    query = _state.value.query,
+                    listChanged = true,
+                    anime = anime,
+                    isUpdatingList = false,
+                    relatedManga = current?.relatedManga ?: emptyList(),
+                    isLoadingRelatedManga = false
+                )
             },
             onFailure = {
-                _state.update { it.copy(isUpdatingList = false) }
+                val current = _state.value as? AnimeSearchState.Detail ?: return
+                _state.value = current.copy(isUpdatingList = false)
             }
         )
     }

@@ -58,7 +58,7 @@ fun AnimeSearchScreen(
             placeholder = "Search anime..."
         )
 
-        AnimatedVisibility(visible = state.isSearching) {
+        AnimatedVisibility(visible = state is AnimeSearchState.Searching) {
             LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
         }
 
@@ -68,48 +68,48 @@ fun AnimeSearchScreen(
                 .fillMaxWidth()
                 .navigationBarsPadding()
         ) {
-            when {
-                state.isLoadingDetail -> {
+            when (val currentState = state) {
+                is AnimeSearchState.LoadingDetail -> {
                     CircularProgressIndicator(
                         modifier = Modifier
                             .size(48.dp)
                             .align(Alignment.Center)
                     )
                 }
-                state.selectedAnime != null -> {
+                is AnimeSearchState.Detail -> {
                     AnimeDetailContent(
-                        anime = state.selectedAnime!!,
+                        anime = currentState.anime,
                         authorized = authorized,
-                        isInMyList = state.isInMyList,
-                        isUpdatingList = state.isUpdatingList,
+                        isInMyList = currentState.isInMyList,
+                        isUpdatingList = currentState.isUpdatingList,
                         onAddToList = viewModel::addToMyList,
                         onDeleteFromList = viewModel::deleteFromMyList,
                         onRelatedAnimeClick = viewModel::onAnimeSelected,
-                        relatedManga = state.relatedManga,
-                        isLoadingRelatedManga = state.isLoadingRelatedManga,
+                        relatedManga = currentState.relatedManga,
+                        isLoadingRelatedManga = currentState.isLoadingRelatedManga,
                         onRelatedMangaClick = navigateToMangaDetail,
-                        onReviewsClick = { navigateToReviews(state.selectedAnime!!.id, "anime") }
+                        onReviewsClick = { navigateToReviews(currentState.anime.id, "anime") }
                     )
                 }
-                state.isSearching -> {
+                is AnimeSearchState.Searching -> {
                     CircularProgressIndicator(
                         modifier = Modifier
                             .size(48.dp)
                             .align(Alignment.Center)
                     )
                 }
-                state.searchResults.isNotEmpty() -> {
+                is AnimeSearchState.Results -> {
                     AnimeSearchResultsList(
-                        results = state.searchResults,
+                        results = currentState.results,
                         onItemClick = {
                             keyboardController?.hide()
                             viewModel.onAnimeSelected(it.id)
                         }
                     )
                 }
-                state.error != null -> {
+                is AnimeSearchState.Error -> {
                     Text(
-                        text = state.error!!,
+                        text = currentState.message,
                         color = MaterialTheme.colorScheme.error,
                         style = MaterialTheme.typography.bodyMedium,
                         modifier = Modifier
@@ -117,7 +117,7 @@ fun AnimeSearchScreen(
                             .padding(32.dp)
                     )
                 }
-                state.query.length >= 3 && !state.isSearching -> {
+                is AnimeSearchState.NoResults -> {
                     Text(
                         text = "No results found",
                         style = MaterialTheme.typography.bodyLarge,
@@ -127,6 +127,7 @@ fun AnimeSearchScreen(
                             .padding(32.dp)
                     )
                 }
+                is AnimeSearchState.Idle -> {}
             }
         }
     }

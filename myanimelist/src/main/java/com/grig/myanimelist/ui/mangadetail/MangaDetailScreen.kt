@@ -72,32 +72,32 @@ fun MangaDetailScreen(
                 .fillMaxWidth()
                 .navigationBarsPadding()
         ) {
-            when {
-                state.isLoading -> {
+            when (val currentState = state) {
+                is MangaDetailState.Loading -> {
                     CircularProgressIndicator(
                         modifier = Modifier
                             .size(48.dp)
                             .align(Alignment.Center)
                     )
                 }
-                state.manga != null -> {
+                is MangaDetailState.Content -> {
                     MangaDetailContent(
-                        manga = state.manga!!,
+                        manga = currentState.manga,
                         authorized = authorized,
-                        isInMyList = state.isInMyList,
-                        isUpdatingList = state.isUpdatingList,
+                        isInMyList = currentState.isInMyList,
+                        isUpdatingList = currentState.isUpdatingList,
                         onAddToList = viewModel::addToMyList,
                         onDeleteFromList = viewModel::deleteFromMyList,
                         onRelatedMangaClick = navigateToMangaDetail,
-                        relatedAnime = state.relatedAnime,
-                        isLoadingRelatedAnime = state.isLoadingRelatedAnime,
+                        relatedAnime = currentState.relatedAnime,
+                        isLoadingRelatedAnime = currentState.isLoadingRelatedAnime,
                         onRelatedAnimeClick = navigateToAnimeDetail,
-                        onReviewsClick = { navigateToReviews(state.manga!!.id) }
+                        onReviewsClick = { navigateToReviews(currentState.manga.id) }
                     )
                 }
-                state.error != null -> {
+                is MangaDetailState.Error -> {
                     Text(
-                        text = state.error!!,
+                        text = currentState.message,
                         color = MaterialTheme.colorScheme.error,
                         style = MaterialTheme.typography.bodyMedium,
                         modifier = Modifier

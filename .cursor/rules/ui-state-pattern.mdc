@@ -1,0 +1,75 @@
+---
+description: UI state pattern - use sealed interface for screen states
+globs: "**/*.kt"
+alwaysApply: false
+---
+
+# UI State Pattern
+
+Use `sealed interface` for all screen/feature UI states. Do not model distinct screen states (loading, content, error, empty) as boolean flags in a single data class.
+
+## Rules
+
+- **Use `sealed interface`** (not `sealed class`) for UI states that represent distinct screen modes.
+- **Standard substates**: `Loading`, `Content`, `Error`, `Empty` (add more as needed, e.g. `Searching`, `LoadingDetail`).
+- **Shared fields**: If a field (e.g. `query`) is needed across all substates, declare it as an abstract property in the base sealed interface and override it in each subtype.
+- **Dedicated file**: States belong in a dedicated `*State.kt` file in the feature package, never inline in the ViewModel.
+- **Form states**: Edit/form states (e.g. `EditAnimeState`) that only represent form data without a Loading/Content/Error lifecycle may remain as data classes.
+
+## Examples
+
+```kotlin
+// BAD - boolean flags for distinct screen modes
+data class AnimeDetailState(
+    val anime: MalAnime? = null,
+    val isLoading: Boolean = true,
+    val error: String? = null
+)
+
+// GOOD - sealed interface with distinct substates
+sealed interface AnimeDetailState {
+    data object Loading : AnimeDetailState
+    data class Content(val anime: MalAnime) : AnimeDetailState
+    data class Error(val message: String) : AnimeDetailState
+}
+
+// GOOD - shared fields in base interface
+sealed interface AnimeSearchState {
+    val query: String
+
+    data class Idle(override val query: String = "") : AnimeSearchState
+    data class Searching(override val query: String) : AnimeSearchState
+    data class Results(override val query: String, val results: List<MalAnime>) : AnimeSearchState
+    data class Error(override val query: String, val message: String) : AnimeSearchState
+}
+```
+
+## ViewModel usage
+
+```kotlin
+// BAD
+private val _state = MutableStateFlow(AnimeDetailState())
+_state.update { it.copy(isLoading = false, anime = anime) }
+
+// GOOD
+private val _state = MutableStateFlow<AnimeDetailState>(AnimeDetailState.Loading)
+_state.value = AnimeDetailState.Content(anime = anime)
+```
+
+## Screen usage
+
+```kotlin
+// BAD
+when {
+    state.isLoading -> { /* ... */ }
+    state.anime != null -> { /* ... */ }
+    state.error != null -> { /* ... */ }
+}
+
+// GOOD
+when (state) {
+    is AnimeDetailState.Loading -> { /* ... */ }
+    is AnimeDetailState.Content -> { /* ... */ }
+    is AnimeDetailState.Error -> { /* ... */ }
+}
+```
