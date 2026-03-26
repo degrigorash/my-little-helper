@@ -25,6 +25,9 @@ jobs:
       - name: Decode keystore
         run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > $GITHUB_WORKSPACE/release.keystore
 
+      - name: Decode google-services.json
+        run: echo "${{ secrets.GOOGLE_SERVICES_JSON }}" | base64 --decode > $GITHUB_WORKSPACE/app/google-services.json
+
       - name: Build release APK
         run: ./gradlew assembleRelease
         env:
