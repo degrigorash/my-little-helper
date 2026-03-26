@@ -29,7 +29,8 @@ fun MangaSearchScreen(
     viewModel: MangaSearchViewModel,
     navigateBack: () -> Unit,
     onListChanged: () -> Unit = {},
-    navigateToAnimeDetail: (Int) -> Unit = {}
+    navigateToAnimeDetail: (Int) -> Unit = {},
+    navigateToReviews: (Int, String) -> Unit = { _, _ -> }
 ) {
     val state by viewModel.state.collectAsState()
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -86,7 +87,8 @@ fun MangaSearchScreen(
                         onRelatedMangaClick = viewModel::onMangaSelected,
                         relatedAnime = state.relatedAnime,
                         isLoadingRelatedAnime = state.isLoadingRelatedAnime,
-                        onRelatedAnimeClick = navigateToAnimeDetail
+                        onRelatedAnimeClick = navigateToAnimeDetail,
+                        onReviewsClick = { navigateToReviews(state.selectedManga!!.id, "manga") }
                     )
                 }
                 state.isSearching -> {

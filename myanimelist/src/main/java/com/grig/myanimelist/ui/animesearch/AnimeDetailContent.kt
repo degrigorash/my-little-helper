@@ -16,6 +16,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -55,7 +56,8 @@ fun AnimeDetailContent(
     onRelatedAnimeClick: (Int) -> Unit = {},
     relatedManga: List<ResolvedRelation> = emptyList(),
     isLoadingRelatedManga: Boolean = false,
-    onRelatedMangaClick: (Int) -> Unit = {}
+    onRelatedMangaClick: (Int) -> Unit = {},
+    onReviewsClick: () -> Unit = {}
 ) {
     var showDeleteConfirm by remember { mutableStateOf(false) }
 
@@ -223,6 +225,16 @@ fun AnimeDetailContent(
             isLoading = isLoadingRelatedManga,
             onClick = onRelatedMangaClick
         )
+
+        Spacer(modifier = Modifier.height(20.dp))
+
+        OutlinedButton(
+            onClick = onReviewsClick,
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(16.dp)
+        ) {
+            Text("Reviews")
+        }
 
         Spacer(modifier = Modifier.height(16.dp))
     }

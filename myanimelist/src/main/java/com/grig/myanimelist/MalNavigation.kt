@@ -15,6 +15,7 @@ import com.grig.myanimelist.ui.login.MalLoginScreen
 import com.grig.myanimelist.ui.mangadetail.MangaDetailScreen
 import com.grig.myanimelist.ui.mangalist.MangaListViewModel
 import com.grig.myanimelist.ui.mangasearch.MangaSearchScreen
+import com.grig.myanimelist.ui.reviews.ReviewsScreen
 
 const val ANIME_LIST_CHANGED = "anime_list_changed"
 const val MANGA_LIST_CHANGED = "manga_list_changed"
@@ -95,6 +96,9 @@ fun NavGraphBuilder.malNavigation(
                 },
                 navigateToMangaDetail = { mangaId ->
                     navController.navigate(MalRoute.MangaDetail(mangaId))
+                },
+                navigateToReviews = { mediaId, mediaType ->
+                    navController.navigate(MalRoute.Reviews(mediaId, mediaType))
                 }
             )
         }
@@ -111,6 +115,9 @@ fun NavGraphBuilder.malNavigation(
                 },
                 navigateToAnimeDetail = { animeId ->
                     navController.navigate(MalRoute.AnimeDetail(animeId))
+                },
+                navigateToReviews = { mediaId, mediaType ->
+                    navController.navigate(MalRoute.Reviews(mediaId, mediaType))
                 }
             )
         }
@@ -129,6 +136,9 @@ fun NavGraphBuilder.malNavigation(
                     navController.navigate(MalRoute.MangaDetail(mangaId)) {
                         popUpTo<MalRoute.AnimeDetail> { inclusive = true }
                     }
+                },
+                navigateToReviews = { animeId ->
+                    navController.navigate(MalRoute.Reviews(animeId, "anime"))
                 }
             )
         }
@@ -147,7 +157,18 @@ fun NavGraphBuilder.malNavigation(
                     navController.navigate(MalRoute.AnimeDetail(animeId)) {
                         popUpTo<MalRoute.MangaDetail> { inclusive = true }
                     }
+                },
+                navigateToReviews = { mangaId ->
+                    navController.navigate(MalRoute.Reviews(mangaId, "manga"))
                 }
+            )
+        }
+    }
+    composable<MalRoute.Reviews> {
+        AppTheme {
+            ReviewsScreen(
+                viewModel = hiltViewModel(),
+                navigateBack = { navController.popBackStack() }
             )
         }
     }

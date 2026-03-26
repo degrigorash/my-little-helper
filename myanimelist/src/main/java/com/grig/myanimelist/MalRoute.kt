@@ -21,4 +21,7 @@ sealed class MalRoute {
 
     @Serializable
     data class MangaDetail(val mangaId: Int) : MalRoute()
+
+    @Serializable
+    data class Reviews(val mediaId: Int, val mediaType: String) : MalRoute()
 }
