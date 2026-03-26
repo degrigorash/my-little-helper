@@ -11,6 +11,12 @@ enum class ReviewsMediaType(val value: String) {
     }
 }
 
+enum class ReviewFilter(val displayName: String, val tag: String) {
+    RECOMMENDED("Recommended", "Recommended"),
+    NOT_RECOMMENDED("Not Recommended", "Not Recommended"),
+    MIXED("Mixed Feelings", "Mixed Feelings");
+}
+
 sealed interface ReviewsState {
     data object Loading : ReviewsState
     data object Empty : ReviewsState

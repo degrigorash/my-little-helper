@@ -32,6 +32,7 @@ fun ReviewsScreen(
     navigateBack: () -> Unit
 ) {
     val state by viewModel.state.collectAsState()
+    val activeFilter by viewModel.activeFilter.collectAsState()
     val colors = AppThemeExtended.colorScheme
 
     Column(
@@ -65,6 +66,11 @@ fun ReviewsScreen(
                 modifier = Modifier.align(Alignment.Center)
             )
         }
+
+        ReviewFilterChipsRow(
+            activeFilter = activeFilter,
+            onToggleFilter = viewModel::toggleFilter
+        )
 
         Box(
             modifier = Modifier
@@ -101,12 +107,24 @@ fun ReviewsScreen(
                     )
                 }
                 is ReviewsState.Content -> {
-                    ReviewsList(
-                        reviews = currentState.reviews,
-                        hasNextPage = currentState.hasNextPage,
-                        isLoadingMore = currentState.isLoadingMore,
-                        onLoadMore = viewModel::loadMore
-                    )
+                    val filteredReviews = viewModel.filteredReviews(currentState.reviews)
+                    if (filteredReviews.isEmpty() && activeFilter != null) {
+                        Text(
+                            text = "No reviews match the selected filters",
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier
+                                .align(Alignment.Center)
+                                .padding(32.dp)
+                        )
+                    } else {
+                        ReviewsList(
+                            reviews = filteredReviews,
+                            hasNextPage = currentState.hasNextPage,
+                            isLoadingMore = currentState.isLoadingMore,
+                            onLoadMore = viewModel::loadMore
+                        )
+                    }
                 }
             }
         }

@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.grig.myanimelist.MalRoute
 import com.grig.myanimelist.data.MalRepository
+import com.grig.myanimelist.data.model.jikan.JikanReview
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -26,8 +27,20 @@ class ReviewsViewModel @Inject constructor(
     private val _state = MutableStateFlow<ReviewsState>(ReviewsState.Loading)
     val state: StateFlow<ReviewsState> = _state.asStateFlow()
 
+    private val _activeFilter = MutableStateFlow<ReviewFilter?>(null)
+    val activeFilter: StateFlow<ReviewFilter?> = _activeFilter.asStateFlow()
+
     init {
         loadReviews(page = 1)
+    }
+
+    fun toggleFilter(filter: ReviewFilter) {
+        _activeFilter.value = if (_activeFilter.value == filter) null else filter
+    }
+
+    fun filteredReviews(reviews: List<JikanReview>): List<JikanReview> {
+        val filter = _activeFilter.value ?: return reviews
+        return reviews.filter { review -> filter.tag in review.tags }
     }
 
     private fun loadReviews(page: Int) {

@@ -28,4 +28,16 @@ val previewReviewLow = JikanReview(
     user = JikanReviewUser(username = "CriticalViewer")
 )
 
-val previewReviews = listOf(previewReview, previewReviewLow)
+val previewReviewMixed = JikanReview(
+    malId = 3,
+    date = "2025-04-10T00:00:00+00:00",
+    review = "It has its moments but overall the show is inconsistent. Some arcs are brilliant while others feel like filler.",
+    score = 6,
+    tags = listOf("Mixed Feelings"),
+    isSpoiler = false,
+    isPreliminary = false,
+    reactions = JikanReviewReactions(overall = 15, nice = 5),
+    user = JikanReviewUser(username = "BalancedTake")
+)
+
+val previewReviews = listOf(previewReview, previewReviewLow, previewReviewMixed)
