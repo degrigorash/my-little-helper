@@ -7,29 +7,13 @@ import androidx.navigation.toRoute
 import com.grig.myanimelist.MalRoute
 import com.grig.myanimelist.data.MalRepository
 import com.grig.myanimelist.data.model.MalUserState
-import com.grig.myanimelist.data.model.anime.MalAnime
-import com.grig.myanimelist.data.model.jikan.ResolvedRelation
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-
-data class AnimeDetailState(
-    val anime: MalAnime? = null,
-    val isLoading: Boolean = true,
-    val isUpdatingList: Boolean = false,
-    val listChanged: Boolean = false,
-    val error: String? = null,
-    val relatedManga: List<ResolvedRelation> = emptyList(),
-    val isLoadingRelatedManga: Boolean = false
-) {
-    val isInMyList: Boolean
-        get() = anime?.myListStatus != null
-}
 
 @HiltViewModel
 class AnimeDetailViewModel @Inject constructor(
@@ -39,7 +23,7 @@ class AnimeDetailViewModel @Inject constructor(
 
     private val animeId: Int = savedStateHandle.toRoute<MalRoute.AnimeDetail>().animeId
 
-    private val _state = MutableStateFlow(AnimeDetailState())
+    private val _state = MutableStateFlow<AnimeDetailState>(AnimeDetailState.Loading)
     val state: StateFlow<AnimeDetailState> = _state.asStateFlow()
 
     init {
@@ -48,32 +32,38 @@ class AnimeDetailViewModel @Inject constructor(
     }
 
     private fun loadDetail() {
-        _state.update { it.copy(isLoading = true, error = null) }
+        _state.value = AnimeDetailState.Loading
         viewModelScope.launch {
             val result = malRepository.getAnimeDetails(animeId)
             result.fold(
                 onSuccess = { anime ->
-                    _state.update { it.copy(anime = anime, isLoading = false) }
+                    _state.value = AnimeDetailState.Content(anime = anime)
                 },
                 onFailure = { error ->
-                    _state.update {
-                        it.copy(isLoading = false, error = error.message ?: "Failed to load details")
-                    }
+                    _state.value = AnimeDetailState.Error(
+                        message = error.message ?: "Failed to load details"
+                    )
                 }
             )
         }
     }
 
     private fun loadRelatedManga() {
-        _state.update { it.copy(isLoadingRelatedManga = true) }
         viewModelScope.launch {
             val relations = malRepository.getAnimeRelatedManga(animeId)
-            _state.update { it.copy(relatedManga = relations, isLoadingRelatedManga = false) }
+            val current = _state.value
+            if (current is AnimeDetailState.Content) {
+                _state.value = current.copy(
+                    relatedManga = relations,
+                    isLoadingRelatedManga = false
+                )
+            }
         }
     }
 
     fun addToMyList() {
-        _state.update { it.copy(isUpdatingList = true, error = null) }
+        val current = _state.value as? AnimeDetailState.Content ?: return
+        _state.value = current.copy(isUpdatingList = true)
         viewModelScope.launch {
             val result = malRepository.updateAnimeListStatus(
                 animeId = animeId,
@@ -82,24 +72,23 @@ class AnimeDetailViewModel @Inject constructor(
             result.fold(
                 onSuccess = { refreshDetail() },
                 onFailure = { error ->
-                    _state.update {
-                        it.copy(isUpdatingList = false, error = error.message ?: "Failed to add")
-                    }
+                    val state = _state.value as? AnimeDetailState.Content ?: return@fold
+                    _state.value = state.copy(isUpdatingList = false)
                 }
             )
         }
     }
 
     fun deleteFromMyList() {
-        _state.update { it.copy(isUpdatingList = true, error = null) }
+        val current = _state.value as? AnimeDetailState.Content ?: return
+        _state.value = current.copy(isUpdatingList = true)
         viewModelScope.launch {
             val result = malRepository.deleteAnimeListItem(animeId)
             result.fold(
                 onSuccess = { refreshDetail() },
                 onFailure = { error ->
-                    _state.update {
-                        it.copy(isUpdatingList = false, error = error.message ?: "Failed to delete")
-                    }
+                    val state = _state.value as? AnimeDetailState.Content ?: return@fold
+                    _state.value = state.copy(isUpdatingList = false)
                 }
             )
         }
@@ -109,12 +98,18 @@ class AnimeDetailViewModel @Inject constructor(
         val result = malRepository.getAnimeDetails(animeId)
         result.fold(
             onSuccess = { anime ->
-                _state.update {
-                    it.copy(anime = anime, isUpdatingList = false, listChanged = true)
-                }
+                val current = _state.value as? AnimeDetailState.Content
+                _state.value = AnimeDetailState.Content(
+                    anime = anime,
+                    isUpdatingList = false,
+                    listChanged = true,
+                    relatedManga = current?.relatedManga ?: emptyList(),
+                    isLoadingRelatedManga = false
+                )
             },
             onFailure = {
-                _state.update { it.copy(isUpdatingList = false) }
+                val current = _state.value as? AnimeDetailState.Content ?: return
+                _state.value = current.copy(isUpdatingList = false)
             }
         )
     }

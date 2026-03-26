@@ -21,7 +21,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.grig.core.theme.AppTheme
 import com.grig.myanimelist.data.model.manga.MalMangaReadingStatus
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -123,6 +125,46 @@ fun VolumeInput(
         Text(
             text = "/ ${total?.takeIf { it > 0 } ?: "?"}",
             style = MaterialTheme.typography.bodyLarge
+        )
+    }
+}
+
+@Preview(name = "Manga Status Dropdown")
+@Composable
+private fun MangaStatusDropdownPreview() {
+    AppTheme(darkTheme = false) {
+        MangaStatusDropdown(
+            selected = MalMangaReadingStatus.Reading,
+            onSelected = {},
+            modifier = Modifier.fillMaxWidth()
+        )
+    }
+}
+
+@Preview(name = "Chapter Input")
+@Composable
+private fun ChapterInputPreview() {
+    AppTheme(darkTheme = false) {
+        ChapterInput(read = 45, total = 100, onReadChange = {})
+    }
+}
+
+@Preview(name = "Volume Input")
+@Composable
+private fun VolumeInputPreview() {
+    AppTheme(darkTheme = false) {
+        VolumeInput(read = 5, total = 12, onReadChange = {})
+    }
+}
+
+@Preview(name = "Manga Status Dropdown - Dark")
+@Composable
+private fun MangaStatusDropdownDarkPreview() {
+    AppTheme(darkTheme = true) {
+        MangaStatusDropdown(
+            selected = MalMangaReadingStatus.Completed,
+            onSelected = {},
+            modifier = Modifier.fillMaxWidth()
         )
     }
 }
