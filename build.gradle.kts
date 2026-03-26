@@ -14,6 +14,7 @@ plugins {
     alias(libs.plugins.ben.manes.versions) apply false
     alias(libs.plugins.kotlin.compose) apply false
     alias(libs.plugins.ksp) apply false
+    alias(libs.plugins.google.services) apply false
 }
 
 // Report stable updates by default (ignore alpha/beta/rc/snapshot unless current is non-stable)

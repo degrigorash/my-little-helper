@@ -29,7 +29,8 @@ fun MangaSearchScreen(
     viewModel: MangaSearchViewModel,
     navigateBack: () -> Unit,
     onListChanged: () -> Unit = {},
-    navigateToAnimeDetail: (Int) -> Unit = {}
+    navigateToAnimeDetail: (Int) -> Unit = {},
+    navigateToReviews: (Int, String) -> Unit = { _, _ -> }
 ) {
     val state by viewModel.state.collectAsState()
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -57,7 +58,7 @@ fun MangaSearchScreen(
             placeholder = "Search manga..."
         )
 
-        AnimatedVisibility(visible = state.isSearching) {
+        AnimatedVisibility(visible = state is MangaSearchState.Searching) {
             LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
         }
 
@@ -67,47 +68,48 @@ fun MangaSearchScreen(
                 .fillMaxWidth()
                 .navigationBarsPadding()
         ) {
-            when {
-                state.isLoadingDetail -> {
+            when (val currentState = state) {
+                is MangaSearchState.LoadingDetail -> {
                     CircularProgressIndicator(
                         modifier = Modifier
                             .size(48.dp)
                             .align(Alignment.Center)
                     )
                 }
-                state.selectedManga != null -> {
+                is MangaSearchState.Detail -> {
                     MangaDetailContent(
-                        manga = state.selectedManga!!,
+                        manga = currentState.manga,
                         authorized = authorized,
-                        isInMyList = state.isInMyList,
-                        isUpdatingList = state.isUpdatingList,
+                        isInMyList = currentState.isInMyList,
+                        isUpdatingList = currentState.isUpdatingList,
                         onAddToList = viewModel::addToMyList,
                         onDeleteFromList = viewModel::deleteFromMyList,
                         onRelatedMangaClick = viewModel::onMangaSelected,
-                        relatedAnime = state.relatedAnime,
-                        isLoadingRelatedAnime = state.isLoadingRelatedAnime,
-                        onRelatedAnimeClick = navigateToAnimeDetail
+                        relatedAnime = currentState.relatedAnime,
+                        isLoadingRelatedAnime = currentState.isLoadingRelatedAnime,
+                        onRelatedAnimeClick = navigateToAnimeDetail,
+                        onReviewsClick = { navigateToReviews(currentState.manga.id, "manga") }
                     )
                 }
-                state.isSearching -> {
+                is MangaSearchState.Searching -> {
                     CircularProgressIndicator(
                         modifier = Modifier
                             .size(48.dp)
                             .align(Alignment.Center)
                     )
                 }
-                state.searchResults.isNotEmpty() -> {
+                is MangaSearchState.Results -> {
                     MangaSearchResultsList(
-                        results = state.searchResults,
+                        results = currentState.results,
                         onItemClick = {
                             keyboardController?.hide()
                             viewModel.onMangaSelected(it.id)
                         }
                     )
                 }
-                state.error != null -> {
+                is MangaSearchState.Error -> {
                     Text(
-                        text = state.error!!,
+                        text = currentState.message,
                         color = MaterialTheme.colorScheme.error,
                         style = MaterialTheme.typography.bodyMedium,
                         modifier = Modifier
@@ -115,7 +117,7 @@ fun MangaSearchScreen(
                             .padding(32.dp)
                     )
                 }
-                state.query.length >= 3 && !state.isSearching -> {
+                is MangaSearchState.NoResults -> {
                     Text(
                         text = "No results found",
                         style = MaterialTheme.typography.bodyLarge,
@@ -125,6 +127,7 @@ fun MangaSearchScreen(
                             .padding(32.dp)
                     )
                 }
+                is MangaSearchState.Idle -> {}
             }
         }
     }

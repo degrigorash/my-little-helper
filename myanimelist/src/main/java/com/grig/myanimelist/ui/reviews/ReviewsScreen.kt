@@ -1,4 +1,4 @@
-package com.grig.myanimelist.ui.animedetail
+package com.grig.myanimelist.ui.reviews
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -17,29 +17,23 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.produceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.grig.core.theme.AppThemeExtended
 import com.grig.myanimelist.R
-import com.grig.myanimelist.ui.animesearch.AnimeDetailContent
 
 @Composable
-fun AnimeDetailScreen(
-    viewModel: AnimeDetailViewModel,
-    navigateBack: () -> Unit,
-    navigateToAnimeDetail: (Int) -> Unit = {},
-    navigateToMangaDetail: (Int) -> Unit = {},
-    navigateToReviews: (Int) -> Unit = {}
+fun ReviewsScreen(
+    viewModel: ReviewsViewModel,
+    navigateBack: () -> Unit
 ) {
     val state by viewModel.state.collectAsState()
+    val activeFilter by viewModel.activeFilter.collectAsState()
     val colors = AppThemeExtended.colorScheme
-    val authorized by produceState(initialValue = false) {
-        value = viewModel.isAuthorized()
-    }
 
     Column(
         modifier = Modifier
@@ -64,7 +58,19 @@ fun AnimeDetailScreen(
                     tint = colors.cardText
                 )
             }
+            Text(
+                text = "Reviews",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                color = colors.cardText,
+                modifier = Modifier.align(Alignment.Center)
+            )
         }
+
+        ReviewFilterChipsRow(
+            activeFilter = activeFilter,
+            onToggleFilter = viewModel::toggleFilter
+        )
 
         Box(
             modifier = Modifier
@@ -73,29 +79,14 @@ fun AnimeDetailScreen(
                 .navigationBarsPadding()
         ) {
             when (val currentState = state) {
-                is AnimeDetailState.Loading -> {
+                is ReviewsState.Loading -> {
                     CircularProgressIndicator(
                         modifier = Modifier
                             .size(48.dp)
                             .align(Alignment.Center)
                     )
                 }
-                is AnimeDetailState.Content -> {
-                    AnimeDetailContent(
-                        anime = currentState.anime,
-                        authorized = authorized,
-                        isInMyList = currentState.isInMyList,
-                        isUpdatingList = currentState.isUpdatingList,
-                        onAddToList = viewModel::addToMyList,
-                        onDeleteFromList = viewModel::deleteFromMyList,
-                        onRelatedAnimeClick = navigateToAnimeDetail,
-                        relatedManga = currentState.relatedManga,
-                        isLoadingRelatedManga = currentState.isLoadingRelatedManga,
-                        onRelatedMangaClick = navigateToMangaDetail,
-                        onReviewsClick = { navigateToReviews(currentState.anime.id) }
-                    )
-                }
-                is AnimeDetailState.Error -> {
+                is ReviewsState.Error -> {
                     Text(
                         text = currentState.message,
                         color = MaterialTheme.colorScheme.error,
@@ -104,6 +95,36 @@ fun AnimeDetailScreen(
                             .align(Alignment.Center)
                             .padding(32.dp)
                     )
+                }
+                is ReviewsState.Empty -> {
+                    Text(
+                        text = "No reviews yet",
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier
+                            .align(Alignment.Center)
+                            .padding(32.dp)
+                    )
+                }
+                is ReviewsState.Content -> {
+                    val filteredReviews = viewModel.filteredReviews(currentState.reviews)
+                    if (filteredReviews.isEmpty() && activeFilter != null) {
+                        Text(
+                            text = "No reviews match the selected filters",
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier
+                                .align(Alignment.Center)
+                                .padding(32.dp)
+                        )
+                    } else {
+                        ReviewsList(
+                            reviews = filteredReviews,
+                            hasNextPage = currentState.hasNextPage,
+                            isLoadingMore = currentState.isLoadingMore,
+                            onLoadMore = viewModel::loadMore
+                        )
+                    }
                 }
             }
         }

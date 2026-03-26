@@ -23,7 +23,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.grig.core.theme.AppTheme
 import com.grig.core.theme.AppThemeExtended
 import com.grig.myanimelist.R
 import com.grig.myanimelist.ui.home.MalTab
@@ -114,5 +116,29 @@ fun MalError(
             Spacer(modifier = Modifier.size(ButtonDefaults.IconSpacing))
             Text(text = stringResource(R.string.error_try_again))
         }
+    }
+}
+
+@Preview(name = "MalError - General")
+@Composable
+private fun MalErrorPreview() {
+    AppTheme(darkTheme = false) {
+        MalError(
+            activeTab = MalTab.Anime,
+            exception = RuntimeException("Something went wrong"),
+            onRetry = {}
+        )
+    }
+}
+
+@Preview(name = "MalError - Network Dark")
+@Composable
+private fun MalErrorNetworkDarkPreview() {
+    AppTheme(darkTheme = true) {
+        MalError(
+            activeTab = MalTab.Manga,
+            exception = IOException("No internet"),
+            onRetry = {}
+        )
     }
 }

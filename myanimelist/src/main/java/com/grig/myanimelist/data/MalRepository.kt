@@ -127,6 +127,12 @@ class MalRepository @Inject constructor(
     suspend fun deleteMangaListItem(mangaId: Int) =
         malService.deleteMangaListItem(mangaId)
 
+    suspend fun getAnimeReviews(animeId: Int, page: Int = 1) =
+        jikanService.getAnimeReviews(animeId, page)
+
+    suspend fun getMangaReviews(mangaId: Int, page: Int = 1) =
+        jikanService.getMangaReviews(mangaId, page)
+
     suspend fun getAnimeRelatedManga(animeId: Int): List<ResolvedRelation> {
         val rawRelations = jikanService.getAnimeRelations(animeId).getOrNull()
             ?.data

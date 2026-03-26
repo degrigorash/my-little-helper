@@ -25,7 +25,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.grig.core.theme.AppTheme
 import com.grig.myanimelist.data.model.anime.MalAnimeWatchingStatus
 import com.grig.myanimelist.ui.home.formatApiDate
 
@@ -217,4 +219,81 @@ fun ConfirmationDialog(
             }
         }
     )
+}
+
+@Preview(name = "Status Dropdown")
+@Composable
+private fun StatusDropdownPreview() {
+    AppTheme(darkTheme = false) {
+        StatusDropdown(
+            selected = MalAnimeWatchingStatus.Watching,
+            onSelected = {},
+            modifier = Modifier.fillMaxWidth()
+        )
+    }
+}
+
+@Preview(name = "Episode Input")
+@Composable
+private fun EpisodeInputPreview() {
+    AppTheme(darkTheme = false) {
+        EpisodeInput(watched = 12, total = 24, onWatchedChange = {})
+    }
+}
+
+@Preview(name = "Score Dropdown")
+@Composable
+private fun ScoreDropdownPreview() {
+    AppTheme(darkTheme = false) {
+        ScoreDropdown(
+            score = 8,
+            onScoreSelected = {},
+            modifier = Modifier.fillMaxWidth()
+        )
+    }
+}
+
+@Preview(name = "Finish Date - Set")
+@Composable
+private fun FinishDateSetPreview() {
+    AppTheme(darkTheme = false) {
+        FinishDateRow(finishDate = "2025-06-15", onSetToday = {})
+    }
+}
+
+@Preview(name = "Finish Date - Not Set")
+@Composable
+private fun FinishDateNotSetPreview() {
+    AppTheme(darkTheme = false) {
+        FinishDateRow(finishDate = null, onSetToday = {})
+    }
+}
+
+@Preview(name = "Confirmation Dialog")
+@Composable
+private fun ConfirmationDialogPreview() {
+    AppTheme(darkTheme = false) {
+        ConfirmationDialog(
+            title = "Save Changes",
+            message = "Save your changes?",
+            confirmText = "Save",
+            onConfirm = {},
+            onDismiss = {}
+        )
+    }
+}
+
+@Preview(name = "Confirmation Dialog - Dark Destructive")
+@Composable
+private fun ConfirmationDialogDarkPreview() {
+    AppTheme(darkTheme = true) {
+        ConfirmationDialog(
+            title = "Delete Entry",
+            message = "Remove this entry?",
+            confirmText = "Delete",
+            onConfirm = {},
+            onDismiss = {},
+            isDestructive = true
+        )
+    }
 }
