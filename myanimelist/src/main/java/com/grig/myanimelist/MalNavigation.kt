@@ -9,6 +9,8 @@ import com.grig.core.theme.AppTheme
 import com.grig.myanimelist.ui.animedetail.AnimeDetailScreen
 import com.grig.myanimelist.ui.animelist.AnimeListViewModel
 import com.grig.myanimelist.ui.animesearch.AnimeSearchScreen
+import com.grig.myanimelist.ui.characterdetail.CharacterDetailScreen
+import com.grig.myanimelist.ui.characters.CharactersScreen
 import com.grig.myanimelist.ui.home.MalHomeScreen
 import com.grig.myanimelist.ui.home.MalHomeViewModel
 import com.grig.myanimelist.ui.login.MalLoginScreen
@@ -99,6 +101,9 @@ fun NavGraphBuilder.malNavigation(
                 },
                 navigateToReviews = { mediaId, mediaType ->
                     navController.navigate(MalRoute.Reviews(mediaId, mediaType))
+                },
+                navigateToCharacters = { mediaId, mediaType ->
+                    navController.navigate(MalRoute.Characters(mediaId, mediaType))
                 }
             )
         }
@@ -118,6 +123,9 @@ fun NavGraphBuilder.malNavigation(
                 },
                 navigateToReviews = { mediaId, mediaType ->
                     navController.navigate(MalRoute.Reviews(mediaId, mediaType))
+                },
+                navigateToCharacters = { mediaId, mediaType ->
+                    navController.navigate(MalRoute.Characters(mediaId, mediaType))
                 }
             )
         }
@@ -139,6 +147,9 @@ fun NavGraphBuilder.malNavigation(
                 },
                 navigateToReviews = { animeId ->
                     navController.navigate(MalRoute.Reviews(animeId, "anime"))
+                },
+                navigateToCharacters = { animeId ->
+                    navController.navigate(MalRoute.Characters(animeId, "anime"))
                 }
             )
         }
@@ -160,6 +171,9 @@ fun NavGraphBuilder.malNavigation(
                 },
                 navigateToReviews = { mangaId ->
                     navController.navigate(MalRoute.Reviews(mangaId, "manga"))
+                },
+                navigateToCharacters = { mangaId ->
+                    navController.navigate(MalRoute.Characters(mangaId, "manga"))
                 }
             )
         }
@@ -167,6 +181,25 @@ fun NavGraphBuilder.malNavigation(
     composable<MalRoute.Reviews> {
         AppTheme {
             ReviewsScreen(
+                viewModel = hiltViewModel(),
+                navigateBack = { navController.popBackStack() }
+            )
+        }
+    }
+    composable<MalRoute.Characters> {
+        AppTheme {
+            CharactersScreen(
+                viewModel = hiltViewModel(),
+                navigateBack = { navController.popBackStack() },
+                navigateToCharacterDetail = { characterId ->
+                    navController.navigate(MalRoute.CharacterDetail(characterId))
+                }
+            )
+        }
+    }
+    composable<MalRoute.CharacterDetail> {
+        AppTheme {
+            CharacterDetailScreen(
                 viewModel = hiltViewModel(),
                 navigateBack = { navController.popBackStack() }
             )

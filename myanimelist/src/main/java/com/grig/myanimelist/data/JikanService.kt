@@ -1,5 +1,7 @@
 package com.grig.myanimelist.data
 
+import com.grig.myanimelist.data.model.jikan.JikanCharacterFullResponse
+import com.grig.myanimelist.data.model.jikan.JikanCharactersResponse
 import com.grig.myanimelist.data.model.jikan.JikanRelationsResponse
 import com.grig.myanimelist.data.model.jikan.JikanReviewsResponse
 import retrofit2.http.GET
@@ -29,5 +31,20 @@ interface JikanService {
         @Path("id") mangaId: Int,
         @Query("page") page: Int = 1
     ): Result<JikanReviewsResponse>
+
+    @GET("v4/anime/{id}/characters")
+    suspend fun getAnimeCharacters(
+        @Path("id") animeId: Int
+    ): Result<JikanCharactersResponse>
+
+    @GET("v4/manga/{id}/characters")
+    suspend fun getMangaCharacters(
+        @Path("id") mangaId: Int
+    ): Result<JikanCharactersResponse>
+
+    @GET("v4/characters/{id}/full")
+    suspend fun getCharacterFull(
+        @Path("id") characterId: Int
+    ): Result<JikanCharacterFullResponse>
 
 }

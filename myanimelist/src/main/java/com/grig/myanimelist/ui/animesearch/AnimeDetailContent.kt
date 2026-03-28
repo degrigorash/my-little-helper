@@ -57,7 +57,8 @@ fun AnimeDetailContent(
     relatedManga: List<ResolvedRelation> = emptyList(),
     isLoadingRelatedManga: Boolean = false,
     onRelatedMangaClick: (Int) -> Unit = {},
-    onReviewsClick: () -> Unit = {}
+    onReviewsClick: () -> Unit = {},
+    onCharactersClick: () -> Unit = {}
 ) {
     var showDeleteConfirm by remember { mutableStateOf(false) }
 
@@ -133,6 +134,28 @@ fun AnimeDetailContent(
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            OutlinedButton(
+                onClick = onCharactersClick,
+                modifier = Modifier.weight(1f),
+                shape = RoundedCornerShape(16.dp)
+            ) {
+                Text("Characters")
+            }
+            OutlinedButton(
+                onClick = onReviewsClick,
+                modifier = Modifier.weight(1f),
+                shape = RoundedCornerShape(16.dp)
+            ) {
+                Text("Reviews")
+            }
         }
 
         if (anime.synopsis.isNotBlank()) {
@@ -225,16 +248,6 @@ fun AnimeDetailContent(
             isLoading = isLoadingRelatedManga,
             onClick = onRelatedMangaClick
         )
-
-        Spacer(modifier = Modifier.height(20.dp))
-
-        OutlinedButton(
-            onClick = onReviewsClick,
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(16.dp)
-        ) {
-            Text("Reviews")
-        }
 
         Spacer(modifier = Modifier.height(16.dp))
     }

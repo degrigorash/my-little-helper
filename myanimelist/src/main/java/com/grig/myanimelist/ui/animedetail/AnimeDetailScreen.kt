@@ -33,7 +33,8 @@ fun AnimeDetailScreen(
     navigateBack: () -> Unit,
     navigateToAnimeDetail: (Int) -> Unit = {},
     navigateToMangaDetail: (Int) -> Unit = {},
-    navigateToReviews: (Int) -> Unit = {}
+    navigateToReviews: (Int) -> Unit = {},
+    navigateToCharacters: (Int) -> Unit = {}
 ) {
     val state by viewModel.state.collectAsState()
     val colors = AppThemeExtended.colorScheme
@@ -92,7 +93,8 @@ fun AnimeDetailScreen(
                         relatedManga = currentState.relatedManga,
                         isLoadingRelatedManga = currentState.isLoadingRelatedManga,
                         onRelatedMangaClick = navigateToMangaDetail,
-                        onReviewsClick = { navigateToReviews(currentState.anime.id) }
+                        onReviewsClick = { navigateToReviews(currentState.anime.id) },
+                        onCharactersClick = { navigateToCharacters(currentState.anime.id) }
                     )
                 }
                 is AnimeDetailState.Error -> {
