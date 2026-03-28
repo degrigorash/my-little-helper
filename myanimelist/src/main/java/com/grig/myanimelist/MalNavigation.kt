@@ -9,6 +9,7 @@ import com.grig.core.theme.AppTheme
 import com.grig.myanimelist.ui.animedetail.AnimeDetailScreen
 import com.grig.myanimelist.ui.animelist.AnimeListViewModel
 import com.grig.myanimelist.ui.animesearch.AnimeSearchScreen
+import com.grig.myanimelist.ui.authordetail.AuthorDetailScreen
 import com.grig.myanimelist.ui.characterdetail.CharacterDetailScreen
 import com.grig.myanimelist.ui.characters.CharactersScreen
 import com.grig.myanimelist.ui.home.MalHomeScreen
@@ -18,6 +19,7 @@ import com.grig.myanimelist.ui.mangadetail.MangaDetailScreen
 import com.grig.myanimelist.ui.mangalist.MangaListViewModel
 import com.grig.myanimelist.ui.mangasearch.MangaSearchScreen
 import com.grig.myanimelist.ui.reviews.ReviewsScreen
+import com.grig.myanimelist.ui.studiodetail.StudioDetailScreen
 
 const val ANIME_LIST_CHANGED = "anime_list_changed"
 const val MANGA_LIST_CHANGED = "manga_list_changed"
@@ -154,6 +156,9 @@ fun NavGraphBuilder.malNavigation(
                         popUpTo<MalRoute.AnimeDetail> { inclusive = true }
                     }
                 },
+                navigateToStudioDetail = { studioId ->
+                    navController.navigate(MalRoute.StudioDetail(studioId))
+                },
                 navigateToReviews = { animeId ->
                     navController.navigate(MalRoute.Reviews(animeId, "anime"))
                 },
@@ -182,6 +187,9 @@ fun NavGraphBuilder.malNavigation(
                     navController.navigate(MalRoute.AnimeDetail(animeId)) {
                         popUpTo<MalRoute.MangaDetail> { inclusive = true }
                     }
+                },
+                navigateToAuthorDetail = { authorId ->
+                    navController.navigate(MalRoute.AuthorDetail(authorId))
                 },
                 navigateToReviews = { mangaId ->
                     navController.navigate(MalRoute.Reviews(mangaId, "manga"))
@@ -216,6 +224,31 @@ fun NavGraphBuilder.malNavigation(
             CharacterDetailScreen(
                 viewModel = hiltViewModel(),
                 navigateBack = { navController.popBackStack() }
+            )
+        }
+    }
+    composable<MalRoute.StudioDetail> {
+        AppTheme {
+            StudioDetailScreen(
+                viewModel = hiltViewModel(),
+                navigateBack = { navController.popBackStack() },
+                navigateToAnimeDetail = { animeId ->
+                    navController.navigate(MalRoute.AnimeDetail(animeId))
+                }
+            )
+        }
+    }
+    composable<MalRoute.AuthorDetail> {
+        AppTheme {
+            AuthorDetailScreen(
+                viewModel = hiltViewModel(),
+                navigateBack = { navController.popBackStack() },
+                navigateToAnimeDetail = { animeId ->
+                    navController.navigate(MalRoute.AnimeDetail(animeId))
+                },
+                navigateToMangaDetail = { mangaId ->
+                    navController.navigate(MalRoute.MangaDetail(mangaId))
+                }
             )
         }
     }

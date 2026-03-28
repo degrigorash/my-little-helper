@@ -30,4 +30,10 @@ sealed class MalRoute {
 
     @Serializable
     data class CharacterDetail(val characterId: Int) : MalRoute()
+
+    @Serializable
+    data class StudioDetail(val studioId: Int) : MalRoute()
+
+    @Serializable
+    data class AuthorDetail(val authorId: Int) : MalRoute()
 }

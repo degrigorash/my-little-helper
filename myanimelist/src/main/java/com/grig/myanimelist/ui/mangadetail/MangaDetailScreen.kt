@@ -35,6 +35,7 @@ fun MangaDetailScreen(
     onListChanged: () -> Unit = {},
     navigateToMangaDetail: (Int) -> Unit = {},
     navigateToAnimeDetail: (Int) -> Unit = {},
+    navigateToAuthorDetail: (Int) -> Unit = {},
     navigateToReviews: (Int) -> Unit = {},
     navigateToCharacters: (Int) -> Unit = {}
 ) {
@@ -99,6 +100,7 @@ fun MangaDetailScreen(
                         isUpdatingList = currentState.isUpdatingList,
                         onAddToList = viewModel::addToMyList,
                         onDeleteFromList = viewModel::deleteFromMyList,
+                        onAuthorClick = navigateToAuthorDetail,
                         onRelatedMangaClick = navigateToMangaDetail,
                         relatedAnime = currentState.relatedAnime,
                         isLoadingRelatedAnime = currentState.isLoadingRelatedAnime,

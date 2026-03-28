@@ -68,7 +68,9 @@ data class JikanAnimeMeta(
     @SerialName("images")
     val images: JikanCharacterImages? = null,
     @SerialName("title")
-    val title: String
+    val title: String,
+    @SerialName("score")
+    val score: Double? = null
 )
 
 @Serializable
@@ -80,5 +82,7 @@ data class JikanMangaMeta(
     @SerialName("images")
     val images: JikanCharacterImages? = null,
     @SerialName("title")
-    val title: String
+    val title: String,
+    @SerialName("score")
+    val score: Double? = null
 )

@@ -1,5 +1,6 @@
 package com.grig.myanimelist.ui.animesearch
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -53,6 +54,7 @@ fun AnimeDetailContent(
     isUpdatingList: Boolean,
     onAddToList: () -> Unit,
     onDeleteFromList: () -> Unit,
+    onStudioClick: (Int) -> Unit = {},
     onRelatedAnimeClick: (Int) -> Unit = {},
     relatedManga: List<ResolvedRelation> = emptyList(),
     isLoadingRelatedManga: Boolean = false,
@@ -136,6 +138,24 @@ fun AnimeDetailContent(
             )
         }
 
+        if (anime.studios.isNotEmpty()) {
+            Spacer(modifier = Modifier.height(12.dp))
+            FlowRow(
+                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                verticalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                anime.studios.forEachIndexed { index, studio ->
+                    Text(
+                        text = studio.name + if (index < anime.studios.lastIndex) "," else "",
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.clickable { onStudioClick(studio.id) }
+                    )
+                }
+            }
+        }
+
         Spacer(modifier = Modifier.height(16.dp))
 
         Row(
@@ -180,17 +200,6 @@ fun AnimeDetailContent(
                     )
                 }
             }
-        }
-
-        val studioNames = anime.studios.joinToString(", ") { it.name }
-        if (studioNames.isNotBlank()) {
-            Spacer(modifier = Modifier.height(12.dp))
-            Text(
-                text = studioNames,
-                style = MaterialTheme.typography.bodyMedium,
-                fontWeight = FontWeight.SemiBold,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
         }
 
         if (authorized) {

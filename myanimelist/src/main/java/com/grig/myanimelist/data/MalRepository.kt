@@ -142,6 +142,15 @@ class MalRepository @Inject constructor(
     suspend fun getCharacterFull(characterId: Int) =
         jikanService.getCharacterFull(characterId)
 
+    suspend fun getProducer(producerId: Int) =
+        jikanService.getProducer(producerId)
+
+    suspend fun getAnimeByProducer(producerId: Int, page: Int = 1) =
+        jikanService.getAnimeByProducer(producerId, page = page)
+
+    suspend fun getPersonFull(personId: Int) =
+        jikanService.getPersonFull(personId)
+
     suspend fun getAnimeRelatedManga(animeId: Int): List<ResolvedRelation> {
         val rawRelations = jikanService.getAnimeRelations(animeId).getOrNull()
             ?.data

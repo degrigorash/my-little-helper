@@ -1,5 +1,6 @@
 package com.grig.myanimelist.ui.mangasearch
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -53,6 +54,7 @@ fun MangaDetailContent(
     isUpdatingList: Boolean,
     onAddToList: () -> Unit,
     onDeleteFromList: () -> Unit,
+    onAuthorClick: (Int) -> Unit = {},
     onRelatedMangaClick: (Int) -> Unit = {},
     relatedAnime: List<ResolvedRelation> = emptyList(),
     isLoadingRelatedAnime: Boolean = false,
@@ -141,18 +143,25 @@ fun MangaDetailContent(
             )
         }
 
-        val authorNames = manga.authors
-            .map { it.author.displayName }
-            .distinct()
-            .joinToString(", ")
-        if (authorNames.isNotBlank()) {
+        val distinctAuthors = manga.authors
+            .distinctBy { it.author.id }
+            .filter { it.author.displayName.isNotBlank() }
+        if (distinctAuthors.isNotEmpty()) {
             Spacer(modifier = Modifier.height(12.dp))
-            Text(
-                text = authorNames,
-                style = MaterialTheme.typography.bodyMedium,
-                fontWeight = FontWeight.SemiBold,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
+            FlowRow(
+                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                verticalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                distinctAuthors.forEachIndexed { index, authorNode ->
+                    Text(
+                        text = authorNode.author.displayName + if (index < distinctAuthors.lastIndex) "," else "",
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.clickable { onAuthorClick(authorNode.author.id) }
+                    )
+                }
+            }
         }
 
         Spacer(modifier = Modifier.height(16.dp))
