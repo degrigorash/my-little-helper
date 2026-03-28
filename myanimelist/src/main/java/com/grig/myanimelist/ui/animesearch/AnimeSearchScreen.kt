@@ -14,10 +14,8 @@ import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.produceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -28,24 +26,10 @@ import com.grig.myanimelist.ui.MalSearchBar
 fun AnimeSearchScreen(
     viewModel: AnimeSearchViewModel,
     navigateBack: () -> Unit,
-    onListChanged: () -> Unit = {},
-    navigateToMangaDetail: (Int) -> Unit = {},
-    navigateToReviews: (Int, String) -> Unit = { _, _ -> },
-    navigateToCharacters: (Int, String) -> Unit = { _, _ -> }
+    navigateToAnimeDetail: (Int) -> Unit = {}
 ) {
     val state by viewModel.state.collectAsState()
     val keyboardController = LocalSoftwareKeyboardController.current
-    val authorized by produceState(initialValue = false) {
-        value = viewModel.isAuthorized()
-    }
-
-    LaunchedEffect(Unit) {
-        viewModel.state.collect { s ->
-            if (s.listChanged) {
-                onListChanged()
-            }
-        }
-    }
 
     Column(
         modifier = Modifier
@@ -70,29 +54,6 @@ fun AnimeSearchScreen(
                 .navigationBarsPadding()
         ) {
             when (val currentState = state) {
-                is AnimeSearchState.LoadingDetail -> {
-                    CircularProgressIndicator(
-                        modifier = Modifier
-                            .size(48.dp)
-                            .align(Alignment.Center)
-                    )
-                }
-                is AnimeSearchState.Detail -> {
-                    AnimeDetailContent(
-                        anime = currentState.anime,
-                        authorized = authorized,
-                        isInMyList = currentState.isInMyList,
-                        isUpdatingList = currentState.isUpdatingList,
-                        onAddToList = viewModel::addToMyList,
-                        onDeleteFromList = viewModel::deleteFromMyList,
-                        onRelatedAnimeClick = viewModel::onAnimeSelected,
-                        relatedManga = currentState.relatedManga,
-                        isLoadingRelatedManga = currentState.isLoadingRelatedManga,
-                        onRelatedMangaClick = navigateToMangaDetail,
-                        onReviewsClick = { navigateToReviews(currentState.anime.id, "anime") },
-                        onCharactersClick = { navigateToCharacters(currentState.anime.id, "anime") }
-                    )
-                }
                 is AnimeSearchState.Searching -> {
                     CircularProgressIndicator(
                         modifier = Modifier
@@ -105,7 +66,7 @@ fun AnimeSearchScreen(
                         results = currentState.results,
                         onItemClick = {
                             keyboardController?.hide()
-                            viewModel.onAnimeSelected(it.id)
+                            navigateToAnimeDetail(it.id)
                         }
                     )
                 }

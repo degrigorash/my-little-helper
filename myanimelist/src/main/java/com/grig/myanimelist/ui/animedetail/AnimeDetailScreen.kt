@@ -15,6 +15,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
@@ -31,6 +32,7 @@ import com.grig.myanimelist.ui.animesearch.AnimeDetailContent
 fun AnimeDetailScreen(
     viewModel: AnimeDetailViewModel,
     navigateBack: () -> Unit,
+    onListChanged: () -> Unit = {},
     navigateToAnimeDetail: (Int) -> Unit = {},
     navigateToMangaDetail: (Int) -> Unit = {},
     navigateToReviews: (Int) -> Unit = {},
@@ -40,6 +42,14 @@ fun AnimeDetailScreen(
     val colors = AppThemeExtended.colorScheme
     val authorized by produceState(initialValue = false) {
         value = viewModel.isAuthorized()
+    }
+
+    LaunchedEffect(Unit) {
+        viewModel.state.collect { s ->
+            if (s is AnimeDetailState.Content && s.listChanged) {
+                onListChanged()
+            }
+        }
     }
 
     Column(

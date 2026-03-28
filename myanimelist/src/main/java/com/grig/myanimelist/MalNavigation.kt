@@ -86,46 +86,50 @@ fun NavGraphBuilder.malNavigation(
             )
         }
     }
-    composable<MalRoute.AnimeSearch> {
+    composable<MalRoute.AnimeSearch> { backStackEntry ->
+        LaunchedEffect(Unit) {
+            backStackEntry.savedStateHandle
+                .getStateFlow(ANIME_LIST_CHANGED, false)
+                .collect { changed ->
+                    if (changed) {
+                        backStackEntry.savedStateHandle[ANIME_LIST_CHANGED] = false
+                        navController.previousBackStackEntry
+                            ?.savedStateHandle
+                            ?.set(ANIME_LIST_CHANGED, true)
+                    }
+                }
+        }
+
         AppTheme {
             AnimeSearchScreen(
                 viewModel = hiltViewModel(),
                 navigateBack = { navController.popBackStack() },
-                onListChanged = {
-                    navController.previousBackStackEntry
-                        ?.savedStateHandle
-                        ?.set(ANIME_LIST_CHANGED, true)
-                },
-                navigateToMangaDetail = { mangaId ->
-                    navController.navigate(MalRoute.MangaDetail(mangaId))
-                },
-                navigateToReviews = { mediaId, mediaType ->
-                    navController.navigate(MalRoute.Reviews(mediaId, mediaType))
-                },
-                navigateToCharacters = { mediaId, mediaType ->
-                    navController.navigate(MalRoute.Characters(mediaId, mediaType))
+                navigateToAnimeDetail = { animeId ->
+                    navController.navigate(MalRoute.AnimeDetail(animeId))
                 }
             )
         }
     }
-    composable<MalRoute.MangaSearch> {
+    composable<MalRoute.MangaSearch> { backStackEntry ->
+        LaunchedEffect(Unit) {
+            backStackEntry.savedStateHandle
+                .getStateFlow(MANGA_LIST_CHANGED, false)
+                .collect { changed ->
+                    if (changed) {
+                        backStackEntry.savedStateHandle[MANGA_LIST_CHANGED] = false
+                        navController.previousBackStackEntry
+                            ?.savedStateHandle
+                            ?.set(MANGA_LIST_CHANGED, true)
+                    }
+                }
+        }
+
         AppTheme {
             MangaSearchScreen(
                 viewModel = hiltViewModel(),
                 navigateBack = { navController.popBackStack() },
-                onListChanged = {
-                    navController.previousBackStackEntry
-                        ?.savedStateHandle
-                        ?.set(MANGA_LIST_CHANGED, true)
-                },
-                navigateToAnimeDetail = { animeId ->
-                    navController.navigate(MalRoute.AnimeDetail(animeId))
-                },
-                navigateToReviews = { mediaId, mediaType ->
-                    navController.navigate(MalRoute.Reviews(mediaId, mediaType))
-                },
-                navigateToCharacters = { mediaId, mediaType ->
-                    navController.navigate(MalRoute.Characters(mediaId, mediaType))
+                navigateToMangaDetail = { mangaId ->
+                    navController.navigate(MalRoute.MangaDetail(mangaId))
                 }
             )
         }
@@ -135,6 +139,11 @@ fun NavGraphBuilder.malNavigation(
             AnimeDetailScreen(
                 viewModel = hiltViewModel(),
                 navigateBack = { navController.popBackStack() },
+                onListChanged = {
+                    navController.previousBackStackEntry
+                        ?.savedStateHandle
+                        ?.set(ANIME_LIST_CHANGED, true)
+                },
                 navigateToAnimeDetail = { animeId ->
                     navController.navigate(MalRoute.AnimeDetail(animeId)) {
                         popUpTo<MalRoute.AnimeDetail> { inclusive = true }
@@ -159,6 +168,11 @@ fun NavGraphBuilder.malNavigation(
             MangaDetailScreen(
                 viewModel = hiltViewModel(),
                 navigateBack = { navController.popBackStack() },
+                onListChanged = {
+                    navController.previousBackStackEntry
+                        ?.savedStateHandle
+                        ?.set(MANGA_LIST_CHANGED, true)
+                },
                 navigateToMangaDetail = { mangaId ->
                     navController.navigate(MalRoute.MangaDetail(mangaId)) {
                         popUpTo<MalRoute.MangaDetail> { inclusive = true }
