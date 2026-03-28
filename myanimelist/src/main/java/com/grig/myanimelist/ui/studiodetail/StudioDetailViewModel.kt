@@ -53,7 +53,7 @@ class StudioDetailViewModel @Inject constructor(
                 onSuccess = { response ->
                     val current = _state.value as? StudioDetailState.Content ?: return@fold
                     _state.value = current.copy(
-                        animeList = current.animeList + response.data,
+                        animeList = (current.animeList + response.data).distinctBy { it.malId },
                         isLoadingAnime = false,
                         hasMoreAnime = response.pagination.hasNextPage,
                         isLoadingMore = false
