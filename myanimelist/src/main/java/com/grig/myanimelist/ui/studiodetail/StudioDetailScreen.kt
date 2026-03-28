@@ -1,4 +1,4 @@
-package com.grig.myanimelist.ui.animedetail
+package com.grig.myanimelist.ui.studiodetail
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -15,43 +15,25 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.produceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.grig.core.theme.AppThemeExtended
 import com.grig.myanimelist.R
-import com.grig.myanimelist.ui.animesearch.AnimeDetailContent
 
 @Composable
-fun AnimeDetailScreen(
-    viewModel: AnimeDetailViewModel,
+fun StudioDetailScreen(
+    viewModel: StudioDetailViewModel,
     navigateBack: () -> Unit,
-    onListChanged: () -> Unit = {},
-    navigateToAnimeDetail: (Int) -> Unit = {},
-    navigateToMangaDetail: (Int) -> Unit = {},
-    navigateToStudioDetail: (Int) -> Unit = {},
-    navigateToReviews: (Int) -> Unit = {},
-    navigateToCharacters: (Int) -> Unit = {}
+    navigateToAnimeDetail: (Int) -> Unit = {}
 ) {
     val state by viewModel.state.collectAsState()
     val colors = AppThemeExtended.colorScheme
-    val authorized by produceState(initialValue = false) {
-        value = viewModel.isAuthorized()
-    }
-
-    LaunchedEffect(Unit) {
-        viewModel.state.collect { s ->
-            if (s is AnimeDetailState.Content && s.listChanged) {
-                onListChanged()
-            }
-        }
-    }
 
     Column(
         modifier = Modifier
@@ -76,6 +58,14 @@ fun AnimeDetailScreen(
                     tint = colors.cardText
                 )
             }
+            val title = (state as? StudioDetailState.Content)?.producer?.name ?: "Studio"
+            Text(
+                text = title,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                color = colors.cardText,
+                modifier = Modifier.align(Alignment.Center)
+            )
         }
 
         Box(
@@ -85,31 +75,14 @@ fun AnimeDetailScreen(
                 .navigationBarsPadding()
         ) {
             when (val currentState = state) {
-                is AnimeDetailState.Loading -> {
+                is StudioDetailState.Loading -> {
                     CircularProgressIndicator(
                         modifier = Modifier
                             .size(48.dp)
                             .align(Alignment.Center)
                     )
                 }
-                is AnimeDetailState.Content -> {
-                    AnimeDetailContent(
-                        anime = currentState.anime,
-                        authorized = authorized,
-                        isInMyList = currentState.isInMyList,
-                        isUpdatingList = currentState.isUpdatingList,
-                        onAddToList = viewModel::addToMyList,
-                        onDeleteFromList = viewModel::deleteFromMyList,
-                        onStudioClick = navigateToStudioDetail,
-                        onRelatedAnimeClick = navigateToAnimeDetail,
-                        relatedManga = currentState.relatedManga,
-                        isLoadingRelatedManga = currentState.isLoadingRelatedManga,
-                        onRelatedMangaClick = navigateToMangaDetail,
-                        onReviewsClick = { navigateToReviews(currentState.anime.id) },
-                        onCharactersClick = { navigateToCharacters(currentState.anime.id) }
-                    )
-                }
-                is AnimeDetailState.Error -> {
+                is StudioDetailState.Error -> {
                     Text(
                         text = currentState.message,
                         color = MaterialTheme.colorScheme.error,
@@ -117,6 +90,17 @@ fun AnimeDetailScreen(
                         modifier = Modifier
                             .align(Alignment.Center)
                             .padding(32.dp)
+                    )
+                }
+                is StudioDetailState.Content -> {
+                    StudioDetailContent(
+                        producer = currentState.producer,
+                        animeList = currentState.animeList,
+                        isLoadingAnime = currentState.isLoadingAnime,
+                        hasMoreAnime = currentState.hasMoreAnime,
+                        isLoadingMore = currentState.isLoadingMore,
+                        onLoadMore = viewModel::loadMore,
+                        onAnimeClick = navigateToAnimeDetail
                     )
                 }
             }

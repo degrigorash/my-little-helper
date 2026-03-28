@@ -15,6 +15,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
@@ -31,14 +32,25 @@ import com.grig.myanimelist.ui.mangasearch.MangaDetailContent
 fun MangaDetailScreen(
     viewModel: MangaDetailViewModel,
     navigateBack: () -> Unit,
+    onListChanged: () -> Unit = {},
     navigateToMangaDetail: (Int) -> Unit = {},
     navigateToAnimeDetail: (Int) -> Unit = {},
-    navigateToReviews: (Int) -> Unit = {}
+    navigateToAuthorDetail: (Int) -> Unit = {},
+    navigateToReviews: (Int) -> Unit = {},
+    navigateToCharacters: (Int) -> Unit = {}
 ) {
     val state by viewModel.state.collectAsState()
     val colors = AppThemeExtended.colorScheme
     val authorized by produceState(initialValue = false) {
         value = viewModel.isAuthorized()
+    }
+
+    LaunchedEffect(Unit) {
+        viewModel.state.collect { s ->
+            if (s is MangaDetailState.Content && s.listChanged) {
+                onListChanged()
+            }
+        }
     }
 
     Column(
@@ -88,11 +100,13 @@ fun MangaDetailScreen(
                         isUpdatingList = currentState.isUpdatingList,
                         onAddToList = viewModel::addToMyList,
                         onDeleteFromList = viewModel::deleteFromMyList,
+                        onAuthorClick = navigateToAuthorDetail,
                         onRelatedMangaClick = navigateToMangaDetail,
                         relatedAnime = currentState.relatedAnime,
                         isLoadingRelatedAnime = currentState.isLoadingRelatedAnime,
                         onRelatedAnimeClick = navigateToAnimeDetail,
-                        onReviewsClick = { navigateToReviews(currentState.manga.id) }
+                        onReviewsClick = { navigateToReviews(currentState.manga.id) },
+                        onCharactersClick = { navigateToCharacters(currentState.manga.id) }
                     )
                 }
                 is MangaDetailState.Error -> {

@@ -1,6 +1,5 @@
-package com.grig.myanimelist.ui.mangasearch
+package com.grig.myanimelist.ui.authordetail
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -9,8 +8,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -18,33 +19,54 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.grig.myanimelist.ui.MalSearchBar
+import com.grig.core.theme.AppThemeExtended
+import com.grig.myanimelist.R
 
 @Composable
-fun MangaSearchScreen(
-    viewModel: MangaSearchViewModel,
+fun AuthorDetailScreen(
+    viewModel: AuthorDetailViewModel,
     navigateBack: () -> Unit,
+    navigateToAnimeDetail: (Int) -> Unit = {},
     navigateToMangaDetail: (Int) -> Unit = {}
 ) {
     val state by viewModel.state.collectAsState()
-    val keyboardController = LocalSoftwareKeyboardController.current
+    val colors = AppThemeExtended.colorScheme
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {
-        MalSearchBar(
-            query = state.query,
-            onQueryChange = viewModel::onQueryChange,
-            onBack = navigateBack,
-            placeholder = "Search manga..."
-        )
-
-        AnimatedVisibility(visible = state is MangaSearchState.Searching) {
-            LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(
+                    brush = Brush.linearGradient(
+                        listOf(colors.malCardStart, colors.malCardEnd)
+                    )
+                )
+                .statusBarsPadding()
+                .padding(horizontal = 4.dp, vertical = 8.dp)
+        ) {
+            IconButton(onClick = navigateBack) {
+                Icon(
+                    painter = painterResource(R.drawable.ic_arrow_back),
+                    contentDescription = "Back",
+                    tint = colors.cardText
+                )
+            }
+            val title = (state as? AuthorDetailState.Content)?.person?.name ?: "Author"
+            Text(
+                text = title,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                color = colors.cardText,
+                modifier = Modifier.align(Alignment.Center)
+            )
         }
 
         Box(
@@ -54,23 +76,14 @@ fun MangaSearchScreen(
                 .navigationBarsPadding()
         ) {
             when (val currentState = state) {
-                is MangaSearchState.Searching -> {
+                is AuthorDetailState.Loading -> {
                     CircularProgressIndicator(
                         modifier = Modifier
                             .size(48.dp)
                             .align(Alignment.Center)
                     )
                 }
-                is MangaSearchState.Results -> {
-                    MangaSearchResultsList(
-                        results = currentState.results,
-                        onItemClick = {
-                            keyboardController?.hide()
-                            navigateToMangaDetail(it.id)
-                        }
-                    )
-                }
-                is MangaSearchState.Error -> {
+                is AuthorDetailState.Error -> {
                     Text(
                         text = currentState.message,
                         color = MaterialTheme.colorScheme.error,
@@ -80,17 +93,13 @@ fun MangaSearchScreen(
                             .padding(32.dp)
                     )
                 }
-                is MangaSearchState.NoResults -> {
-                    Text(
-                        text = "No results found",
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier
-                            .align(Alignment.Center)
-                            .padding(32.dp)
+                is AuthorDetailState.Content -> {
+                    AuthorDetailContent(
+                        person = currentState.person,
+                        onAnimeClick = navigateToAnimeDetail,
+                        onMangaClick = navigateToMangaDetail
                     )
                 }
-                is MangaSearchState.Idle -> {}
             }
         }
     }

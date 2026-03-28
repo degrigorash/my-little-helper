@@ -1,7 +1,7 @@
 ---
 description: Jetpack Compose file organization - one logical concern per file, add previews
 globs: "**/*.kt"
-alwaysApply: false
+alwaysApply: true
 ---
 
 # Composable File Organization
