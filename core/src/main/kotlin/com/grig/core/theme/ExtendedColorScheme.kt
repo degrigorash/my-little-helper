@@ -16,6 +16,9 @@ data class ExtendedColorScheme(
     val danishCardStart: Color,
     val danishCardEnd: Color,
     val danishIconContainer: Color,
+    val scoreHigh: Color,
+    val scoreMid: Color,
+    val scoreLow: Color,
 )
 
 val LightExtendedColorScheme = ExtendedColorScheme(
@@ -29,6 +32,9 @@ val LightExtendedColorScheme = ExtendedColorScheme(
     danishCardStart = danishCardStartLight,
     danishCardEnd = danishCardEndLight,
     danishIconContainer = danishIconContainerLight,
+    scoreHigh = scoreHighLight,
+    scoreMid = scoreMidLight,
+    scoreLow = scoreLowLight,
 )
 
 val DarkExtendedColorScheme = ExtendedColorScheme(
@@ -42,6 +48,9 @@ val DarkExtendedColorScheme = ExtendedColorScheme(
     danishCardStart = danishCardStartDark,
     danishCardEnd = danishCardEndDark,
     danishIconContainer = danishIconContainerDark,
+    scoreHigh = scoreHighDark,
+    scoreMid = scoreMidDark,
+    scoreLow = scoreLowDark,
 )
 
 val LocalExtendedColorScheme = staticCompositionLocalOf { LightExtendedColorScheme }

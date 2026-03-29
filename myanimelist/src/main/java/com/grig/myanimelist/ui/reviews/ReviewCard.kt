@@ -34,6 +34,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.grig.core.theme.AppTheme
+import com.grig.core.theme.AppThemeExtended
 import com.grig.myanimelist.data.model.jikan.JikanReview
 import com.grig.myanimelist.ui.home.StatusBadge
 import java.time.ZonedDateTime
@@ -150,10 +151,13 @@ fun ScoreBadge(score: Int) {
 }
 
 @Composable
-fun scoreColor(score: Int): Color = when {
-    score >= 8 -> MaterialTheme.colorScheme.primary
-    score >= 5 -> MaterialTheme.colorScheme.tertiary
-    else -> MaterialTheme.colorScheme.error
+fun scoreColor(score: Int): Color {
+    val colors = AppThemeExtended.colorScheme
+    return when {
+        score >= 8 -> colors.scoreHigh
+        score >= 5 -> colors.scoreMid
+        else -> colors.scoreLow
+    }
 }
 
 @Composable
