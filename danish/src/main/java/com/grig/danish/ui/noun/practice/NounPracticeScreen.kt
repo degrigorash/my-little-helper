@@ -16,7 +16,7 @@ fun NounPracticeScreen(
         onAnswerChanged = { viewModel.onAnswerChanged(it) },
         onCheck = { viewModel.checkAnswer() },
         onShowAnswer = { viewModel.showAnswer() },
-        onSpeak = { viewModel.speakDanish() },
+        onSpeak = { viewModel.speak(it) },
         onNext = { viewModel.next() },
         navigateBack = navigateBack
     )

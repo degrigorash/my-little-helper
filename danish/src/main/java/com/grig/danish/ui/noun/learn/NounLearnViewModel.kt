@@ -87,10 +87,7 @@ class NounLearnViewModel @Inject constructor(
         }
     }
 
-    fun speakDanish() {
-        val current = _state.value
-        if (current is NounLearnState.Content) {
-            ttsPlayer.speak(current.noun.danish)
-        }
+    fun speak(text: String) {
+        ttsPlayer.speak(text)
     }
 }

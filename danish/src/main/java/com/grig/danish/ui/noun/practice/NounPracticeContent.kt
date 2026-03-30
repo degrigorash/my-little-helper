@@ -35,7 +35,7 @@ fun NounPracticeContent(
     onAnswerChanged: (String) -> Unit,
     onCheck: () -> Unit,
     onShowAnswer: () -> Unit,
-    onSpeak: () -> Unit,
+    onSpeak: (String) -> Unit,
     onNext: () -> Unit,
     navigateBack: () -> Unit,
     modifier: Modifier = Modifier

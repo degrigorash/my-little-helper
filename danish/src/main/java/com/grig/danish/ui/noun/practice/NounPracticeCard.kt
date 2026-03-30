@@ -8,15 +8,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
@@ -27,16 +24,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.grig.core.theme.DanishTheme
-import com.grig.danish.R
 import com.grig.danish.data.model.Noun
+import com.grig.danish.ui.DanishFormRow
 import com.grig.danish.ui.LearnMode
+import com.grig.danish.ui.SpeakButton
 import com.grig.danish.ui.noun.sampleNoun
 import com.grig.danish.ui.noun.sampleNounWithAlt
 
@@ -52,7 +49,7 @@ fun NounPracticeCard(
     onAnswerChanged: (String) -> Unit,
     onCheck: () -> Unit,
     onShowAnswer: () -> Unit,
-    onSpeak: () -> Unit,
+    onSpeak: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val answered = answerResult != AnswerResult.UNANSWERED
@@ -124,7 +121,7 @@ fun NounPracticeCard(
                         if (answerResult == AnswerResult.INCORRECT && userAnswer.isNotBlank()) {
                             IncorrectAnswerRow(userAnswer)
                         }
-                        AnswerEnglishAndForms(noun = noun)
+                        AnswerEnglishAndForms(noun = noun, onSpeak = onSpeak)
                     } else {
                         AnswerInput(
                             userAnswer = userAnswer,
@@ -157,7 +154,7 @@ private fun QuestionEnglish(noun: Noun) {
 }
 
 @Composable
-private fun QuestionDanish(noun: Noun, onSpeak: () -> Unit) {
+private fun QuestionDanish(noun: Noun, onSpeak: (String) -> Unit) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -167,7 +164,7 @@ private fun QuestionDanish(noun: Noun, onSpeak: () -> Unit) {
             style = MaterialTheme.typography.headlineMedium,
             fontWeight = FontWeight.Bold
         )
-        SpeakButton(onClick = onSpeak)
+        SpeakButton(onClick = { onSpeak(noun.danish) })
     }
 }
 
@@ -223,18 +220,12 @@ private fun IncorrectAnswerRow(userAnswer: String) {
 }
 
 @Composable
-private fun AnswerDanishForms(noun: Noun, onSpeak: () -> Unit) {
+private fun AnswerDanishForms(noun: Noun, onSpeak: (String) -> Unit) {
     Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            NounFormRow(label = "Danish", value = noun.danish)
-            SpeakButton(onClick = onSpeak)
-        }
-        NounFormRow(label = "The form", value = noun.theForm)
-        NounFormRow(label = "Plural", value = noun.plural)
-        NounFormRow(label = "The plural", value = noun.thePlural)
+        DanishFormRow(label = "Danish", value = noun.danish, onSpeak = onSpeak)
+        DanishFormRow(label = "The form", value = noun.theForm, onSpeak = onSpeak)
+        DanishFormRow(label = "Plural", value = noun.plural, onSpeak = onSpeak)
+        DanishFormRow(label = "The plural", value = noun.thePlural, onSpeak = onSpeak)
 
         if (noun.notes != null) {
             HorizontalDivider()
@@ -248,7 +239,7 @@ private fun AnswerDanishForms(noun: Noun, onSpeak: () -> Unit) {
 }
 
 @Composable
-private fun AnswerEnglishAndForms(noun: Noun) {
+private fun AnswerEnglishAndForms(noun: Noun, onSpeak: (String) -> Unit) {
     Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
         Text(
             text = noun.english,
@@ -263,9 +254,9 @@ private fun AnswerEnglishAndForms(noun: Noun) {
             )
         }
 
-        NounFormRow(label = "The form", value = noun.theForm)
-        NounFormRow(label = "Plural", value = noun.plural)
-        NounFormRow(label = "The plural", value = noun.thePlural)
+        DanishFormRow(label = "The form", value = noun.theForm, onSpeak = onSpeak)
+        DanishFormRow(label = "Plural", value = noun.plural, onSpeak = onSpeak)
+        DanishFormRow(label = "The plural", value = noun.thePlural, onSpeak = onSpeak)
 
         if (noun.notes != null) {
             HorizontalDivider()
@@ -278,33 +269,6 @@ private fun AnswerEnglishAndForms(noun: Noun) {
     }
 }
 
-@Composable
-private fun NounFormRow(label: String, value: String) {
-    Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
-        Text(
-            text = label,
-            style = MaterialTheme.typography.labelMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-        Text(
-            text = value,
-            style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.Medium
-        )
-    }
-}
-
-@Composable
-private fun SpeakButton(onClick: () -> Unit) {
-    IconButton(onClick = onClick, modifier = Modifier.size(32.dp)) {
-        Icon(
-            painter = painterResource(R.drawable.ic_talk),
-            contentDescription = "Listen",
-            tint = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.size(24.dp)
-        )
-    }
-}
 
 @Preview(name = "EN→DK Unanswered")
 @Composable

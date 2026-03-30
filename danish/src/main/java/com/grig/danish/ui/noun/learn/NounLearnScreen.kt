@@ -14,7 +14,7 @@ fun NounLearnScreen(
     NounLearnContent(
         state = state,
         onReveal = { viewModel.reveal() },
-        onSpeak = { viewModel.speakDanish() },
+        onSpeak = { viewModel.speak(it) },
         onNext = { viewModel.next() },
         navigateBack = navigateBack
     )

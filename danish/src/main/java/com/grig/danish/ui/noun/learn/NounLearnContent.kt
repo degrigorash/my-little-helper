@@ -33,7 +33,7 @@ import com.grig.danish.ui.noun.sampleNounWithAlt
 fun NounLearnContent(
     state: NounLearnState,
     onReveal: () -> Unit,
-    onSpeak: () -> Unit,
+    onSpeak: (String) -> Unit,
     onNext: () -> Unit,
     navigateBack: () -> Unit,
     modifier: Modifier = Modifier
