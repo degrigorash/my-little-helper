@@ -1,0 +1,78 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "149cc775f465ee103ce9b0ee26d07b77",
+    "entities": [
+      {
+        "tableName": "nouns",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `english` TEXT NOT NULL, `alt` TEXT NOT NULL, `danish` TEXT NOT NULL, `the_form` TEXT NOT NULL, `plural` TEXT NOT NULL, `thePlural` TEXT NOT NULL, `folder` TEXT NOT NULL, `notes` TEXT, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "english",
+            "columnName": "english",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "alt",
+            "columnName": "alt",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "danish",
+            "columnName": "danish",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "theForm",
+            "columnName": "the_form",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "plural",
+            "columnName": "plural",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "thePlural",
+            "columnName": "thePlural",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "folder",
+            "columnName": "folder",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "notes",
+            "columnName": "notes",
+            "affinity": "TEXT"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        }
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '149cc775f465ee103ce9b0ee26d07b77')"
+    ]
+  }
+}
