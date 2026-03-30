@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.ui.text.intl.LocaleList
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -110,7 +111,8 @@ fun NounPracticeCard(
                             onAnswerChanged = onAnswerChanged,
                             onCheck = onCheck,
                             onShowAnswer = onShowAnswer,
-                            placeholder = "Type Danish translation…"
+                            placeholder = "Type Danish translation…",
+                            hintLocales = LocaleList("da")
                         )
                     }
                 }
@@ -128,7 +130,8 @@ fun NounPracticeCard(
                             onAnswerChanged = onAnswerChanged,
                             onCheck = onCheck,
                             onShowAnswer = onShowAnswer,
-                            placeholder = "Type English translation…"
+                            placeholder = "Type English translation…",
+                            hintLocales = LocaleList("en")
                         )
                     }
                 }
@@ -174,7 +177,8 @@ private fun AnswerInput(
     onAnswerChanged: (String) -> Unit,
     onCheck: () -> Unit,
     onShowAnswer: () -> Unit,
-    placeholder: String
+    placeholder: String,
+    hintLocales: LocaleList = LocaleList.current
 ) {
     OutlinedTextField(
         value = userAnswer,
@@ -182,7 +186,10 @@ private fun AnswerInput(
         modifier = Modifier.fillMaxWidth(),
         placeholder = { Text(placeholder) },
         singleLine = true,
-        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+        keyboardOptions = KeyboardOptions(
+            imeAction = ImeAction.Done,
+            hintLocales = hintLocales
+        ),
         keyboardActions = KeyboardActions(onDone = { onCheck() })
     )
 
