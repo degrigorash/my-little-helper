@@ -109,6 +109,7 @@ fun NounLearnScreen(
                             mode = current.mode,
                             revealed = current.revealed,
                             onReveal = { viewModel.reveal() },
+                            onSpeak = { viewModel.speakDanish() },
                             modifier = Modifier.align(Alignment.TopCenter)
                         )
 

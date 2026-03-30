@@ -7,11 +7,15 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -19,11 +23,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.BlurredEdgeTreatment
 import androidx.compose.ui.draw.blur
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.grig.core.theme.DanishTheme
+import com.grig.danish.R
 import com.grig.danish.data.model.Noun
 import com.grig.danish.ui.LearnMode
 
@@ -33,6 +39,7 @@ fun NounCard(
     mode: LearnMode,
     revealed: Boolean,
     onReveal: () -> Unit,
+    onSpeak: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Card(
@@ -51,10 +58,15 @@ fun NounCard(
                 LearnMode.EN_TO_DK -> {
                     QuestionEnglish(noun)
                     SpoilerDivider(revealed = revealed, onReveal = onReveal)
-                    AnswerDanishForms(noun = noun, revealed = revealed, onReveal = onReveal)
+                    AnswerDanishForms(
+                        noun = noun,
+                        revealed = revealed,
+                        onReveal = onReveal,
+                        onSpeak = onSpeak
+                    )
                 }
                 LearnMode.DK_TO_EN -> {
-                    QuestionDanish(noun)
+                    QuestionDanish(noun = noun, onSpeak = onSpeak)
                     SpoilerDivider(revealed = revealed, onReveal = onReveal)
                     AnswerEnglishAndForms(noun = noun, revealed = revealed, onReveal = onReveal)
                 }
@@ -80,12 +92,18 @@ private fun QuestionEnglish(noun: Noun) {
 }
 
 @Composable
-private fun QuestionDanish(noun: Noun) {
-    Text(
-        text = noun.danish,
-        style = MaterialTheme.typography.headlineMedium,
-        fontWeight = FontWeight.Bold
-    )
+private fun QuestionDanish(noun: Noun, onSpeak: () -> Unit) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        Text(
+            text = noun.danish,
+            style = MaterialTheme.typography.headlineMedium,
+            fontWeight = FontWeight.Bold
+        )
+        SpeakButton(onClick = onSpeak)
+    }
 }
 
 @Composable
@@ -112,10 +130,21 @@ private fun SpoilerDivider(revealed: Boolean, onReveal: () -> Unit) {
 }
 
 @Composable
-private fun AnswerDanishForms(noun: Noun, revealed: Boolean, onReveal: () -> Unit) {
+private fun AnswerDanishForms(
+    noun: Noun,
+    revealed: Boolean,
+    onReveal: () -> Unit,
+    onSpeak: () -> Unit
+) {
     SpoilerBox(revealed = revealed, onReveal = onReveal) {
         Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-            NounFormRow(label = "Danish", value = noun.danish)
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                NounFormRow(label = "Danish", value = noun.danish)
+                if (revealed) SpeakButton(onClick = onSpeak)
+            }
             NounFormRow(label = "The form", value = noun.theForm)
             NounFormRow(label = "Plural", value = noun.plural)
             NounFormRow(label = "The plural", value = noun.thePlural)
@@ -209,11 +238,23 @@ private fun NounFormRow(
     }
 }
 
+@Composable
+private fun SpeakButton(onClick: () -> Unit) {
+    IconButton(onClick = onClick, modifier = Modifier.size(32.dp)) {
+        Icon(
+            painter = painterResource(R.drawable.ic_talk),
+            contentDescription = "Listen",
+            tint = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.size(24.dp)
+        )
+    }
+}
+
 @Preview(name = "EN→DK Hidden")
 @Composable
 private fun NounCardEnToDkHiddenPreview() {
     DanishTheme(darkTheme = false) {
-        NounCard(noun = sampleNoun, mode = LearnMode.EN_TO_DK, revealed = false, onReveal = {})
+        NounCard(noun = sampleNoun, mode = LearnMode.EN_TO_DK, revealed = false, onReveal = {}, onSpeak = {})
     }
 }
 
@@ -221,7 +262,7 @@ private fun NounCardEnToDkHiddenPreview() {
 @Composable
 private fun NounCardEnToDkRevealedPreview() {
     DanishTheme(darkTheme = false) {
-        NounCard(noun = sampleNounWithAlt, mode = LearnMode.EN_TO_DK, revealed = true, onReveal = {})
+        NounCard(noun = sampleNounWithAlt, mode = LearnMode.EN_TO_DK, revealed = true, onReveal = {}, onSpeak = {})
     }
 }
 
@@ -229,7 +270,7 @@ private fun NounCardEnToDkRevealedPreview() {
 @Composable
 private fun NounCardDkToEnHiddenPreview() {
     DanishTheme(darkTheme = false) {
-        NounCard(noun = sampleNoun, mode = LearnMode.DK_TO_EN, revealed = false, onReveal = {})
+        NounCard(noun = sampleNoun, mode = LearnMode.DK_TO_EN, revealed = false, onReveal = {}, onSpeak = {})
     }
 }
 
@@ -237,7 +278,7 @@ private fun NounCardDkToEnHiddenPreview() {
 @Composable
 private fun NounCardDkToEnRevealedPreview() {
     DanishTheme(darkTheme = false) {
-        NounCard(noun = sampleNounWithAlt, mode = LearnMode.DK_TO_EN, revealed = true, onReveal = {})
+        NounCard(noun = sampleNounWithAlt, mode = LearnMode.DK_TO_EN, revealed = true, onReveal = {}, onSpeak = {})
     }
 }
 
@@ -245,7 +286,7 @@ private fun NounCardDkToEnRevealedPreview() {
 @Composable
 private fun NounCardEnToDkHiddenDarkPreview() {
     DanishTheme(darkTheme = true) {
-        NounCard(noun = sampleNoun, mode = LearnMode.EN_TO_DK, revealed = false, onReveal = {})
+        NounCard(noun = sampleNoun, mode = LearnMode.EN_TO_DK, revealed = false, onReveal = {}, onSpeak = {})
     }
 }
 
@@ -253,6 +294,6 @@ private fun NounCardEnToDkHiddenDarkPreview() {
 @Composable
 private fun NounCardDkToEnRevealedDarkPreview() {
     DanishTheme(darkTheme = true) {
-        NounCard(noun = sampleNounWithAlt, mode = LearnMode.DK_TO_EN, revealed = true, onReveal = {})
+        NounCard(noun = sampleNounWithAlt, mode = LearnMode.DK_TO_EN, revealed = true, onReveal = {}, onSpeak = {})
     }
 }

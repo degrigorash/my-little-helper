@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -21,8 +23,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.grig.core.theme.AppThemeExtended
+import com.grig.danish.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -31,7 +35,19 @@ fun DanishHome(
     navigateToNounLearn: (LearnMode) -> Unit
 ) {
     val state by viewModel.state.collectAsState()
+    val ttsSettings by viewModel.ttsSettings.collectAsState()
+    val availableVoices by viewModel.availableVoices.collectAsState()
+    val showTtsSettings by viewModel.showTtsSettings.collectAsState()
     val colors = AppThemeExtended.colorScheme
+
+    if (showTtsSettings) {
+        TtsSettingsDialog(
+            settings = ttsSettings,
+            availableVoices = availableVoices,
+            onSettingsChanged = { viewModel.updateTtsSettings(it) },
+            onDismiss = { viewModel.closeTtsSettings() }
+        )
+    }
 
     Box(
         modifier = Modifier
@@ -47,6 +63,15 @@ fun DanishHome(
             topBar = {
                 TopAppBar(
                     title = { Text("Danish", color = colors.headerText) },
+                    actions = {
+                        IconButton(onClick = { viewModel.openTtsSettings() }) {
+                            Icon(
+                                painter = painterResource(R.drawable.ic_settings),
+                                contentDescription = "Voice settings",
+                                tint = colors.headerText
+                            )
+                        }
+                    },
                     colors = TopAppBarDefaults.topAppBarColors(
                         containerColor = Color.Transparent
                     )
