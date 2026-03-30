@@ -38,6 +38,7 @@ fun CategoryCard(
     wordCount: Int,
     enabled: Boolean,
     onLearnClick: (LearnMode, Boolean) -> Unit,
+    onPracticeClick: (LearnMode, Boolean) -> Unit = { _, _ -> },
     modifier: Modifier = Modifier
 ) {
     var selectedMode by rememberSaveable { mutableStateOf(LearnMode.DK_TO_EN) }
@@ -127,6 +128,9 @@ fun CategoryCard(
                     Button(onClick = { onLearnClick(selectedMode, shuffled) }) {
                         Text("Learn")
                     }
+                    Button(onClick = { onPracticeClick(selectedMode, shuffled) }) {
+                        Text("Practice")
+                    }
                 }
             } else {
                 Text(
@@ -147,7 +151,8 @@ private fun CategoryCardEnabledPreview() {
             title = "Nouns",
             wordCount = 42,
             enabled = true,
-            onLearnClick = { _, _ -> }
+            onLearnClick = { _, _ -> },
+            onPracticeClick = { _, _ -> }
         )
     }
 }
@@ -160,7 +165,8 @@ private fun CategoryCardEnabledDarkPreview() {
             title = "Nouns",
             wordCount = 42,
             enabled = true,
-            onLearnClick = { _, _ -> }
+            onLearnClick = { _, _ -> },
+            onPracticeClick = { _, _ -> }
         )
     }
 }

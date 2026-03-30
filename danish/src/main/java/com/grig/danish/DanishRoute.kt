@@ -14,4 +14,11 @@ sealed class DanishRoute {
         val mode: LearnMode = LearnMode.EN_TO_DK,
         val shuffled: Boolean = true
     ) : DanishRoute()
+
+    @Serializable
+    data class NounPractice(
+        val folder: String? = null,
+        val mode: LearnMode = LearnMode.EN_TO_DK,
+        val shuffled: Boolean = true
+    ) : DanishRoute()
 }

@@ -1,4 +1,4 @@
-package com.grig.danish.ui.noun
+package com.grig.danish.ui.noun.learn
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState

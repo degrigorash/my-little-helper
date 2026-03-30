@@ -1,4 +1,4 @@
-package com.grig.danish.ui.noun
+package com.grig.danish.ui.noun.learn
 
 import com.grig.danish.data.model.Noun
 import com.grig.danish.ui.LearnMode

@@ -34,6 +34,7 @@ fun DanishHomeContent(
     state: DanishHomeState,
     onSettingsClick: () -> Unit,
     navigateToNounLearn: (LearnMode, Boolean) -> Unit,
+    navigateToNounPractice: (LearnMode, Boolean) -> Unit = { _, _ -> },
     modifier: Modifier = Modifier
 ) {
     val colors = AppThemeExtended.colorScheme
@@ -106,7 +107,8 @@ fun DanishHomeContent(
                                 title = "Nouns",
                                 wordCount = state.nounCount,
                                 enabled = true,
-                                onLearnClick = navigateToNounLearn
+                                onLearnClick = navigateToNounLearn,
+                                onPracticeClick = navigateToNounPractice
                             )
                         }
                         item {

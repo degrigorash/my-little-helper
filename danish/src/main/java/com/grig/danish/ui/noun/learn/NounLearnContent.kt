@@ -1,4 +1,4 @@
-package com.grig.danish.ui.noun
+package com.grig.danish.ui.noun.learn
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -25,6 +25,8 @@ import androidx.compose.ui.unit.dp
 import com.grig.core.theme.AppThemeExtended
 import com.grig.core.theme.DanishTheme
 import com.grig.danish.ui.LearnMode
+import com.grig.danish.ui.noun.sampleNoun
+import com.grig.danish.ui.noun.sampleNounWithAlt
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

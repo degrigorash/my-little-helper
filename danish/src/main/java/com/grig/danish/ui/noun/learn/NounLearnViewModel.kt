@@ -1,4 +1,4 @@
-package com.grig.danish.ui.noun
+package com.grig.danish.ui.noun.learn
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel

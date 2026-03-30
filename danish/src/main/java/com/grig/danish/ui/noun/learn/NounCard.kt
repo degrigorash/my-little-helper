@@ -1,4 +1,4 @@
-package com.grig.danish.ui.noun
+package com.grig.danish.ui.noun.learn
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
@@ -32,6 +32,8 @@ import com.grig.core.theme.DanishTheme
 import com.grig.danish.R
 import com.grig.danish.data.model.Noun
 import com.grig.danish.ui.LearnMode
+import com.grig.danish.ui.noun.sampleNoun
+import com.grig.danish.ui.noun.sampleNounWithAlt
 
 @Composable
 fun NounCard(

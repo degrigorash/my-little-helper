@@ -7,7 +7,8 @@ import androidx.compose.runtime.getValue
 @Composable
 fun DanishHome(
     viewModel: DanishHomeViewModel,
-    navigateToNounLearn: (LearnMode, Boolean) -> Unit
+    navigateToNounLearn: (LearnMode, Boolean) -> Unit,
+    navigateToNounPractice: (LearnMode, Boolean) -> Unit
 ) {
     val state by viewModel.state.collectAsState()
     val ttsSettings by viewModel.ttsSettings.collectAsState()
@@ -26,6 +27,7 @@ fun DanishHome(
     DanishHomeContent(
         state = state,
         onSettingsClick = { viewModel.openTtsSettings() },
-        navigateToNounLearn = navigateToNounLearn
+        navigateToNounLearn = navigateToNounLearn,
+        navigateToNounPractice = navigateToNounPractice
     )
 }
