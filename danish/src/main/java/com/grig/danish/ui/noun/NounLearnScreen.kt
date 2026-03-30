@@ -65,6 +65,17 @@ fun NounLearnScreen(
                             )
                         }
                     },
+                    actions = {
+                        val contentState = state as? NounLearnState.Content
+                        if (contentState != null && contentState.progress.isNotEmpty()) {
+                            Text(
+                                text = contentState.progress,
+                                style = MaterialTheme.typography.labelLarge,
+                                color = colors.headerText,
+                                modifier = Modifier.padding(end = 16.dp)
+                            )
+                        }
+                    },
                     colors = TopAppBarDefaults.topAppBarColors(
                         containerColor = Color.Transparent
                     )

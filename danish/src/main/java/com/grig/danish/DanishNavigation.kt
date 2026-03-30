@@ -13,8 +13,8 @@ fun NavGraphBuilder.danishNavigation(navController: NavHostController) {
         DanishTheme {
             DanishHome(
                 viewModel = hiltViewModel(),
-                navigateToNounLearn = { mode ->
-                    navController.navigate(DanishRoute.NounLearn(mode = mode))
+                navigateToNounLearn = { mode, shuffled ->
+                    navController.navigate(DanishRoute.NounLearn(mode = mode, shuffled = shuffled))
                 }
             )
         }

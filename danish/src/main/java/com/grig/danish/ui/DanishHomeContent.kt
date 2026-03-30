@@ -33,7 +33,7 @@ import com.grig.danish.R
 fun DanishHomeContent(
     state: DanishHomeState,
     onSettingsClick: () -> Unit,
-    navigateToNounLearn: (LearnMode) -> Unit,
+    navigateToNounLearn: (LearnMode, Boolean) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val colors = AppThemeExtended.colorScheme
@@ -114,7 +114,7 @@ fun DanishHomeContent(
                                 title = "Verbs",
                                 wordCount = 0,
                                 enabled = false,
-                                onLearnClick = {}
+                                onLearnClick = { _, _ -> }
                             )
                         }
                         item {
@@ -122,7 +122,7 @@ fun DanishHomeContent(
                                 title = "Adjectives",
                                 wordCount = 0,
                                 enabled = false,
-                                onLearnClick = {}
+                                onLearnClick = { _, _ -> }
                             )
                         }
                     }
@@ -139,7 +139,7 @@ private fun DanishHomeContentPreview() {
         DanishHomeContent(
             state = DanishHomeState.Content(nounCount = 42, nounFolders = listOf("default")),
             onSettingsClick = {},
-            navigateToNounLearn = {}
+            navigateToNounLearn = { _, _ -> }
         )
     }
 }
@@ -151,7 +151,7 @@ private fun DanishHomeContentDarkPreview() {
         DanishHomeContent(
             state = DanishHomeState.Content(nounCount = 42, nounFolders = listOf("default")),
             onSettingsClick = {},
-            navigateToNounLearn = {}
+            navigateToNounLearn = { _, _ -> }
         )
     }
 }
@@ -163,7 +163,7 @@ private fun DanishHomeLoadingPreview() {
         DanishHomeContent(
             state = DanishHomeState.Loading,
             onSettingsClick = {},
-            navigateToNounLearn = {}
+            navigateToNounLearn = { _, _ -> }
         )
     }
 }
@@ -175,7 +175,7 @@ private fun DanishHomeLoadingDarkPreview() {
         DanishHomeContent(
             state = DanishHomeState.Loading,
             onSettingsClick = {},
-            navigateToNounLearn = {}
+            navigateToNounLearn = { _, _ -> }
         )
     }
 }
@@ -187,7 +187,7 @@ private fun DanishHomeErrorPreview() {
         DanishHomeContent(
             state = DanishHomeState.Error("Failed to load word database"),
             onSettingsClick = {},
-            navigateToNounLearn = {}
+            navigateToNounLearn = { _, _ -> }
         )
     }
 }
@@ -199,7 +199,7 @@ private fun DanishHomeErrorDarkPreview() {
         DanishHomeContent(
             state = DanishHomeState.Error("Failed to load word database"),
             onSettingsClick = {},
-            navigateToNounLearn = {}
+            navigateToNounLearn = { _, _ -> }
         )
     }
 }

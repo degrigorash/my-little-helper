@@ -29,8 +29,10 @@ class NounLearnViewModel @Inject constructor(
     val state: StateFlow<NounLearnState> = _state.asStateFlow()
 
     private val mode = route.mode
+    private val shuffled = route.shuffled
 
     private var nouns: List<Noun> = emptyList()
+    private var currentIndex = 0
 
     init {
         loadNouns()
@@ -48,8 +50,14 @@ class NounLearnViewModel @Inject constructor(
                 _state.value = NounLearnState.Error("No nouns available")
                 return@launch
             }
-            nouns = loaded.shuffled()
-            _state.value = NounLearnState.Content(noun = nouns.first(), mode = mode)
+            nouns = if (shuffled) loaded.shuffled() else loaded.sortedBy { it.english.lowercase() }
+            currentIndex = 0
+            _state.value = NounLearnState.Content(
+                noun = nouns.first(),
+                mode = mode,
+                shuffled = shuffled,
+                progress = if (!shuffled) "1 / ${nouns.size}" else ""
+            )
         }
     }
 
@@ -62,8 +70,21 @@ class NounLearnViewModel @Inject constructor(
 
     fun next() {
         if (nouns.isEmpty()) return
-        val randomNoun = nouns.random()
-        _state.value = NounLearnState.Content(noun = randomNoun, mode = mode)
+        if (shuffled) {
+            _state.value = NounLearnState.Content(
+                noun = nouns.random(),
+                mode = mode,
+                shuffled = true
+            )
+        } else {
+            currentIndex = (currentIndex + 1) % nouns.size
+            _state.value = NounLearnState.Content(
+                noun = nouns[currentIndex],
+                mode = mode,
+                shuffled = false,
+                progress = "${currentIndex + 1} / ${nouns.size}"
+            )
+        }
     }
 
     fun speakDanish() {

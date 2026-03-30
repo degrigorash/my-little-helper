@@ -7,7 +7,7 @@ import androidx.compose.runtime.getValue
 @Composable
 fun DanishHome(
     viewModel: DanishHomeViewModel,
-    navigateToNounLearn: (LearnMode) -> Unit
+    navigateToNounLearn: (LearnMode, Boolean) -> Unit
 ) {
     val state by viewModel.state.collectAsState()
     val ttsSettings by viewModel.ttsSettings.collectAsState()

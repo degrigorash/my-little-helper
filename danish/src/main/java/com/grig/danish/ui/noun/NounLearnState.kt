@@ -10,7 +10,9 @@ sealed interface NounLearnState {
     data class Content(
         val noun: Noun,
         val mode: LearnMode,
-        val revealed: Boolean = false
+        val revealed: Boolean = false,
+        val shuffled: Boolean = true,
+        val progress: String = ""
     ) : NounLearnState
 
     data class Error(val message: String) : NounLearnState
