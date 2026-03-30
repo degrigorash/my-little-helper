@@ -116,6 +116,25 @@ fun AppTheme(
     }
 }
 
+@Composable
+fun DanishTheme(
+    darkTheme: Boolean = isSystemInDarkTheme(),
+    content: @Composable () -> Unit
+) {
+    AppTheme(darkTheme = darkTheme) {
+        val danishColors = MaterialTheme.colorScheme.copy(
+            primary = if (darkTheme) danishPrimaryDark else danishPrimaryLight,
+            onPrimary = if (darkTheme) danishOnPrimaryDark else danishOnPrimaryLight,
+            primaryContainer = if (darkTheme) danishPrimaryContainerDark else danishPrimaryContainerLight,
+            onPrimaryContainer = if (darkTheme) danishOnPrimaryContainerDark else danishOnPrimaryContainerLight,
+        )
+        MaterialTheme(
+            colorScheme = danishColors,
+            content = content
+        )
+    }
+}
+
 object AppThemeExtended {
     val colorScheme: ExtendedColorScheme
         @Composable

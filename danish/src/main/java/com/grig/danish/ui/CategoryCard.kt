@@ -9,24 +9,32 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.SegmentedButton
+import androidx.compose.material3.SegmentedButtonDefaults
+import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.grig.core.theme.AppTheme
+import com.grig.core.theme.DanishTheme
 
 @Composable
 fun CategoryCard(
     title: String,
     wordCount: Int,
     enabled: Boolean,
-    onLearnClick: () -> Unit,
+    onLearnClick: (LearnMode) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    var selectedMode by rememberSaveable { mutableStateOf(LearnMode.DK_TO_EN) }
+
     Card(
         modifier = modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(
@@ -59,15 +67,35 @@ fun CategoryCard(
             }
 
             if (enabled) {
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    Button(onClick = onLearnClick) {
-                        Text("Learn")
+                SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
+                    LearnMode.entries.forEachIndexed { index, mode ->
+                        val isSelected = selectedMode == mode
+                        SegmentedButton(
+                            selected = isSelected,
+                            onClick = { selectedMode = mode },
+                            shape = SegmentedButtonDefaults.itemShape(
+                                index = index,
+                                count = LearnMode.entries.size
+                            ),
+                            icon = {},
+                            colors = SegmentedButtonDefaults.colors(
+                                activeContainerColor = MaterialTheme.colorScheme.primary,
+                                activeContentColor = MaterialTheme.colorScheme.onPrimary,
+                                activeBorderColor = MaterialTheme.colorScheme.primary
+                            )
+                        ) {
+                            Text(
+                                when (mode) {
+                                    LearnMode.DK_TO_EN -> "DK → EN"
+                                    LearnMode.EN_TO_DK -> "EN → DK"
+                                }
+                            )
+                        }
                     }
-                    OutlinedButton(onClick = {}, enabled = false) {
-                        Text("Practice")
-                    }
+                }
+
+                Button(onClick = { onLearnClick(selectedMode) }) {
+                    Text("Learn")
                 }
             } else {
                 Text(
@@ -83,7 +111,7 @@ fun CategoryCard(
 @Preview(name = "Light - Enabled")
 @Composable
 private fun CategoryCardEnabledPreview() {
-    AppTheme(darkTheme = false) {
+    DanishTheme(darkTheme = false) {
         CategoryCard(
             title = "Nouns",
             wordCount = 42,
@@ -96,7 +124,7 @@ private fun CategoryCardEnabledPreview() {
 @Preview(name = "Dark - Enabled")
 @Composable
 private fun CategoryCardEnabledDarkPreview() {
-    AppTheme(darkTheme = true) {
+    DanishTheme(darkTheme = true) {
         CategoryCard(
             title = "Nouns",
             wordCount = 42,
@@ -109,7 +137,7 @@ private fun CategoryCardEnabledDarkPreview() {
 @Preview(name = "Light - Disabled")
 @Composable
 private fun CategoryCardDisabledPreview() {
-    AppTheme(darkTheme = false) {
+    DanishTheme(darkTheme = false) {
         CategoryCard(
             title = "Verbs",
             wordCount = 0,
@@ -122,7 +150,7 @@ private fun CategoryCardDisabledPreview() {
 @Preview(name = "Dark - Disabled")
 @Composable
 private fun CategoryCardDisabledDarkPreview() {
-    AppTheme(darkTheme = true) {
+    DanishTheme(darkTheme = true) {
         CategoryCard(
             title = "Verbs",
             wordCount = 0,

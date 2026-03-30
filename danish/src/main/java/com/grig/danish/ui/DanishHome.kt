@@ -28,7 +28,7 @@ import com.grig.core.theme.AppThemeExtended
 @Composable
 fun DanishHome(
     viewModel: DanishHomeViewModel,
-    navigateToNounLearn: () -> Unit
+    navigateToNounLearn: (LearnMode) -> Unit
 ) {
     val state by viewModel.state.collectAsState()
     val colors = AppThemeExtended.colorScheme

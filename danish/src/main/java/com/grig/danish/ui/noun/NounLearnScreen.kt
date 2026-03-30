@@ -24,6 +24,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.grig.core.theme.AppThemeExtended
+import com.grig.danish.ui.LearnMode
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -47,7 +48,13 @@ fun NounLearnScreen(
             containerColor = Color.Transparent,
             topBar = {
                 TopAppBar(
-                    title = { Text("Learn Nouns", color = colors.headerText) },
+                    title = {
+                        val titleText = when ((state as? NounLearnState.Content)?.mode) {
+                            LearnMode.DK_TO_EN -> "Nouns: DK → EN"
+                            else -> "Nouns: EN → DK"
+                        }
+                        Text(titleText, color = colors.headerText)
+                    },
                     navigationIcon = {
                         IconButton(onClick = navigateBack) {
                             Text(
@@ -99,6 +106,9 @@ fun NounLearnScreen(
                     ) {
                         NounCard(
                             noun = current.noun,
+                            mode = current.mode,
+                            revealed = current.revealed,
+                            onReveal = { viewModel.reveal() },
                             modifier = Modifier.align(Alignment.TopCenter)
                         )
 

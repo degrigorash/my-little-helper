@@ -26,6 +26,8 @@ class NounLearnViewModel @Inject constructor(
     private val _state = MutableStateFlow<NounLearnState>(NounLearnState.Loading)
     val state: StateFlow<NounLearnState> = _state.asStateFlow()
 
+    private val mode = route.mode
+
     private var nouns: List<Noun> = emptyList()
 
     init {
@@ -45,13 +47,20 @@ class NounLearnViewModel @Inject constructor(
                 return@launch
             }
             nouns = loaded.shuffled()
-            _state.value = NounLearnState.Content(nouns.first())
+            _state.value = NounLearnState.Content(noun = nouns.first(), mode = mode)
+        }
+    }
+
+    fun reveal() {
+        val current = _state.value
+        if (current is NounLearnState.Content) {
+            _state.value = current.copy(revealed = true)
         }
     }
 
     fun next() {
         if (nouns.isEmpty()) return
         val randomNoun = nouns.random()
-        _state.value = NounLearnState.Content(randomNoun)
+        _state.value = NounLearnState.Content(noun = randomNoun, mode = mode)
     }
 }
