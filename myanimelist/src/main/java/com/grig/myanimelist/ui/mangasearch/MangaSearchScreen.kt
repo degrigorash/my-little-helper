@@ -2,6 +2,8 @@ package com.grig.myanimelist.ui.mangasearch
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
+import androidx.compose.ui.graphics.Brush
+import com.grig.core.theme.AppThemeExtended
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -30,11 +32,12 @@ fun MangaSearchScreen(
 ) {
     val state by viewModel.state.collectAsState()
     val keyboardController = LocalSoftwareKeyboardController.current
+    val colors = AppThemeExtended.colorScheme
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
+            .background(brush = Brush.verticalGradient(listOf(colors.gradientBackgroundTop, colors.gradientBackgroundBottom)))
     ) {
         MalSearchBar(
             query = state.query,

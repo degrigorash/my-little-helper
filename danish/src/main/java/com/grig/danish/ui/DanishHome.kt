@@ -1,22 +1,33 @@
 package com.grig.danish.ui
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-
-@Preview(showBackground = true)
-@Composable
-fun DanishHomePreview() {
-    DanishHome()
-}
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 
 @Composable
 fun DanishHome(
-    modifier: Modifier = Modifier
+    viewModel: DanishHomeViewModel,
+    navigateToNounLearn: (LearnMode, Boolean) -> Unit,
+    navigateToNounPractice: (LearnMode, Boolean) -> Unit
 ) {
-    Box(
-        modifier = modifier
-    ) {
+    val state by viewModel.state.collectAsState()
+    val ttsSettings by viewModel.ttsSettings.collectAsState()
+    val availableVoices by viewModel.availableVoices.collectAsState()
+    val showTtsSettings by viewModel.showTtsSettings.collectAsState()
+
+    if (showTtsSettings) {
+        TtsSettingsDialog(
+            settings = ttsSettings,
+            availableVoices = availableVoices,
+            onSettingsChanged = { viewModel.updateTtsSettings(it) },
+            onDismiss = { viewModel.closeTtsSettings() }
+        )
     }
+
+    DanishHomeContent(
+        state = state,
+        onSettingsClick = { viewModel.openTtsSettings() },
+        navigateToNounLearn = navigateToNounLearn,
+        navigateToNounPractice = navigateToNounPractice
+    )
 }

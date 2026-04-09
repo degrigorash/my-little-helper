@@ -36,6 +36,6 @@ fun MyLittleHelperNavHost(
             }
         }
         malNavigation(navController)
-        danishNavigation()
+        danishNavigation(navController)
     }
 }

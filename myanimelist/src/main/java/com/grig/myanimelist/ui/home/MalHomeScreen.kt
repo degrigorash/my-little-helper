@@ -3,6 +3,8 @@ package com.grig.myanimelist.ui.home
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.ui.graphics.Brush
+import com.grig.core.theme.AppThemeExtended
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -62,10 +64,12 @@ fun MalHomeScreen(
         }
     }
 
+    val colors = AppThemeExtended.colorScheme
+
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
+            .background(brush = Brush.verticalGradient(listOf(colors.gradientBackgroundTop, colors.gradientBackgroundBottom)))
     ) {
         UserHeader(
             user = user,
