@@ -39,6 +39,7 @@ import com.grig.myanimelist.data.model.anime.MalAnime
 import com.grig.myanimelist.data.model.jikan.ResolvedRelation
 import com.grig.myanimelist.ui.animeedit.ConfirmationDialog
 import com.grig.myanimelist.ui.common.CrossMediaRelationsSection
+import com.grig.myanimelist.ui.common.FullscreenImageViewer
 import com.grig.myanimelist.ui.home.StatusBadge
 import com.grig.myanimelist.ui.home.StatsRow
 import com.grig.myanimelist.ui.home.animeStatusColor
@@ -63,6 +64,16 @@ fun AnimeDetailContent(
     onCharactersClick: () -> Unit = {}
 ) {
     var showDeleteConfirm by remember { mutableStateOf(false) }
+    var showFullscreenImage by remember { mutableStateOf(false) }
+    val imageUrl = anime.pictures?.let { it.large ?: it.medium }
+    val galleryUrls = remember(anime) {
+        val rest = anime.gallery.mapNotNull { it.large ?: it.medium }
+        if (imageUrl != null) {
+            listOf(imageUrl) + rest.filter { it != imageUrl }
+        } else {
+            rest
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -70,14 +81,15 @@ fun AnimeDetailContent(
             .verticalScroll(rememberScrollState())
             .padding(horizontal = 16.dp, vertical = 12.dp)
     ) {
-        if (anime.pictures != null) {
+        if (imageUrl != null) {
             AsyncImage(
-                model = anime.pictures.large ?: anime.pictures.medium,
+                model = imageUrl,
                 contentDescription = null,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(280.dp)
-                    .clip(RoundedCornerShape(16.dp)),
+                    .clip(RoundedCornerShape(16.dp))
+                    .clickable { showFullscreenImage = true },
                 contentScale = ContentScale.Crop
             )
             Spacer(modifier = Modifier.height(16.dp))
@@ -272,6 +284,13 @@ fun AnimeDetailContent(
             },
             onDismiss = { showDeleteConfirm = false },
             isDestructive = true
+        )
+    }
+
+    if (showFullscreenImage && galleryUrls.isNotEmpty()) {
+        FullscreenImageViewer(
+            imageUrls = galleryUrls,
+            onDismiss = { showFullscreenImage = false }
         )
     }
 }

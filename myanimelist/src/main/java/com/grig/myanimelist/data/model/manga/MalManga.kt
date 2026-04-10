@@ -47,6 +47,8 @@ data class MalManga(
     val nsfw: MalNsfw = MalNsfw.Safe,
     @SerialName("my_list_status")
     val myListStatus: MalMangaListStatus? = null,
+    @SerialName("pictures")
+    val gallery: List<MalPictures> = emptyList(),
     @SerialName("related_manga")
     val relatedManga: List<MalRelatedManga> = emptyList()
 )
