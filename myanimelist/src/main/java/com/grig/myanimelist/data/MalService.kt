@@ -24,6 +24,7 @@ interface MalService {
     suspend fun searchAnime(
         @Query("q") query: String,
         @Query("limit") limit: Int = 15,
+        @Query("nsfw") nsfw: Boolean = true,
         @Query("fields") fields: String = "main_picture,start_date,end_date,status"
     ): Result<MalAnimeList>
 
@@ -37,6 +38,7 @@ interface MalService {
     suspend fun searchManga(
         @Query("q") query: String,
         @Query("limit") limit: Int = 15,
+        @Query("nsfw") nsfw: Boolean = true,
         @Query("fields") fields: String = "main_picture,start_date,end_date,status"
     ): Result<MalMangaList>
 
