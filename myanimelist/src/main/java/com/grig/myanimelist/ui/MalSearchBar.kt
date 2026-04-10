@@ -20,7 +20,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -44,11 +43,7 @@ fun MalSearchBar(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(
-                brush = Brush.linearGradient(
-                    listOf(colors.malCardStart, colors.malCardEnd)
-                )
-            )
+            .background(color = colors.malCardStart.copy(alpha = 0.12f))
             .statusBarsPadding()
             .padding(horizontal = 8.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically
@@ -57,7 +52,7 @@ fun MalSearchBar(
             Icon(
                 painter = painterResource(R.drawable.ic_arrow_back),
                 contentDescription = "Back",
-                tint = colors.cardText
+                tint = colors.headerText
             )
         }
         OutlinedTextField(
@@ -70,19 +65,19 @@ fun MalSearchBar(
                 Text(
                     text = placeholder,
                     style = MaterialTheme.typography.bodyMedium,
-                    color = colors.cardText.copy(alpha = 0.5f)
+                    color = colors.headerText.copy(alpha = 0.5f)
                 )
             },
             textStyle = MaterialTheme.typography.bodyMedium.copy(
-                color = colors.cardText,
+                color = colors.headerText,
                 fontWeight = FontWeight.SemiBold
             ),
             singleLine = true,
             shape = RoundedCornerShape(24.dp),
             colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = colors.cardText,
-                unfocusedBorderColor = colors.cardText.copy(alpha = 0.5f),
-                cursorColor = colors.cardText
+                focusedBorderColor = colors.headerText,
+                unfocusedBorderColor = colors.headerText.copy(alpha = 0.5f),
+                cursorColor = colors.headerText
             ),
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
             keyboardActions = KeyboardActions(onSearch = {
@@ -94,7 +89,7 @@ fun MalSearchBar(
                         Icon(
                             painter = painterResource(R.drawable.ic_close),
                             contentDescription = "Clear",
-                            tint = colors.cardText.copy(alpha = 0.7f)
+                            tint = colors.headerText.copy(alpha = 0.7f)
                         )
                     }
                 }
