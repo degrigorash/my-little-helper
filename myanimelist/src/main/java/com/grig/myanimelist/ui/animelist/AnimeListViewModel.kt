@@ -2,7 +2,6 @@ package com.grig.myanimelist.ui.animelist
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.grig.myanimelist.data.FilterPreferencesManager
 import com.grig.myanimelist.data.MalRepository
 import com.grig.myanimelist.data.model.MalUserState
 import com.grig.myanimelist.data.model.anime.MalAnime
@@ -20,8 +19,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AnimeListViewModel @Inject constructor(
-    private val malRepository: MalRepository,
-    private val filterPreferences: FilterPreferencesManager
+    private val malRepository: MalRepository
 ) : ViewModel() {
 
     private val _listState = MutableStateFlow<AnimeListState>(AnimeListState.Loading)
@@ -48,9 +46,6 @@ class AnimeListViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            _statusFilter.value = filterPreferences.loadAnimeFilter()
-            _upcomingFilter.value = filterPreferences.loadUpcomingFilter()
-
             val userState = malRepository.userFlow.first()
             if (userState is MalUserState.Authorized) {
                 loadList()
@@ -72,14 +67,12 @@ class AnimeListViewModel @Inject constructor(
         val current = _statusFilter.value
         val updated = if (status in current) current - status else current + status
         _statusFilter.value = updated
-        viewModelScope.launch { filterPreferences.saveAnimeFilter(updated) }
         applyFilter()
     }
 
     fun toggleUpcomingFilter() {
         val updated = !_upcomingFilter.value
         _upcomingFilter.value = updated
-        viewModelScope.launch { filterPreferences.saveUpcomingFilter(updated) }
         applyFilter()
     }
 
