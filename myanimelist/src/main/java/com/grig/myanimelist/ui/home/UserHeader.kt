@@ -16,6 +16,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -24,12 +26,16 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -50,6 +56,7 @@ fun UserHeader(
     onGuestUsernameChange: (String) -> Unit,
     onGuestSearch: () -> Unit,
     onSearchClick: () -> Unit,
+    onWatchlistClick: () -> Unit,
     onLogoutClick: () -> Unit
 ) {
     val colors = AppThemeExtended.colorScheme
@@ -75,18 +82,73 @@ fun UserHeader(
                 onGuestSearch = onGuestSearch
             )
         }
-        IconButton(onClick = onSearchClick) {
+        OverflowMenu(
+            onSearchClick = onSearchClick,
+            onWatchlistClick = onWatchlistClick,
+            onLogoutClick = onLogoutClick
+        )
+    }
+}
+
+@Composable
+private fun OverflowMenu(
+    onSearchClick: () -> Unit,
+    onWatchlistClick: () -> Unit,
+    onLogoutClick: () -> Unit
+) {
+    val colors = AppThemeExtended.colorScheme
+    var expanded by remember { mutableStateOf(false) }
+
+    Box {
+        IconButton(onClick = { expanded = true }) {
             Icon(
-                painter = painterResource(R.drawable.ic_search),
-                contentDescription = "Search",
+                painter = painterResource(R.drawable.ic_more_vert),
+                contentDescription = "More",
                 tint = colors.cardText
             )
         }
-        IconButton(onClick = onLogoutClick) {
-            Icon(
-                painter = painterResource(R.drawable.ic_logout),
-                contentDescription = "Logout",
-                tint = colors.cardText
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false }
+        ) {
+            DropdownMenuItem(
+                text = { Text("Search") },
+                onClick = {
+                    expanded = false
+                    onSearchClick()
+                },
+                leadingIcon = {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_search),
+                        contentDescription = null
+                    )
+                }
+            )
+            DropdownMenuItem(
+                text = { Text("Watch Next") },
+                onClick = {
+                    expanded = false
+                    onWatchlistClick()
+                },
+                leadingIcon = {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_bookmark),
+                        contentDescription = null
+                    )
+                }
+            )
+            DropdownMenuItem(
+                text = { Text("Logout") },
+                onClick = {
+                    expanded = false
+                    onLogoutClick()
+                },
+                leadingIcon = {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_logout),
+                        contentDescription = null
+                    )
+                }
             )
         }
     }
@@ -211,6 +273,7 @@ private fun UserHeaderAuthorizedPreview() {
             onGuestUsernameChange = {},
             onGuestSearch = {},
             onSearchClick = {},
+            onWatchlistClick = {},
             onLogoutClick = {}
         )
     }
@@ -227,6 +290,7 @@ private fun UserHeaderGuestPreview() {
             onGuestUsernameChange = {},
             onGuestSearch = {},
             onSearchClick = {},
+            onWatchlistClick = {},
             onLogoutClick = {}
         )
     }
@@ -243,6 +307,7 @@ private fun UserHeaderGuestWithUsernamePreview() {
             onGuestUsernameChange = {},
             onGuestSearch = {},
             onSearchClick = {},
+            onWatchlistClick = {},
             onLogoutClick = {}
         )
     }
@@ -259,6 +324,7 @@ private fun UserHeaderGuestDarkPreview() {
             onGuestUsernameChange = {},
             onGuestSearch = {},
             onSearchClick = {},
+            onWatchlistClick = {},
             onLogoutClick = {}
         )
     }
@@ -275,6 +341,7 @@ private fun UserHeaderDarkPreview() {
             onGuestUsernameChange = {},
             onGuestSearch = {},
             onSearchClick = {},
+            onWatchlistClick = {},
             onLogoutClick = {}
         )
     }

@@ -9,14 +9,18 @@ data class EditAnimeState(
     val numEpisodesWatched: Int = 0,
     val finishDate: String? = null,
     val isSaving: Boolean = false,
-    val error: String? = null
+    val error: String? = null,
+    val isBookmarked: Boolean = false,
+    val bookmarkNotes: String = "",
+    val showBookmarkEditor: Boolean = false
 ) {
     companion object {
         fun from(listStatus: MalAnimeListStatus?): EditAnimeState = EditAnimeState(
             status = listStatus?.status ?: MalAnimeWatchingStatus.PlanToWatch,
             score = listStatus?.score ?: 0,
             numEpisodesWatched = listStatus?.numEpisodesWatched ?: 0,
-            finishDate = listStatus?.finishDate
+            finishDate = listStatus?.finishDate,
+            bookmarkNotes = listStatus?.comments ?: ""
         )
     }
 }

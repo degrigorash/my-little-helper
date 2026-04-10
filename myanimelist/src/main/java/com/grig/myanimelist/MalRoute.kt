@@ -36,4 +36,7 @@ sealed class MalRoute {
 
     @Serializable
     data class AuthorDetail(val authorId: Int) : MalRoute()
+
+    @Serializable
+    data object Watchlist : MalRoute()
 }

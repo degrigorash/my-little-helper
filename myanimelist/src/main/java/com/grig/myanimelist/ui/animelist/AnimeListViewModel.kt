@@ -3,6 +3,7 @@ package com.grig.myanimelist.ui.animelist
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.grig.myanimelist.data.MalRepository
+import com.grig.myanimelist.data.local.WatchlistDao
 import com.grig.myanimelist.data.model.MalUserState
 import com.grig.myanimelist.data.model.anime.MalAnime
 import com.grig.myanimelist.data.model.anime.MalAnimeAiringStatus
@@ -11,15 +12,19 @@ import com.grig.myanimelist.data.model.anime.MalAnimeWatchingStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class AnimeListViewModel @Inject constructor(
-    private val malRepository: MalRepository
+    private val malRepository: MalRepository,
+    watchlistDao: WatchlistDao
 ) : ViewModel() {
 
     private val _listState = MutableStateFlow<AnimeListState>(AnimeListState.Loading)
@@ -39,6 +44,10 @@ class AnimeListViewModel @Inject constructor(
 
     private val _editSheetAnime = MutableStateFlow<AnimeCardData?>(null)
     val editSheetAnime: StateFlow<AnimeCardData?> = _editSheetAnime.asStateFlow()
+
+    val watchlistIds: StateFlow<Set<Int>> = watchlistDao.getAllIds()
+        .map { it.toSet() }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptySet())
 
     private var loadJob: Job? = null
     private var cached: List<Pair<MalAnime, MalAnimeListStatus?>> = emptyList()

@@ -52,6 +52,10 @@ android {
     }
 }
 
+ksp {
+    arg("room.schemaLocation", "$projectDir/schemas")
+}
+
 dependencies {
     implementation(project(":core"))
 
@@ -65,6 +69,10 @@ dependencies {
     implementation(libs.kotlinx.serialization.retrofit)
     implementation(libs.retrofit)
     implementation(libs.okhttp3)
+
+    implementation(libs.room.runtime)
+    implementation(libs.room.ktx)
+    ksp(libs.room.compiler)
 
     implementation(libs.hilt)
     ksp(libs.hilt.compiler)

@@ -20,6 +20,8 @@ import com.grig.myanimelist.ui.mangalist.MangaListViewModel
 import com.grig.myanimelist.ui.mangasearch.MangaSearchScreen
 import com.grig.myanimelist.ui.reviews.ReviewsScreen
 import com.grig.myanimelist.ui.studiodetail.StudioDetailScreen
+import com.grig.myanimelist.ui.watchlist.WatchlistScreen
+import com.grig.myanimelist.ui.watchlist.WatchlistViewModel
 
 const val ANIME_LIST_CHANGED = "anime_list_changed"
 const val MANGA_LIST_CHANGED = "manga_list_changed"
@@ -84,6 +86,21 @@ fun NavGraphBuilder.malNavigation(
                 },
                 navigateToMangaDetail = { mangaId ->
                     navController.navigate(MalRoute.MangaDetail(mangaId))
+                },
+                navigateToWatchlist = {
+                    navController.navigate(MalRoute.Watchlist)
+                }
+            )
+        }
+    }
+    composable<MalRoute.Watchlist> {
+        val watchlistViewModel: WatchlistViewModel = hiltViewModel()
+        AppTheme {
+            WatchlistScreen(
+                viewModel = watchlistViewModel,
+                navigateBack = { navController.popBackStack() },
+                navigateToAnimeDetail = { animeId ->
+                    navController.navigate(MalRoute.AnimeDetail(animeId))
                 }
             )
         }
