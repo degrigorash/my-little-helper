@@ -52,9 +52,16 @@ class EditAnimeViewModel @Inject constructor(
         _state.update { it.copy(numEpisodesWatched = episodes.coerceAtLeast(0)) }
     }
 
-    fun setFinishDateToday() {
+    fun setFinishDateToday(totalEpisodes: Int?) {
         val today = LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE)
-        _state.update { it.copy(finishDate = today) }
+        _state.update {
+            it.copy(
+                finishDate = today,
+                status = MalAnimeWatchingStatus.Completed,
+                numEpisodesWatched = totalEpisodes?.takeIf { ep -> ep > 0 }
+                    ?: it.numEpisodesWatched
+            )
+        }
     }
 
     fun toggleBookmarkEditor() {
