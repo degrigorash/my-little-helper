@@ -114,7 +114,9 @@ fun EditMangaBottomSheet(
 
             FinishDateRow(
                 finishDate = state.finishDate,
-                onSetToday = viewModel::setFinishDateToday
+                onSetToday = {
+                    viewModel.setFinishDateToday(data.manga.numChapters, data.manga.numVolumes)
+                }
             )
 
             if (state.error != null) {

@@ -168,7 +168,7 @@ fun EditAnimeBottomSheet(
 
             FinishDateRow(
                 finishDate = state.finishDate,
-                onSetToday = viewModel::setFinishDateToday
+                onSetToday = { viewModel.setFinishDateToday(data.anime.numEpisodes) }
             )
 
             if (state.error != null) {
