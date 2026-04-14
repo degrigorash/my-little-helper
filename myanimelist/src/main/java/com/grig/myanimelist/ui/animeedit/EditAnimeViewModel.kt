@@ -3,6 +3,8 @@ package com.grig.myanimelist.ui.animeedit
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.grig.myanimelist.data.MalRepository
+import com.grig.myanimelist.data.local.WatchlistDao
+import com.grig.myanimelist.data.local.WatchlistEntry
 import com.grig.myanimelist.data.model.anime.MalAnimeWatchingStatus
 import com.grig.myanimelist.ui.animelist.AnimeCardData
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,7 +22,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class EditAnimeViewModel @Inject constructor(
-    private val malRepository: MalRepository
+    private val malRepository: MalRepository,
+    private val watchlistDao: WatchlistDao
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(EditAnimeState())
@@ -31,6 +34,10 @@ class EditAnimeViewModel @Inject constructor(
 
     fun init(data: AnimeCardData) {
         _state.value = EditAnimeState.from(data.listStatus)
+        viewModelScope.launch {
+            val entry = watchlistDao.getByAnimeId(data.anime.id)
+            _state.update { it.copy(isBookmarked = entry != null) }
+        }
     }
 
     fun setStatus(status: MalAnimeWatchingStatus) {
@@ -45,9 +52,68 @@ class EditAnimeViewModel @Inject constructor(
         _state.update { it.copy(numEpisodesWatched = episodes.coerceAtLeast(0)) }
     }
 
-    fun setFinishDateToday() {
+    fun setFinishDateToday(totalEpisodes: Int?) {
         val today = LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE)
-        _state.update { it.copy(finishDate = today) }
+        _state.update {
+            it.copy(
+                finishDate = today,
+                status = MalAnimeWatchingStatus.Completed,
+                numEpisodesWatched = totalEpisodes?.takeIf { ep -> ep > 0 }
+                    ?: it.numEpisodesWatched
+            )
+        }
+    }
+
+    fun toggleBookmarkEditor() {
+        _state.update { it.copy(showBookmarkEditor = !it.showBookmarkEditor) }
+    }
+
+    fun setBookmarkNotes(notes: String) {
+        _state.update { it.copy(bookmarkNotes = notes) }
+    }
+
+    fun saveBookmark(animeId: Int) {
+        viewModelScope.launch {
+            _state.update { it.copy(isSaving = true, error = null) }
+            val notes = _state.value.bookmarkNotes
+            watchlistDao.insert(WatchlistEntry(animeId = animeId))
+            val result = malRepository.updateAnimeListStatus(
+                animeId = animeId,
+                comments = notes.ifBlank { null }
+            )
+            result.fold(
+                onSuccess = {
+                    _state.update {
+                        it.copy(
+                            isSaving = false,
+                            isBookmarked = true,
+                            showBookmarkEditor = false
+                        )
+                    }
+                },
+                onFailure = { error ->
+                    _state.update {
+                        it.copy(
+                            isSaving = false,
+                            isBookmarked = true,
+                            showBookmarkEditor = false
+                        )
+                    }
+                }
+            )
+        }
+    }
+
+    fun removeBookmark(animeId: Int) {
+        viewModelScope.launch {
+            watchlistDao.delete(animeId)
+            _state.update {
+                it.copy(
+                    isBookmarked = false,
+                    showBookmarkEditor = false
+                )
+            }
+        }
     }
 
     fun save(animeId: Int) {

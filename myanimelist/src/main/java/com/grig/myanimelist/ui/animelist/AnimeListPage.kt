@@ -18,7 +18,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.grig.core.theme.AppThemeExtended
 import com.grig.myanimelist.data.model.anime.MalAnimeWatchingStatus
 import com.grig.myanimelist.ui.MalEmpty
@@ -42,6 +42,7 @@ fun AnimeListPage(
     val searchQuery by viewModel.searchQuery.collectAsState()
     val isRefreshing by viewModel.isRefreshing.collectAsState()
     val editSheetAnime by viewModel.editSheetAnime.collectAsState()
+    val watchlistIds by viewModel.watchlistIds.collectAsState()
 
     Column(modifier = Modifier.fillMaxSize()) {
         AnimeFilterChipsRow(
@@ -74,7 +75,8 @@ fun AnimeListPage(
                         { data -> onOpenDetail(data.anime.id) }
                     },
                     searchQuery = searchQuery,
-                    onSearchQueryChange = viewModel::onSearchQueryChange
+                    onSearchQueryChange = viewModel::onSearchQueryChange,
+                    watchlistIds = watchlistIds
                 )
             }
         }

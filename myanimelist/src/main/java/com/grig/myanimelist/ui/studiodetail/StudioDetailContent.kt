@@ -11,10 +11,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -25,12 +24,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
 import com.grig.core.theme.AppTheme
 import com.grig.myanimelist.data.model.jikan.JikanAnimeListItem
 import com.grig.myanimelist.data.model.jikan.JikanProducer
@@ -43,30 +41,37 @@ fun StudioDetailContent(
     hasMoreAnime: Boolean,
     isLoadingMore: Boolean,
     onLoadMore: () -> Unit,
-    onAnimeClick: (Int) -> Unit
+    onAnimeClick: (Int) -> Unit,
+    listState: LazyListState = rememberLazyListState(),
+    imageSpacerHeight: Dp = 0.dp,
+    titleAlpha: Float = 1f
 ) {
-    val listState = rememberLazyListState()
-
-    val shouldLoadMore by remember {
+    val nearEnd by remember {
         derivedStateOf {
             val lastVisibleItem = listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
             val totalItems = listState.layoutInfo.totalItemsCount
-            lastVisibleItem >= totalItems - 5 && hasMoreAnime && !isLoadingMore
+            lastVisibleItem >= totalItems - 5
         }
     }
 
-    LaunchedEffect(shouldLoadMore) {
-        if (shouldLoadMore) onLoadMore()
+    LaunchedEffect(nearEnd, hasMoreAnime, isLoadingMore) {
+        if (nearEnd && hasMoreAnime && !isLoadingMore) onLoadMore()
     }
 
     LazyColumn(
         state = listState,
         modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp),
+        contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 24.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        item {
-            StudioInfoHeader(producer = producer)
+        if (imageSpacerHeight > 0.dp) {
+            item(key = "image_spacer") {
+                Spacer(modifier = Modifier.height(imageSpacerHeight))
+            }
+        }
+
+        item(key = "studio_header") {
+            StudioInfoHeader(producer = producer, titleAlpha = titleAlpha)
         }
 
         if (animeList.isNotEmpty()) {
@@ -97,48 +102,21 @@ fun StudioDetailContent(
                 }
             }
         }
-        if (hasMoreAnime && !isLoadingMore && !isLoadingAnime) {
-            item {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    Button(
-                        onClick = onLoadMore,
-                        shape = RoundedCornerShape(16.dp)
-                    ) {
-                        Text("Load more")
-                    }
-                }
-            }
-        }
     }
 }
 
 @Composable
-private fun StudioInfoHeader(producer: JikanProducer) {
+private fun StudioInfoHeader(
+    producer: JikanProducer,
+    titleAlpha: Float = 1f
+) {
     Column {
-        val imageUrl = producer.images?.jpg?.imageUrl
-        if (imageUrl != null) {
-            AsyncImage(
-                model = imageUrl,
-                contentDescription = producer.name,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(180.dp)
-                    .clip(RoundedCornerShape(16.dp)),
-                contentScale = ContentScale.Fit
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-        }
-
         Text(
             text = producer.name,
             style = MaterialTheme.typography.headlineSmall,
             fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.onSurface
+            color = MaterialTheme.colorScheme.onSurface,
+            modifier = Modifier.graphicsLayer { alpha = titleAlpha }
         )
 
         producer.japaneseName?.let { jpName ->

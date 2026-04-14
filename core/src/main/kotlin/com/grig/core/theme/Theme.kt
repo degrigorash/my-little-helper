@@ -92,7 +92,7 @@ private val darkScheme = darkColorScheme(
 fun AppTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
+    dynamicColor: Boolean = false,
     content: @Composable() () -> Unit
 ) {
     val colorScheme = when {
@@ -111,6 +111,25 @@ fun AppTheme(
         MaterialTheme(
             colorScheme = colorScheme,
             typography = AppTypography,
+            content = content
+        )
+    }
+}
+
+@Composable
+fun DanishTheme(
+    darkTheme: Boolean = isSystemInDarkTheme(),
+    content: @Composable () -> Unit
+) {
+    AppTheme(darkTheme = darkTheme) {
+        val danishColors = MaterialTheme.colorScheme.copy(
+            primary = if (darkTheme) danishPrimaryDark else danishPrimaryLight,
+            onPrimary = if (darkTheme) danishOnPrimaryDark else danishOnPrimaryLight,
+            primaryContainer = if (darkTheme) danishPrimaryContainerDark else danishPrimaryContainerLight,
+            onPrimaryContainer = if (darkTheme) danishOnPrimaryContainerDark else danishOnPrimaryContainerLight,
+        )
+        MaterialTheme(
+            colorScheme = danishColors,
             content = content
         )
     }

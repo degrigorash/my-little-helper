@@ -1,6 +1,7 @@
 package com.grig.myanimelist.ui.animelist
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -46,7 +47,8 @@ fun AnimeList(
     animes: List<AnimeCardData>,
     onAnimeClick: ((AnimeCardData) -> Unit)? = null,
     searchQuery: String = "",
-    onSearchQueryChange: (String) -> Unit = {}
+    onSearchQueryChange: (String) -> Unit = {},
+    watchlistIds: Set<Int> = emptySet()
 ) {
     val listState = rememberLazyListState(initialFirstVisibleItemIndex = 1)
 
@@ -67,13 +69,21 @@ fun AnimeList(
             }
         }
         items(animes, key = { it.anime.id }) { data ->
-            AnimeCard(data = data, onClick = onAnimeClick?.let { { it(data) } })
+            AnimeCard(
+                data = data,
+                onClick = onAnimeClick?.let { { it(data) } },
+                isBookmarked = data.anime.id in watchlistIds
+            )
         }
     }
 }
 
 @Composable
-fun AnimeCard(data: AnimeCardData, onClick: (() -> Unit)? = null) {
+fun AnimeCard(
+    data: AnimeCardData,
+    onClick: (() -> Unit)? = null,
+    isBookmarked: Boolean = false
+) {
     val anime = data.anime
     val listStatus = data.listStatus
 
@@ -82,90 +92,103 @@ fun AnimeCard(data: AnimeCardData, onClick: (() -> Unit)? = null) {
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(12.dp)
-        ) {
-            AsyncImage(
-                model = anime.pictures?.medium,
-                contentDescription = null,
+        Box {
+            Row(
                 modifier = Modifier
-                    .size(100.dp)
-                    .clip(RoundedCornerShape(12.dp)),
-                contentScale = ContentScale.Crop
-            )
-            Spacer(modifier = Modifier.width(12.dp))
-            Column(
-                modifier = Modifier.weight(1f)
+                    .fillMaxWidth()
+                    .padding(12.dp)
             ) {
-                Text(
-                    text = anime.title,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onSurface
+                AsyncImage(
+                    model = anime.pictures?.medium,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(100.dp)
+                        .clip(RoundedCornerShape(12.dp)),
+                    contentScale = ContentScale.Crop
                 )
-
-                Spacer(modifier = Modifier.height(4.dp))
-
-                val studioNames = anime.studios.joinToString(", ") { it.name }
-                if (studioNames.isNotEmpty()) {
-                    Text(
-                        text = studioNames,
-                        style = MaterialTheme.typography.bodySmall,
-                        fontWeight = FontWeight.SemiBold,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
-
-                val epText = buildEpisodeProgress(data)
-                if (epText != null) {
-                    Text(
-                        text = epText,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.padding(top = 2.dp)
-                    )
-                }
-
-                val airedText = buildAiredText(anime.startDate, anime.endDate)
-                if (airedText != null) {
-                    Text(
-                        text = airedText,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier.padding(top = 2.dp)
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                StatsRowWithMyScore(
-                    mean = anime.mean,
-                    rank = anime.rank,
-                    members = anime.numListUsers,
-                    myScore = listStatus?.score
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalAlignment = Alignment.CenterVertically
+                Spacer(modifier = Modifier.width(12.dp))
+                Column(
+                    modifier = Modifier.weight(1f)
                 ) {
-                    if (listStatus != null) {
-                        StatusBadge(
-                            text = listStatus.status.displayName,
-                            color = watchingStatusColor(listStatus.status)
+                    Text(
+                        text = anime.title,
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+
+                    Spacer(modifier = Modifier.height(4.dp))
+
+                    val studioNames = anime.studios.joinToString(", ") { it.name }
+                    if (studioNames.isNotEmpty()) {
+                        Text(
+                            text = studioNames,
+                            style = MaterialTheme.typography.bodySmall,
+                            fontWeight = FontWeight.SemiBold,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
-                    StatusBadge(
-                        text = anime.status.displayName,
-                        color = animeStatusColor(anime.status)
+
+                    val epText = buildEpisodeProgress(data)
+                    if (epText != null) {
+                        Text(
+                            text = epText,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.padding(top = 2.dp)
+                        )
+                    }
+
+                    val airedText = buildAiredText(anime.startDate, anime.endDate)
+                    if (airedText != null) {
+                        Text(
+                            text = airedText,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier.padding(top = 2.dp)
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    StatsRowWithMyScore(
+                        mean = anime.mean,
+                        rank = anime.rank,
+                        members = anime.numListUsers,
+                        myScore = listStatus?.score
                     )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        if (listStatus != null) {
+                            StatusBadge(
+                                text = listStatus.status.displayName,
+                                color = watchingStatusColor(listStatus.status)
+                            )
+                        }
+                        StatusBadge(
+                            text = anime.status.displayName,
+                            color = animeStatusColor(anime.status)
+                        )
+                    }
                 }
+            }
+            if (isBookmarked) {
+                Icon(
+                    painter = painterResource(R.drawable.ic_bookmark),
+                    contentDescription = "In Watch Next",
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .padding(8.dp)
+                        .size(20.dp),
+                    tint = MaterialTheme.colorScheme.primary
+                )
             }
         }
     }

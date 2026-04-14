@@ -7,14 +7,10 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.OutlinedButton
@@ -28,12 +24,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
 import com.grig.core.theme.AppTheme
 import com.grig.myanimelist.data.model.jikan.ResolvedRelation
 import com.grig.myanimelist.data.model.manga.MalManga
@@ -54,6 +48,7 @@ fun MangaDetailContent(
     isUpdatingList: Boolean,
     onAddToList: () -> Unit,
     onDeleteFromList: () -> Unit,
+    titleAlpha: Float = 1f,
     onAuthorClick: (Int) -> Unit = {},
     onRelatedMangaClick: (Int) -> Unit = {},
     relatedAnime: List<ResolvedRelation> = emptyList(),
@@ -64,30 +59,13 @@ fun MangaDetailContent(
 ) {
     var showDeleteConfirm by remember { mutableStateOf(false) }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .padding(horizontal = 16.dp, vertical = 12.dp)
-    ) {
-        if (manga.pictures != null) {
-            AsyncImage(
-                model = manga.pictures.large ?: manga.pictures.medium,
-                contentDescription = null,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(280.dp)
-                    .clip(RoundedCornerShape(16.dp)),
-                contentScale = ContentScale.Crop
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-        }
-
+    Column {
         Text(
             text = manga.title,
             style = MaterialTheme.typography.headlineSmall,
             fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.onSurface
+            color = MaterialTheme.colorScheme.onSurface,
+            modifier = Modifier.graphicsLayer { alpha = titleAlpha }
         )
 
         val altTitles = buildList {
@@ -282,6 +260,7 @@ fun MangaDetailContent(
             isDestructive = true
         )
     }
+
 }
 
 @Preview(name = "Manga Detail - Not in List")

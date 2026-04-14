@@ -49,6 +49,9 @@ val malIconContainerLight = Color(0xFF8B9BC8)
 val danishCardStartLight = Color(0xFF6B4B8A)
 val danishCardEndLight = Color(0xFF4A3262)
 val danishIconContainerLight = Color(0xFF8B6B9A)
+val scoreHighLight = Color(0xFF3A7D44)
+val scoreMidLight = Color(0xFFC48A1A)
+val scoreLowLight = Color(0xFFC62828)
 
 // Extended palette — Dark
 val gradientBackgroundTopDark = Color(0xFF1A1724)
@@ -61,6 +64,21 @@ val malIconContainerDark = Color(0xFF5C6CA0)
 val danishCardStartDark = Color(0xFF4A3262)
 val danishCardEndDark = Color(0xFF2E2248)
 val danishIconContainerDark = Color(0xFF5A4272)
+val scoreHighDark = Color(0xFF81C784)
+val scoreMidDark = Color(0xFFE6C36A)
+val scoreLowDark = Color(0xFFEF5350)
+
+// Danish M3 primary overrides — Light
+val danishPrimaryLight = Color(0xFF6B4B8A)
+val danishOnPrimaryLight = Color(0xFFFFFFFF)
+val danishPrimaryContainerLight = Color(0xFFEBDDFF)
+val danishOnPrimaryContainerLight = Color(0xFF523A71)
+
+// Danish M3 primary overrides — Dark
+val danishPrimaryDark = Color(0xFFD0BCFF)
+val danishOnPrimaryDark = Color(0xFF381E72)
+val danishPrimaryContainerDark = Color(0xFF4F378B)
+val danishOnPrimaryContainerDark = Color(0xFFEBDDFF)
 
 val primaryDark = Color(0xFFFFB4A6)
 val onPrimaryDark = Color(0xFF561E14)

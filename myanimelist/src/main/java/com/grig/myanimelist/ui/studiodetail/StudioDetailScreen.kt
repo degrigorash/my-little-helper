@@ -2,29 +2,31 @@ package com.grig.myanimelist.ui.studiodetail
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import com.grig.core.theme.AppThemeExtended
-import com.grig.myanimelist.R
+import com.grig.myanimelist.ui.common.CollapsingImage
+import com.grig.myanimelist.ui.common.IMAGE_MAX_HEIGHT
+import com.grig.myanimelist.ui.common.StatusBarScrim
+import com.grig.myanimelist.ui.common.ToolbarOverlay
 
 @Composable
 fun StudioDetailScreen(
@@ -35,74 +37,89 @@ fun StudioDetailScreen(
     val state by viewModel.state.collectAsState()
     val colors = AppThemeExtended.colorScheme
 
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
+            .background(brush = Brush.verticalGradient(listOf(colors.gradientBackgroundTop, colors.gradientBackgroundBottom)))
     ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(
-                    brush = Brush.linearGradient(
-                        listOf(colors.malCardStart, colors.malCardEnd)
-                    )
-                )
-                .statusBarsPadding()
-                .padding(horizontal = 4.dp, vertical = 8.dp)
-        ) {
-            IconButton(onClick = navigateBack) {
-                Icon(
-                    painter = painterResource(R.drawable.ic_arrow_back),
-                    contentDescription = "Back",
-                    tint = colors.cardText
+        when (val currentState = state) {
+            is StudioDetailState.Loading -> {
+                CircularProgressIndicator(
+                    modifier = Modifier
+                        .size(48.dp)
+                        .align(Alignment.Center)
                 )
             }
-            val title = (state as? StudioDetailState.Content)?.producer?.name ?: "Studio"
-            Text(
-                text = title,
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                color = colors.cardText,
-                modifier = Modifier.align(Alignment.Center)
-            )
-        }
+            is StudioDetailState.Content -> {
+                val producer = currentState.producer
+                val imageUrl = producer.images?.jpg?.imageUrl
+                val density = LocalDensity.current
+                val statusBarHeight = WindowInsets.statusBars.getTop(density)
+                val imageMaxHeightPx = with(density) { IMAGE_MAX_HEIGHT.toPx() } + statusBarHeight
+                val imageSpacerHeight = with(density) { imageMaxHeightPx.toDp() }
 
-        Box(
-            modifier = Modifier
-                .weight(1f)
-                .fillMaxWidth()
-                .navigationBarsPadding()
-        ) {
-            when (val currentState = state) {
-                is StudioDetailState.Loading -> {
-                    CircularProgressIndicator(
-                        modifier = Modifier
-                            .size(48.dp)
-                            .align(Alignment.Center)
-                    )
+                val listState = rememberLazyListState()
+
+                val collapseProgress by remember {
+                    derivedStateOf {
+                        if (listState.firstVisibleItemIndex > 0) {
+                            1f
+                        } else {
+                            (listState.firstVisibleItemScrollOffset / imageMaxHeightPx).coerceIn(0f, 1f)
+                        }
+                    }
                 }
-                is StudioDetailState.Error -> {
-                    Text(
-                        text = currentState.message,
-                        color = MaterialTheme.colorScheme.error,
-                        style = MaterialTheme.typography.bodyMedium,
-                        modifier = Modifier
-                            .align(Alignment.Center)
-                            .padding(32.dp)
-                    )
+
+                val imageHeightPx by remember {
+                    derivedStateOf {
+                        if (listState.firstVisibleItemIndex > 0) {
+                            0f
+                        } else {
+                            (imageMaxHeightPx - listState.firstVisibleItemScrollOffset).coerceAtLeast(0f)
+                        }
+                    }
                 }
-                is StudioDetailState.Content -> {
+
+                Box(modifier = Modifier.fillMaxSize()) {
                     StudioDetailContent(
-                        producer = currentState.producer,
+                        producer = producer,
                         animeList = currentState.animeList,
                         isLoadingAnime = currentState.isLoadingAnime,
                         hasMoreAnime = currentState.hasMoreAnime,
                         isLoadingMore = currentState.isLoadingMore,
                         onLoadMore = viewModel::loadMore,
-                        onAnimeClick = navigateToAnimeDetail
+                        onAnimeClick = navigateToAnimeDetail,
+                        listState = listState,
+                        imageSpacerHeight = imageSpacerHeight,
+                        titleAlpha = 1f - collapseProgress
+                    )
+
+                    CollapsingImage(
+                        imageUrl = imageUrl,
+                        visibleHeightPx = imageHeightPx,
+                        fullHeightPx = imageMaxHeightPx,
+                        onImageClick = {},
+                        contentScale = ContentScale.Fit
+                    )
+
+                    StatusBarScrim(collapseProgress = collapseProgress)
+
+                    ToolbarOverlay(
+                        title = producer.name,
+                        collapseProgress = collapseProgress,
+                        onBackClick = navigateBack
                     )
                 }
+            }
+            is StudioDetailState.Error -> {
+                Text(
+                    text = currentState.message,
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .padding(32.dp)
+                )
             }
         }
     }
