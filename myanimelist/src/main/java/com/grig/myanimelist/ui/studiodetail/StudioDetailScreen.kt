@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import com.grig.core.theme.AppThemeExtended
 import com.grig.myanimelist.ui.common.CollapsingImage
 import com.grig.myanimelist.ui.common.IMAGE_MAX_HEIGHT
+import com.grig.myanimelist.ui.common.StatusBarScrim
 import com.grig.myanimelist.ui.common.ToolbarOverlay
 
 @Composable
@@ -100,6 +101,8 @@ fun StudioDetailScreen(
                         onImageClick = {},
                         contentScale = ContentScale.Fit
                     )
+
+                    StatusBarScrim(collapseProgress = collapseProgress)
 
                     ToolbarOverlay(
                         title = producer.name,
