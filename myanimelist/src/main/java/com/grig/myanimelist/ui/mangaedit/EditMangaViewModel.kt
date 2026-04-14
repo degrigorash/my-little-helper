@@ -49,9 +49,18 @@ class EditMangaViewModel @Inject constructor(
         _state.update { it.copy(numVolumesRead = volumes.coerceAtLeast(0)) }
     }
 
-    fun setFinishDateToday() {
+    fun setFinishDateToday(totalChapters: Int?, totalVolumes: Int?) {
         val today = LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE)
-        _state.update { it.copy(finishDate = today) }
+        _state.update {
+            it.copy(
+                finishDate = today,
+                status = MalMangaReadingStatus.Completed,
+                numChaptersRead = totalChapters?.takeIf { ch -> ch > 0 }
+                    ?: it.numChaptersRead,
+                numVolumesRead = totalVolumes?.takeIf { vol -> vol > 0 }
+                    ?: it.numVolumesRead
+            )
+        }
     }
 
     fun save(mangaId: Int) {
