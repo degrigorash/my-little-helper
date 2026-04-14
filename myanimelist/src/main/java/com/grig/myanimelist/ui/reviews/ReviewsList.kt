@@ -9,8 +9,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
@@ -19,7 +17,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.material3.Text
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -34,15 +31,15 @@ fun ReviewsList(
     onLoadMore: () -> Unit
 ) {
     val listState = rememberLazyListState()
-    val shouldLoadMore by remember {
+    val nearEnd by remember {
         derivedStateOf {
             val lastVisible = listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
             lastVisible >= listState.layoutInfo.totalItemsCount - 3
         }
     }
 
-    LaunchedEffect(shouldLoadMore) {
-        if (shouldLoadMore && hasNextPage && !isLoadingMore) {
+    LaunchedEffect(nearEnd, hasNextPage, isLoadingMore) {
+        if (nearEnd && hasNextPage && !isLoadingMore) {
             onLoadMore()
         }
     }
@@ -68,23 +65,6 @@ fun ReviewsList(
                     horizontalArrangement = Arrangement.Center
                 ) {
                     CircularProgressIndicator(modifier = Modifier.size(24.dp), strokeWidth = 2.dp)
-                }
-            }
-        }
-        if (hasNextPage && !isLoadingMore) {
-            item {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    Button(
-                        onClick = onLoadMore,
-                        shape = RoundedCornerShape(16.dp)
-                    ) {
-                        Text("Load more")
-                    }
                 }
             }
         }

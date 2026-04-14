@@ -14,8 +14,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -48,22 +46,22 @@ fun StudioDetailContent(
     imageSpacerHeight: Dp = 0.dp,
     titleAlpha: Float = 1f
 ) {
-    val shouldLoadMore by remember {
+    val nearEnd by remember {
         derivedStateOf {
             val lastVisibleItem = listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
             val totalItems = listState.layoutInfo.totalItemsCount
-            lastVisibleItem >= totalItems - 5 && hasMoreAnime && !isLoadingMore
+            lastVisibleItem >= totalItems - 5
         }
     }
 
-    LaunchedEffect(shouldLoadMore) {
-        if (shouldLoadMore) onLoadMore()
+    LaunchedEffect(nearEnd, hasMoreAnime, isLoadingMore) {
+        if (nearEnd && hasMoreAnime && !isLoadingMore) onLoadMore()
     }
 
     LazyColumn(
         state = listState,
         modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(horizontal = 16.dp),
+        contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 24.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         if (imageSpacerHeight > 0.dp) {
@@ -101,23 +99,6 @@ fun StudioDetailContent(
                     horizontalArrangement = Arrangement.Center
                 ) {
                     CircularProgressIndicator(modifier = Modifier.size(24.dp), strokeWidth = 2.dp)
-                }
-            }
-        }
-        if (hasMoreAnime && !isLoadingMore && !isLoadingAnime) {
-            item {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    Button(
-                        onClick = onLoadMore,
-                        shape = RoundedCornerShape(16.dp)
-                    ) {
-                        Text("Load more")
-                    }
                 }
             }
         }
