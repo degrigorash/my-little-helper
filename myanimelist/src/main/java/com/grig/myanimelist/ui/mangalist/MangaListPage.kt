@@ -73,6 +73,7 @@ fun MangaListPage(
                     } else {
                         { data -> onOpenDetail(data.manga.id) }
                     },
+                    onMangaLongClick = { data -> onOpenDetail(data.manga.id) },
                     searchQuery = searchQuery,
                     onSearchQueryChange = viewModel::onSearchQueryChange
                 )

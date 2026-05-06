@@ -1,5 +1,7 @@
 package com.grig.myanimelist.ui.mangalist
 
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -45,6 +47,7 @@ import com.grig.myanimelist.ui.home.readingStatusColor
 fun MangaList(
     mangas: List<MangaCardData>,
     onMangaClick: ((MangaCardData) -> Unit)? = null,
+    onMangaLongClick: (MangaCardData) -> Unit = {},
     searchQuery: String = "",
     onSearchQueryChange: (String) -> Unit = {}
 ) {
@@ -67,18 +70,30 @@ fun MangaList(
             }
         }
         items(mangas, key = { it.manga.id }) { data ->
-            MangaCard(data = data, onClick = onMangaClick?.let { { it(data) } })
+            MangaCard(
+                data = data,
+                onClick = onMangaClick?.let { { it(data) } },
+                onLongClick = { onMangaLongClick(data) }
+            )
         }
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun MangaCard(data: MangaCardData, onClick: (() -> Unit)? = null) {
+fun MangaCard(
+    data: MangaCardData,
+    onClick: (() -> Unit)? = null,
+    onLongClick: () -> Unit = {}
+) {
     val manga = data.manga
     val listStatus = data.listStatus
 
     Card(
-        onClick = { onClick?.invoke() },
+        modifier = Modifier.combinedClickable(
+            onClick = { onClick?.invoke() },
+            onLongClick = onLongClick
+        ),
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {

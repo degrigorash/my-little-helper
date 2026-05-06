@@ -74,6 +74,7 @@ fun AnimeListPage(
                     } else {
                         { data -> onOpenDetail(data.anime.id) }
                     },
+                    onAnimeLongClick = { data -> onOpenDetail(data.anime.id) },
                     searchQuery = searchQuery,
                     onSearchQueryChange = viewModel::onSearchQueryChange,
                     watchlistIds = watchlistIds
