@@ -11,10 +11,10 @@ sealed class MalRoute {
     data object MalHome : MalRoute()
 
     @Serializable
-    data object AnimeSearch : MalRoute()
+    data class AnimeSearch(val query: String = "") : MalRoute()
 
     @Serializable
-    data object MangaSearch : MalRoute()
+    data class MangaSearch(val query: String = "") : MalRoute()
 
     @Serializable
     data class AnimeDetail(val animeId: Int) : MalRoute()

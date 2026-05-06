@@ -34,7 +34,8 @@ import com.grig.myanimelist.ui.mangaedit.EditMangaViewModel
 fun MangaListPage(
     viewModel: MangaListViewModel,
     authorized: Boolean,
-    onOpenDetail: (Int) -> Unit
+    onOpenDetail: (Int) -> Unit,
+    onSearchWithQuery: (String) -> Unit
 ) {
     val listState by viewModel.listState.collectAsState()
     val statusFilter by viewModel.statusFilter.collectAsState()
@@ -75,7 +76,8 @@ fun MangaListPage(
                     },
                     onMangaLongClick = { data -> onOpenDetail(data.manga.id) },
                     searchQuery = searchQuery,
-                    onSearchQueryChange = viewModel::onSearchQueryChange
+                    onSearchQueryChange = viewModel::onSearchQueryChange,
+                    onEmptySearchClick = { onSearchWithQuery(searchQuery) }
                 )
             }
         }

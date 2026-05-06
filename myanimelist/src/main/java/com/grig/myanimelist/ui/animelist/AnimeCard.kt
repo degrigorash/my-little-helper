@@ -51,6 +51,7 @@ fun AnimeList(
     onAnimeLongClick: (AnimeCardData) -> Unit = {},
     searchQuery: String = "",
     onSearchQueryChange: (String) -> Unit = {},
+    onEmptySearchClick: () -> Unit = {},
     watchlistIds: Set<Int> = emptySet()
 ) {
     val listState = rememberLazyListState(initialFirstVisibleItemIndex = 1)
@@ -68,7 +69,9 @@ fun AnimeList(
         }
         if (animes.isEmpty()) {
             item(key = "filtered_empty") {
-                FilteredEmptyItem()
+                FilteredEmptyItem(
+                    onIconClick = if (searchQuery.isNotBlank()) onEmptySearchClick else null
+                )
             }
         }
         items(animes, key = { it.anime.id }) { data ->

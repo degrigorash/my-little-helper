@@ -1,7 +1,10 @@
 package com.grig.myanimelist.ui.mangasearch
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.toRoute
+import com.grig.myanimelist.MalRoute
 import com.grig.myanimelist.data.MalRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -14,6 +17,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MangaSearchViewModel @Inject constructor(
+    savedStateHandle: SavedStateHandle,
     private val malRepository: MalRepository
 ) : ViewModel() {
 
@@ -21,6 +25,13 @@ class MangaSearchViewModel @Inject constructor(
     val state: StateFlow<MangaSearchState> = _state.asStateFlow()
 
     private var searchJob: Job? = null
+
+    init {
+        val initialQuery = savedStateHandle.toRoute<MalRoute.MangaSearch>().query
+        if (initialQuery.isNotBlank()) {
+            onQueryChange(initialQuery)
+        }
+    }
 
     fun onQueryChange(query: String) {
         searchJob?.cancel()

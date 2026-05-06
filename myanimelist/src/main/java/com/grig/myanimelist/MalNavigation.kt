@@ -75,11 +75,11 @@ fun NavGraphBuilder.malNavigation(
                         popUpTo<MalRoute.MalHome> { inclusive = true }
                     }
                 },
-                navigateToAnimeSearch = {
-                    navController.navigate(MalRoute.AnimeSearch)
+                navigateToAnimeSearch = { query ->
+                    navController.navigate(MalRoute.AnimeSearch(query))
                 },
-                navigateToMangaSearch = {
-                    navController.navigate(MalRoute.MangaSearch)
+                navigateToMangaSearch = { query ->
+                    navController.navigate(MalRoute.MangaSearch(query))
                 },
                 navigateToAnimeDetail = { animeId ->
                     navController.navigate(MalRoute.AnimeDetail(animeId))

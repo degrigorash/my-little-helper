@@ -49,7 +49,8 @@ fun MangaList(
     onMangaClick: ((MangaCardData) -> Unit)? = null,
     onMangaLongClick: (MangaCardData) -> Unit = {},
     searchQuery: String = "",
-    onSearchQueryChange: (String) -> Unit = {}
+    onSearchQueryChange: (String) -> Unit = {},
+    onEmptySearchClick: () -> Unit = {}
 ) {
     val listState = rememberLazyListState(initialFirstVisibleItemIndex = 1)
 
@@ -66,7 +67,9 @@ fun MangaList(
         }
         if (mangas.isEmpty()) {
             item(key = "filtered_empty") {
-                FilteredEmptyItem()
+                FilteredEmptyItem(
+                    onIconClick = if (searchQuery.isNotBlank()) onEmptySearchClick else null
+                )
             }
         }
         items(mangas, key = { it.manga.id }) { data ->
