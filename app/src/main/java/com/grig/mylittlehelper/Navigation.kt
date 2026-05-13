@@ -4,14 +4,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.grig.core.theme.AppTheme
-import com.grig.danish.DanishRoute
-import com.grig.danish.danishNavigation
 import com.grig.myanimelist.MalRoute
 import com.grig.myanimelist.malNavigation
-import com.grig.mylittlehelper.ui.home.HomeScreen
 
 @Composable
 fun MyLittleHelperNavHost(
@@ -21,21 +16,8 @@ fun MyLittleHelperNavHost(
     NavHost(
         modifier = modifier,
         navController = navController,
-        startDestination = Route.Home
+        startDestination = MalRoute.MalLogin
     ) {
-        composable<Route.Home> {
-            AppTheme {
-                HomeScreen(
-                    navigateToMal = {
-                        navController.navigate(MalRoute.MalLogin)
-                    },
-                    navigateToDanish = {
-                        navController.navigate(DanishRoute.DanishHome)
-                    }
-                )
-            }
-        }
         malNavigation(navController)
-        danishNavigation(navController)
     }
 }

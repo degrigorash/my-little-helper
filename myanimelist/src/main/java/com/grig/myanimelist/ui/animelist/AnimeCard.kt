@@ -1,5 +1,7 @@
 package com.grig.myanimelist.ui.animelist
 
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -46,8 +48,10 @@ import com.grig.myanimelist.ui.home.watchingStatusColor
 fun AnimeList(
     animes: List<AnimeCardData>,
     onAnimeClick: ((AnimeCardData) -> Unit)? = null,
+    onAnimeLongClick: (AnimeCardData) -> Unit = {},
     searchQuery: String = "",
     onSearchQueryChange: (String) -> Unit = {},
+    onEmptySearchClick: () -> Unit = {},
     watchlistIds: Set<Int> = emptySet()
 ) {
     val listState = rememberLazyListState(initialFirstVisibleItemIndex = 1)
@@ -65,30 +69,38 @@ fun AnimeList(
         }
         if (animes.isEmpty()) {
             item(key = "filtered_empty") {
-                FilteredEmptyItem()
+                FilteredEmptyItem(
+                    onIconClick = if (searchQuery.isNotBlank()) onEmptySearchClick else null
+                )
             }
         }
         items(animes, key = { it.anime.id }) { data ->
             AnimeCard(
                 data = data,
                 onClick = onAnimeClick?.let { { it(data) } },
+                onLongClick = { onAnimeLongClick(data) },
                 isBookmarked = data.anime.id in watchlistIds
             )
         }
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun AnimeCard(
     data: AnimeCardData,
     onClick: (() -> Unit)? = null,
+    onLongClick: () -> Unit = {},
     isBookmarked: Boolean = false
 ) {
     val anime = data.anime
     val listStatus = data.listStatus
 
     Card(
-        onClick = { onClick?.invoke() },
+        modifier = Modifier.combinedClickable(
+            onClick = { onClick?.invoke() },
+            onLongClick = onLongClick
+        ),
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {

@@ -34,7 +34,8 @@ import com.grig.myanimelist.ui.home.UpcomingFilterButton
 fun AnimeListPage(
     viewModel: AnimeListViewModel,
     authorized: Boolean,
-    onOpenDetail: (Int) -> Unit
+    onOpenDetail: (Int) -> Unit,
+    onSearchWithQuery: (String) -> Unit
 ) {
     val listState by viewModel.listState.collectAsState()
     val statusFilter by viewModel.statusFilter.collectAsState()
@@ -74,8 +75,10 @@ fun AnimeListPage(
                     } else {
                         { data -> onOpenDetail(data.anime.id) }
                     },
+                    onAnimeLongClick = { data -> onOpenDetail(data.anime.id) },
                     searchQuery = searchQuery,
                     onSearchQueryChange = viewModel::onSearchQueryChange,
+                    onEmptySearchClick = { onSearchWithQuery(searchQuery) },
                     watchlistIds = watchlistIds
                 )
             }

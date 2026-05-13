@@ -30,8 +30,8 @@ fun MalHomeScreen(
     animeListViewModel: AnimeListViewModel,
     mangaListViewModel: MangaListViewModel,
     navigateToLogin: () -> Unit,
-    navigateToAnimeSearch: () -> Unit,
-    navigateToMangaSearch: () -> Unit,
+    navigateToAnimeSearch: (String) -> Unit,
+    navigateToMangaSearch: (String) -> Unit,
     navigateToAnimeDetail: (Int) -> Unit,
     navigateToMangaDetail: (Int) -> Unit,
     navigateToWatchlist: () -> Unit
@@ -83,8 +83,8 @@ fun MalHomeScreen(
             },
             onSearchClick = {
                 when (activeTab) {
-                    MalTab.Anime -> navigateToAnimeSearch()
-                    MalTab.Manga -> navigateToMangaSearch()
+                    MalTab.Anime -> navigateToAnimeSearch("")
+                    MalTab.Manga -> navigateToMangaSearch("")
                 }
             },
             onWatchlistClick = navigateToWatchlist,
@@ -114,12 +114,14 @@ fun MalHomeScreen(
                 0 -> AnimeListPage(
                     viewModel = animeListViewModel,
                     authorized = authorized,
-                    onOpenDetail = navigateToAnimeDetail
+                    onOpenDetail = navigateToAnimeDetail,
+                    onSearchWithQuery = navigateToAnimeSearch
                 )
                 1 -> MangaListPage(
                     viewModel = mangaListViewModel,
                     authorized = authorized,
-                    onOpenDetail = navigateToMangaDetail
+                    onOpenDetail = navigateToMangaDetail,
+                    onSearchWithQuery = navigateToMangaSearch
                 )
             }
         }

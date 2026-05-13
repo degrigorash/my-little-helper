@@ -1,6 +1,7 @@
 package com.grig.myanimelist.ui.home
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -15,6 +16,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -25,7 +27,9 @@ import com.grig.core.theme.AppThemeExtended
 import com.grig.myanimelist.R
 
 @Composable
-fun FilteredEmptyItem() {
+fun FilteredEmptyItem(
+    onIconClick: (() -> Unit)? = null
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -35,9 +39,14 @@ fun FilteredEmptyItem() {
         Box(
             modifier = Modifier
                 .size(80.dp)
+                .clip(CircleShape)
                 .background(
                     color = AppThemeExtended.colorScheme.malIconContainer.copy(alpha = 0.2f),
                     shape = CircleShape
+                )
+                .then(
+                    if (onIconClick != null) Modifier.clickable(onClick = onIconClick)
+                    else Modifier
                 ),
             contentAlignment = Alignment.Center
         ) {
