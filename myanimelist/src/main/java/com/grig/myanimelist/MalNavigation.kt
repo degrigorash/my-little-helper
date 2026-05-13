@@ -38,7 +38,6 @@ fun NavGraphBuilder.malNavigation(
                         popUpTo<MalRoute.MalLogin> { inclusive = true }
                     }
                 },
-                navigateBack = { navController.popBackStack() }
             )
         }
     }

@@ -17,8 +17,6 @@ import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
@@ -47,9 +45,8 @@ import com.grig.myanimelist.data.model.MalUserState
 fun MalLoginScreen(
     viewModel: MalLoginViewModel,
     navigateToHome: () -> Unit,
-    navigateBack: () -> Unit
 ) {
-    val userState by viewModel.userFlow.collectAsState(initial = MalUserState.Unauthorized)
+    val userState by viewModel.userFlow.collectAsState(initial = null)
 
     LaunchedEffect(userState) {
         if (userState is MalUserState.Authorized) {
@@ -57,12 +54,13 @@ fun MalLoginScreen(
         }
     }
 
+    if (userState !is MalUserState.Unauthorized) return
+
     val uriHandler = LocalUriHandler.current
 
     MalLoginContent(
         onLoginClick = { uriHandler.openUri(viewModel.loginUri()) },
         onGuestClick = navigateToHome,
-        onBackClick = navigateBack
     )
 }
 
@@ -70,7 +68,6 @@ fun MalLoginScreen(
 private fun MalLoginContent(
     onLoginClick: () -> Unit,
     onGuestClick: () -> Unit,
-    onBackClick: () -> Unit
 ) {
     val colors = AppThemeExtended.colorScheme
 
@@ -83,19 +80,6 @@ private fun MalLoginContent(
                 )
             )
     ) {
-        IconButton(
-            onClick = onBackClick,
-            modifier = Modifier
-                .systemBarsPadding()
-                .padding(start = 4.dp, top = 4.dp)
-        ) {
-            Icon(
-                painter = painterResource(R.drawable.ic_arrow_back),
-                contentDescription = null,
-                tint = colors.headerText
-            )
-        }
-
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -200,7 +184,6 @@ private fun MalLoginScreenPreview() {
         MalLoginContent(
             onLoginClick = {},
             onGuestClick = {},
-            onBackClick = {}
         )
     }
 }
@@ -212,7 +195,6 @@ private fun MalLoginScreenDarkPreview() {
         MalLoginContent(
             onLoginClick = {},
             onGuestClick = {},
-            onBackClick = {}
         )
     }
 }

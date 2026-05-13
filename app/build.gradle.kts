@@ -62,7 +62,6 @@ android {
 
 dependencies {
     implementation(project(":myanimelist"))
-    implementation(project(":danish"))
     implementation(project(":core"))
 
     implementation(libs.kotlin)
