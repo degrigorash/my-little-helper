@@ -184,7 +184,7 @@ class MangaListViewModel @Inject constructor(
         val sort = _sortOption.value
         val sorted = when (sort.field) {
             SortField.Rating -> sortedWithOption(filtered, sort.direction) { it.first.mean }
-            SortField.MyScore -> sortedWithOption(filtered, sort.direction) { it.second?.score }
+            SortField.MyScore -> sortedWithOption(filtered, sort.direction) { it.second?.score?.takeIf { score -> score > 0 } }
             SortField.ReleaseDate -> sortedWithOption(filtered, sort.direction) { it.first.startDate }
             SortField.FinishDate -> sortedWithOption(filtered, sort.direction) { it.second?.finishDate }
         }
