@@ -3,8 +3,8 @@
 compileSdk = "36"
 minSdk = "26"
 targetSdk = "36"
-versionCode = "17"
-versionName = "2.2.0"
+versionCode = "18"
+versionName = "2.2.1"
 
 kotlin = "2.3.10"
 core-ktx = "1.17.0"

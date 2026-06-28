@@ -15,4 +15,12 @@ interface MalAuthService {
         @Field("code") code: String,
         @Field("code_verifier") codeVerifier: String
     ): Result<MalTokenResponse>
+
+    @FormUrlEncoded
+    @POST("v1/oauth2/token")
+    suspend fun refreshToken(
+        @Field("client_id") clientId: String,
+        @Field("grant_type") grantType: String,
+        @Field("refresh_token") refreshToken: String
+    ): Result<MalTokenResponse>
 }
