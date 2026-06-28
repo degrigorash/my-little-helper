@@ -8,6 +8,11 @@ import com.grig.myanimelist.data.model.manga.MalManga
 import com.grig.myanimelist.data.model.manga.MalMangaListStatus
 import com.grig.myanimelist.data.model.manga.MalMangaPublishStatus
 import com.grig.myanimelist.data.model.manga.MalMangaReadingStatus
+import com.grig.myanimelist.ui.home.SortDirection
+import com.grig.myanimelist.ui.home.SortField
+import com.grig.myanimelist.ui.home.SortOption
+import com.grig.myanimelist.ui.home.defaultDirection
+import com.grig.myanimelist.ui.home.sortedWithOption
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -33,6 +38,9 @@ class MangaListViewModel @Inject constructor(
 
     private val _searchQuery = MutableStateFlow("")
     val searchQuery: StateFlow<String> = _searchQuery.asStateFlow()
+
+    private val _sortOption = MutableStateFlow(SortOption.Default)
+    val sortOption: StateFlow<SortOption> = _sortOption.asStateFlow()
 
     private val _isRefreshing = MutableStateFlow(false)
     val isRefreshing: StateFlow<Boolean> = _isRefreshing.asStateFlow()
@@ -78,6 +86,22 @@ class MangaListViewModel @Inject constructor(
 
     fun onSearchQueryChange(query: String) {
         _searchQuery.value = query
+        applyFilter()
+    }
+
+    fun onSortSelected(field: SortField) {
+        val current = _sortOption.value
+        _sortOption.value = if (current.field == field) {
+            current.copy(
+                direction = if (current.direction == SortDirection.Descending) {
+                    SortDirection.Ascending
+                } else {
+                    SortDirection.Descending
+                }
+            )
+        } else {
+            SortOption(field, field.defaultDirection())
+        }
         applyFilter()
     }
 
@@ -157,9 +181,14 @@ class MangaListViewModel @Inject constructor(
             }
         }
 
-        val cardData = filtered
-            .map { MangaCardData(it.first, it.second) }
-            .sortedByDescending { it.manga.mean }
+        val sort = _sortOption.value
+        val sorted = when (sort.field) {
+            SortField.Rating -> sortedWithOption(filtered, sort.direction) { it.first.mean }
+            SortField.MyScore -> sortedWithOption(filtered, sort.direction) { it.second?.score?.takeIf { score -> score > 0 } }
+            SortField.ReleaseDate -> sortedWithOption(filtered, sort.direction) { it.first.startDate }
+            SortField.FinishDate -> sortedWithOption(filtered, sort.direction) { it.second?.finishDate }
+        }
+        val cardData = sorted.map { MangaCardData(it.first, it.second) }
 
         _listState.value = if (cardData.isNotEmpty()) {
             MangaListState.Content(cardData)
