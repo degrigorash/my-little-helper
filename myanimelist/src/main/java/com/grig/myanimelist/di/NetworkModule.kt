@@ -6,6 +6,7 @@ import com.grig.myanimelist.data.MalAuthService
 import com.grig.myanimelist.data.MalService
 import com.grig.myanimelist.data.UserManager
 import com.grig.myanimelist.data.setup.AuthorizationInterceptor
+import com.grig.myanimelist.data.setup.TokenAuthenticator
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module
 import dagger.Provides
@@ -54,11 +55,13 @@ class NetworkModule {
     @Named("Mal")
     fun provideMalRetrofit(
         okHttpClientBuilder: OkHttpClient.Builder,
-        userManager: UserManager
+        userManager: UserManager,
+        malAuthService: MalAuthService
     ): Retrofit = Retrofit.Builder()
         .client(
             okHttpClientBuilder
                 .addInterceptor(AuthorizationInterceptor(userManager))
+                .authenticator(TokenAuthenticator(userManager, malAuthService))
                 .build()
         )
         .baseUrl("https://api.myanimelist.net/")
