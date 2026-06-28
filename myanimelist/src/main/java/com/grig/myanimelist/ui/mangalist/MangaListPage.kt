@@ -15,6 +15,9 @@ import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -25,6 +28,8 @@ import com.grig.myanimelist.ui.MalEmpty
 import com.grig.myanimelist.ui.MalError
 import com.grig.myanimelist.ui.MalLoading
 import com.grig.myanimelist.ui.home.MalTab
+import com.grig.myanimelist.ui.home.SortBottomSheet
+import com.grig.myanimelist.ui.home.SortButton
 import com.grig.myanimelist.ui.home.UpcomingFilterButton
 import com.grig.myanimelist.ui.mangaedit.EditMangaBottomSheet
 import com.grig.myanimelist.ui.mangaedit.EditMangaViewModel
@@ -43,13 +48,16 @@ fun MangaListPage(
     val searchQuery by viewModel.searchQuery.collectAsState()
     val isRefreshing by viewModel.isRefreshing.collectAsState()
     val editSheetManga by viewModel.editSheetManga.collectAsState()
+    val sortOption by viewModel.sortOption.collectAsState()
+    var showSortSheet by remember { mutableStateOf(false) }
 
     Column(modifier = Modifier.fillMaxSize()) {
         MangaFilterChipsRow(
             statusFilter = statusFilter,
             upcomingFilter = upcomingFilter,
             onFilterSelected = viewModel::selectFilter,
-            onUpcomingToggle = viewModel::toggleUpcomingFilter
+            onUpcomingToggle = viewModel::toggleUpcomingFilter,
+            onSortClick = { showSortSheet = true }
         )
 
         PullToRefreshBox(
@@ -101,6 +109,14 @@ fun MangaListPage(
             }
         )
     }
+
+    if (showSortSheet) {
+        SortBottomSheet(
+            current = sortOption,
+            onSortSelected = viewModel::onSortSelected,
+            onDismiss = { showSortSheet = false }
+        )
+    }
 }
 
 @Composable
@@ -108,7 +124,8 @@ private fun MangaFilterChipsRow(
     statusFilter: Set<MalMangaReadingStatus>,
     upcomingFilter: Boolean,
     onFilterSelected: (MalMangaReadingStatus) -> Unit,
-    onUpcomingToggle: () -> Unit
+    onUpcomingToggle: () -> Unit,
+    onSortClick: () -> Unit
 ) {
     val colors = AppThemeExtended.colorScheme
 
@@ -118,6 +135,9 @@ private fun MangaFilterChipsRow(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
+        item {
+            SortButton(onClick = onSortClick)
+        }
         item {
             UpcomingFilterButton(selected = upcomingFilter, onClick = onUpcomingToggle)
         }
