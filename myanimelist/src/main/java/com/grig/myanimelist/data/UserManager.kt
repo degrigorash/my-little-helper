@@ -20,6 +20,8 @@ class UserManager @Inject constructor(
 
     val accessToken: String?
         get() = runBlocking { dataStore.data.map { it[ACCESS_TOKEN] }.first() }
+    val refreshToken: String?
+        get() = runBlocking { dataStore.data.map { it[REFRESH_TOKEN] }.first() }
     val userFlow = dataStore.data.map {
         it[USER]?.let { user ->
             MalUserState.Authorized(Json.decodeFromString<MalUser>(user))
