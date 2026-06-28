@@ -19,6 +19,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.selected
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.grig.myanimelist.R
@@ -54,7 +57,11 @@ fun SortBottomSheet(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clickable { onSortSelected(field) }
+                        .clickable(
+                            role = Role.RadioButton,
+                            onClickLabel = field.displayName
+                        ) { onSortSelected(field) }
+                        .semantics { selected = isActive }
                         .padding(vertical = 16.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -67,14 +74,13 @@ fun SortBottomSheet(
                         modifier = Modifier.weight(1f)
                     )
                     if (isActive) {
+                        val isAscending = current.direction == SortDirection.Ascending
                         Icon(
                             painter = painterResource(
-                                if (current.direction == SortDirection.Ascending)
-                                    R.drawable.ic_arrow_upward
+                                if (isAscending) R.drawable.ic_arrow_upward
                                 else R.drawable.ic_arrow_downward
                             ),
-                            contentDescription = if (current.direction == SortDirection.Ascending)
-                                "Ascending" else "Descending",
+                            contentDescription = if (isAscending) "Ascending" else "Descending",
                             tint = MaterialTheme.colorScheme.primary,
                             modifier = Modifier.size(20.dp)
                         )
