@@ -87,7 +87,8 @@ fun AnimeListPage(
                     searchQuery = searchQuery,
                     onSearchQueryChange = viewModel::onSearchQueryChange,
                     onEmptySearchClick = { onSearchWithQuery(searchQuery) },
-                    watchlistIds = watchlistIds
+                    watchlistIds = watchlistIds,
+                    sortKey = "${sortOption.field}-${sortOption.direction}"
                 )
             }
         }

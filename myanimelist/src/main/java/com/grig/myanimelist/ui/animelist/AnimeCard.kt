@@ -23,6 +23,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -52,9 +53,14 @@ fun AnimeList(
     searchQuery: String = "",
     onSearchQueryChange: (String) -> Unit = {},
     onEmptySearchClick: () -> Unit = {},
-    watchlistIds: Set<Int> = emptySet()
+    watchlistIds: Set<Int> = emptySet(),
+    sortKey: String = ""
 ) {
     val listState = rememberLazyListState(initialFirstVisibleItemIndex = 1)
+
+    LaunchedEffect(sortKey) {
+        listState.scrollToItem(1)
+    }
 
     LazyColumn(
         state = listState,

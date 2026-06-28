@@ -85,7 +85,8 @@ fun MangaListPage(
                     onMangaLongClick = { data -> onOpenDetail(data.manga.id) },
                     searchQuery = searchQuery,
                     onSearchQueryChange = viewModel::onSearchQueryChange,
-                    onEmptySearchClick = { onSearchWithQuery(searchQuery) }
+                    onEmptySearchClick = { onSearchWithQuery(searchQuery) },
+                    sortKey = "${sortOption.field}-${sortOption.direction}"
                 )
             }
         }
