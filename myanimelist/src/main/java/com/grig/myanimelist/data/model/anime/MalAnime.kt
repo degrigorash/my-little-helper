@@ -27,6 +27,8 @@ data class MalAnime(
     val popularity: Int? = null,
     @SerialName("num_list_users")
     val numListUsers: Int? = null,
+    @SerialName("media_type")
+    val mediaType: MalAnimeMediaType = MalAnimeMediaType.Unknown,
     @SerialName("status")
     val status: MalAnimeAiringStatus = MalAnimeAiringStatus.NotYetAired,
     @SerialName("num_episodes")

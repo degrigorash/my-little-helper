@@ -39,6 +39,7 @@ import com.grig.myanimelist.R
 import com.grig.myanimelist.ui.home.FilteredEmptyItem
 import com.grig.myanimelist.ui.home.ListSearchBar
 import com.grig.myanimelist.ui.home.StatusBadge
+import com.grig.myanimelist.ui.home.StatusBadgeOutlined
 import com.grig.myanimelist.ui.home.buildAiredText
 import com.grig.myanimelist.ui.home.formatMemberCount
 import com.grig.myanimelist.ui.home.mangaStatusColor
@@ -188,9 +189,13 @@ fun MangaCard(
                             color = readingStatusColor(listStatus.status)
                         )
                     }
-                    StatusBadge(
+                    StatusBadgeOutlined(
                         text = manga.status.displayName,
                         color = mangaStatusColor(manga.status)
+                    )
+                    StatusBadge(
+                        text = manga.mediaType.displayName,
+                        color = MaterialTheme.colorScheme.tertiary
                     )
                 }
             }

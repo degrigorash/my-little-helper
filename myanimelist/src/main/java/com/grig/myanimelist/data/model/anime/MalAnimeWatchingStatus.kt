@@ -8,7 +8,7 @@ enum class MalAnimeWatchingStatus(val apiValue: String, val displayName: String)
     @SerialName("watching")
     Watching("watching", "Watching"),
     @SerialName("completed")
-    Completed("completed", "Completed"),
+    Completed("completed", "Watched"),
     @SerialName("on_hold")
     OnHold("on_hold", "On Hold"),
     @SerialName("dropped")

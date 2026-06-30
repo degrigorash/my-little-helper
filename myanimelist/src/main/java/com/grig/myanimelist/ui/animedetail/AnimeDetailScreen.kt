@@ -20,7 +20,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.unit.dp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.grig.core.theme.AppThemeExtended
+import com.grig.myanimelist.ui.animeedit.EditAnimeBottomSheet
+import com.grig.myanimelist.ui.animeedit.EditAnimeViewModel
+import com.grig.myanimelist.ui.animelist.AnimeCardData
 import com.grig.myanimelist.ui.animesearch.AnimeDetailContent
 import com.grig.myanimelist.ui.common.CollapsingHeaderLayout
 import com.grig.myanimelist.ui.common.FullscreenImageViewer
@@ -75,6 +79,7 @@ fun AnimeDetailScreen(
                     }
                 }
                 var showFullscreenImage by remember { mutableStateOf(false) }
+                var showEditSheet by remember { mutableStateOf(false) }
 
                 CollapsingHeaderLayout(
                     title = anime.title,
@@ -89,6 +94,7 @@ fun AnimeDetailScreen(
                         isUpdatingList = currentState.isUpdatingList,
                         onAddToList = viewModel::addToMyList,
                         onDeleteFromList = viewModel::deleteFromMyList,
+                        onUpdateStatus = { showEditSheet = true },
                         titleAlpha = titleAlpha,
                         onStudioClick = navigateToStudioDetail,
                         onRelatedAnimeClick = navigateToAnimeDetail,
@@ -104,6 +110,27 @@ fun AnimeDetailScreen(
                     FullscreenImageViewer(
                         imageUrls = galleryUrls,
                         onDismiss = { showFullscreenImage = false }
+                    )
+                }
+
+                if (showEditSheet) {
+                    val editViewModel: EditAnimeViewModel = hiltViewModel()
+                    EditAnimeBottomSheet(
+                        data = AnimeCardData(
+                            anime = anime,
+                            listStatus = anime.myListStatus
+                        ),
+                        viewModel = editViewModel,
+                        onDismiss = { showEditSheet = false },
+                        onSaved = {
+                            showEditSheet = false
+                            viewModel.reload()
+                        },
+                        onDeleted = {
+                            showEditSheet = false
+                            viewModel.reload()
+                        },
+                        onOpenDetail = { showEditSheet = false }
                     )
                 }
             }

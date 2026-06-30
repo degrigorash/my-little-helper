@@ -177,7 +177,7 @@ class MalRepository @Inject constructor(
         relations: List<Pair<String, com.grig.myanimelist.data.model.jikan.JikanRelationEntry>>,
         isManga: Boolean
     ): List<ResolvedRelation> = coroutineScope {
-        val fields = "main_picture,start_date"
+        val fields = "main_picture,start_date,media_type,status"
         relations.map { (relation, entry) ->
             async {
                 val detail = try {
@@ -200,6 +200,16 @@ class MalRepository @Inject constructor(
                     is MalManga -> detail.startDate?.take(4)
                     else -> null
                 }
+                val mediaTypeLabel = when (detail) {
+                    is MalAnime -> detail.mediaType.displayName
+                    is MalManga -> detail.mediaType.displayName
+                    else -> null
+                }
+                val statusLabel = when (detail) {
+                    is MalAnime -> detail.status.displayName
+                    is MalManga -> detail.status.displayName
+                    else -> null
+                }
 
                 ResolvedRelation(
                     malId = entry.malId,
@@ -207,7 +217,9 @@ class MalRepository @Inject constructor(
                     type = entry.type,
                     relation = relation,
                     imageUrl = imageUrl,
-                    year = year
+                    year = year,
+                    mediaTypeLabel = mediaTypeLabel,
+                    statusLabel = statusLabel
                 )
             }
         }.awaitAll()

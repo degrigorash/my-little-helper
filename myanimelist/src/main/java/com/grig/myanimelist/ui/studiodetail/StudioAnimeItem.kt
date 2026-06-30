@@ -72,11 +72,16 @@ fun StudioAnimeItem(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
+                    anime.score?.let { score ->
+                        StatusBadge(
+                            text = "★ $score",
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                    }
                     anime.type?.let { type ->
-                        Text(
+                        StatusBadge(
                             text = type,
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                            color = MaterialTheme.colorScheme.tertiary
                         )
                     }
                     anime.year?.let { year ->
@@ -84,12 +89,6 @@ fun StudioAnimeItem(
                             text = year.toString(),
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-                    anime.score?.let { score ->
-                        StatusBadge(
-                            text = "★ $score",
-                            color = MaterialTheme.colorScheme.primary
                         )
                     }
                 }

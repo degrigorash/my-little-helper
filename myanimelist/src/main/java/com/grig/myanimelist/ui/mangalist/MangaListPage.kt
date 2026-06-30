@@ -77,12 +77,12 @@ fun MangaListPage(
                 )
                 is MangaListState.Content -> MangaList(
                     mangas = state.mangas,
-                    onMangaClick = if (authorized) {
+                    onMangaClick = { data -> onOpenDetail(data.manga.id) },
+                    onMangaLongClick = if (authorized) {
                         viewModel::onMangaClick
                     } else {
                         { data -> onOpenDetail(data.manga.id) }
                     },
-                    onMangaLongClick = { data -> onOpenDetail(data.manga.id) },
                     searchQuery = searchQuery,
                     onSearchQueryChange = viewModel::onSearchQueryChange,
                     onEmptySearchClick = { onSearchWithQuery(searchQuery) },

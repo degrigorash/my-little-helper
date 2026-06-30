@@ -27,6 +27,10 @@ class NetworkModule {
 
     private val json = Json {
         ignoreUnknownKeys = true
+        // Fall back to a property's default when the API returns an enum value
+        // we don't model (e.g. media_type "tv_special"/"cm"/"pv") instead of
+        // throwing and failing the whole response.
+        coerceInputValues = true
     }
 
     @Singleton

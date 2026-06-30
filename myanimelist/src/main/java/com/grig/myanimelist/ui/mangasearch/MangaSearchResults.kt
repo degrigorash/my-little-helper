@@ -31,6 +31,7 @@ import coil.compose.AsyncImage
 import com.grig.core.theme.AppTheme
 import com.grig.myanimelist.data.model.manga.MalManga
 import com.grig.myanimelist.ui.home.StatusBadge
+import com.grig.myanimelist.ui.home.StatusBadgeOutlined
 import com.grig.myanimelist.ui.home.mangaStatusColor
 import com.grig.myanimelist.ui.mangalist.previewManga
 import com.grig.myanimelist.ui.mangalist.previewMangaFinished
@@ -100,9 +101,13 @@ fun MangaSearchResultItem(
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
-                    StatusBadge(
+                    StatusBadgeOutlined(
                         text = manga.status.displayName,
                         color = mangaStatusColor(manga.status)
+                    )
+                    StatusBadge(
+                        text = manga.mediaType.displayName,
+                        color = MaterialTheme.colorScheme.tertiary
                     )
                 }
             }

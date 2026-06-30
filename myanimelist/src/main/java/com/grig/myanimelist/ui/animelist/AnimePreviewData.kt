@@ -5,6 +5,7 @@ import com.grig.myanimelist.data.model.MalGenre
 import com.grig.myanimelist.data.model.MalStudio
 import com.grig.myanimelist.data.model.anime.MalAnime
 import com.grig.myanimelist.data.model.anime.MalAnimeAiringStatus
+import com.grig.myanimelist.data.model.anime.MalAnimeMediaType
 import com.grig.myanimelist.data.model.anime.MalAnimeListStatus
 import com.grig.myanimelist.data.model.anime.MalAnimeWatchingStatus
 
@@ -16,6 +17,7 @@ val previewAnime = MalAnime(
     mean = 8.9f,
     rank = 1,
     numListUsers = 2_100_000,
+    mediaType = MalAnimeMediaType.Movie,
     status = MalAnimeAiringStatus.CurrentlyAiring,
     numEpisodes = 26,
     startDate = "2025-10-03",
@@ -31,6 +33,7 @@ val previewAnimeFinished = MalAnime(
     mean = 9.1f,
     rank = 2,
     numListUsers = 3_500_000,
+    mediaType = MalAnimeMediaType.Tv,
     status = MalAnimeAiringStatus.FinishedAiring,
     numEpisodes = 87,
     startDate = "2020-12-07",
