@@ -78,12 +78,12 @@ fun AnimeListPage(
                 )
                 is AnimeListState.Content -> AnimeList(
                     animes = state.animes,
-                    onAnimeClick = if (authorized) {
+                    onAnimeClick = { data -> onOpenDetail(data.anime.id) },
+                    onAnimeLongClick = if (authorized) {
                         viewModel::onAnimeClick
                     } else {
                         { data -> onOpenDetail(data.anime.id) }
                     },
-                    onAnimeLongClick = { data -> onOpenDetail(data.anime.id) },
                     searchQuery = searchQuery,
                     onSearchQueryChange = viewModel::onSearchQueryChange,
                     onEmptySearchClick = { onSearchWithQuery(searchQuery) },

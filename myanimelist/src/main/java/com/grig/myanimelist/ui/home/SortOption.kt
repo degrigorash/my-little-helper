@@ -4,7 +4,7 @@ enum class SortField(val displayName: String) {
     Rating("Rating"),
     MyScore("My score"),
     ReleaseDate("Release date"),
-    FinishDate("Date finished"),
+    FinishDate("Date completed"),
 }
 
 enum class SortDirection { Ascending, Descending }

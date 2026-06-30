@@ -34,6 +34,7 @@ import com.grig.myanimelist.data.model.manga.MalManga
 import com.grig.myanimelist.ui.animeedit.ConfirmationDialog
 import com.grig.myanimelist.ui.common.CrossMediaRelationsSection
 import com.grig.myanimelist.ui.home.StatusBadge
+import com.grig.myanimelist.ui.home.StatusBadgeOutlined
 import com.grig.myanimelist.ui.home.StatsRow
 import com.grig.myanimelist.ui.home.buildAiredText
 import com.grig.myanimelist.ui.home.mangaStatusColor
@@ -48,6 +49,7 @@ fun MangaDetailContent(
     isUpdatingList: Boolean,
     onAddToList: () -> Unit,
     onDeleteFromList: () -> Unit,
+    onUpdateStatus: () -> Unit = {},
     titleAlpha: Float = 1f,
     onAuthorClick: (Int) -> Unit = {},
     onRelatedMangaClick: (Int) -> Unit = {},
@@ -88,9 +90,13 @@ fun MangaDetailContent(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            StatusBadge(
+            StatusBadgeOutlined(
                 text = manga.status.displayName,
                 color = mangaStatusColor(manga.status)
+            )
+            StatusBadge(
+                text = manga.mediaType.displayName,
+                color = MaterialTheme.colorScheme.tertiary
             )
             val dateText = buildAiredText(manga.startDate, manga.endDate)
             if (dateText != null) {
@@ -191,6 +197,15 @@ fun MangaDetailContent(
         if (authorized) {
             Spacer(modifier = Modifier.height(24.dp))
             if (isInMyList) {
+                Button(
+                    onClick = onUpdateStatus,
+                    enabled = !isUpdatingList,
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(16.dp)
+                ) {
+                    Text("Update status")
+                }
+                Spacer(modifier = Modifier.height(8.dp))
                 Button(
                     onClick = { showDeleteConfirm = true },
                     enabled = !isUpdatingList,

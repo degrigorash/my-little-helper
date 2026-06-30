@@ -30,7 +30,9 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.grig.core.theme.AppTheme
 import com.grig.myanimelist.data.model.anime.MalAnime
+import com.grig.myanimelist.data.model.anime.MalAnimeMediaType
 import com.grig.myanimelist.ui.home.StatusBadge
+import com.grig.myanimelist.ui.home.StatusBadgeOutlined
 import com.grig.myanimelist.ui.home.animeStatusColor
 import com.grig.myanimelist.ui.animelist.previewAnime
 import com.grig.myanimelist.ui.animelist.previewAnimeFinished
@@ -100,10 +102,16 @@ fun AnimeSearchResultItem(
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
-                    StatusBadge(
+                    StatusBadgeOutlined(
                         text = anime.status.displayName,
                         color = animeStatusColor(anime.status)
                     )
+                    if (anime.mediaType != MalAnimeMediaType.Unknown) {
+                        StatusBadge(
+                            text = anime.mediaType.displayName,
+                            color = MaterialTheme.colorScheme.tertiary
+                        )
+                    }
                 }
             }
         }

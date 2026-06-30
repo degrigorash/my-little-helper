@@ -8,7 +8,7 @@ enum class MalMangaReadingStatus(val apiValue: String, val displayName: String) 
     @SerialName("reading")
     Reading("reading", "Reading"),
     @SerialName("completed")
-    Completed("completed", "Completed"),
+    Completed("completed", "Read"),
     @SerialName("on_hold")
     OnHold("on_hold", "On Hold"),
     @SerialName("dropped")

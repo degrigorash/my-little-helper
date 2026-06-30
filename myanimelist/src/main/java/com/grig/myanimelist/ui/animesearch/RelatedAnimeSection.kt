@@ -34,10 +34,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
 import coil.compose.AsyncImage
 import com.grig.core.theme.AppTheme
+import com.grig.myanimelist.data.model.anime.MalAnimeMediaType
 import com.grig.myanimelist.data.model.anime.MalRelatedAnime
 import com.grig.myanimelist.ui.animelist.previewAnime
 import com.grig.myanimelist.ui.animelist.previewAnimeFinished
 import com.grig.myanimelist.ui.home.StatusBadge
+import com.grig.myanimelist.ui.home.StatusBadgeOutlined
+import com.grig.myanimelist.ui.home.animeStatusColor
 
 private val PRIMARY_RELATION_TYPES = setOf("sequel", "prequel", "adaptation")
 
@@ -134,6 +137,16 @@ private fun RelatedAnimeItem(
                 StatusBadge(
                     text = related.relationTypeFormatted,
                     color = MaterialTheme.colorScheme.tertiary
+                )
+                if (related.node.mediaType != MalAnimeMediaType.Unknown) {
+                    StatusBadge(
+                        text = related.node.mediaType.displayName,
+                        color = MaterialTheme.colorScheme.secondary
+                    )
+                }
+                StatusBadgeOutlined(
+                    text = related.node.status.displayName,
+                    color = animeStatusColor(related.node.status)
                 )
                 val year = related.node.startDate?.take(4)
                 if (year != null) {

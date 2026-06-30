@@ -27,6 +27,8 @@ import coil.compose.AsyncImage
 import com.grig.core.theme.AppTheme
 import com.grig.myanimelist.data.model.jikan.ResolvedRelation
 import com.grig.myanimelist.ui.home.StatusBadge
+import com.grig.myanimelist.ui.home.StatusBadgeOutlined
+import com.grig.myanimelist.ui.home.statusLabelColor
 
 @Composable
 fun CrossMediaRelationsSection(
@@ -96,6 +98,18 @@ fun CrossMediaRelationsSection(
                                 text = resolved.relation,
                                 color = MaterialTheme.colorScheme.secondary
                             )
+                            if (resolved.mediaTypeLabel != null) {
+                                StatusBadge(
+                                    text = resolved.mediaTypeLabel,
+                                    color = MaterialTheme.colorScheme.tertiary
+                                )
+                            }
+                            if (resolved.statusLabel != null) {
+                                StatusBadgeOutlined(
+                                    text = resolved.statusLabel,
+                                    color = statusLabelColor(resolved.statusLabel)
+                                )
+                            }
                             if (resolved.year != null) {
                                 Text(
                                     text = resolved.year,
@@ -118,8 +132,8 @@ private fun CrossMediaRelationsSectionPreview() {
         CrossMediaRelationsSection(
             title = "Related Manga",
             relations = listOf(
-                ResolvedRelation(malId = 11, name = "Naruto", type = "manga", relation = "Adaptation", year = "1999"),
-                ResolvedRelation(malId = 86129, name = "Naruto Hiden Series", type = "manga", relation = "Adaptation", year = "2015")
+                ResolvedRelation(malId = 9, name = "Re:Zero kara Hajimeru Isekai Seikatsu", type = "manga", relation = "Adaptation", year = "2014", mediaTypeLabel = "Light Novel", statusLabel = "Publishing"),
+                ResolvedRelation(malId = 86129, name = "Re:Zero kara Hajimeru Isekai Seikatsu: Truth of Zero", type = "manga", relation = "Adaptation", year = "2015", mediaTypeLabel = "Manga", statusLabel = "Finished")
             ),
             isLoading = false,
             onClick = {}
@@ -147,7 +161,7 @@ private fun CrossMediaRelationsSectionDarkPreview() {
         CrossMediaRelationsSection(
             title = "Related Manga",
             relations = listOf(
-                ResolvedRelation(malId = 11, name = "Naruto", type = "manga", relation = "Adaptation", year = "1999")
+                ResolvedRelation(malId = 11, name = "Naruto", type = "manga", relation = "Adaptation", year = "1999", mediaTypeLabel = "Manga", statusLabel = "Finished")
             ),
             isLoading = false,
             onClick = {}

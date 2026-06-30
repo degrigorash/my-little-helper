@@ -31,10 +31,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.grig.core.theme.AppTheme
 import com.grig.myanimelist.data.model.anime.MalAnime
+import com.grig.myanimelist.data.model.anime.MalAnimeMediaType
 import com.grig.myanimelist.data.model.jikan.ResolvedRelation
 import com.grig.myanimelist.ui.animeedit.ConfirmationDialog
 import com.grig.myanimelist.ui.common.CrossMediaRelationsSection
 import com.grig.myanimelist.ui.home.StatusBadge
+import com.grig.myanimelist.ui.home.StatusBadgeOutlined
 import com.grig.myanimelist.ui.home.StatsRow
 import com.grig.myanimelist.ui.home.animeStatusColor
 import com.grig.myanimelist.ui.home.buildAiredText
@@ -49,6 +51,7 @@ fun AnimeDetailContent(
     isUpdatingList: Boolean,
     onAddToList: () -> Unit,
     onDeleteFromList: () -> Unit,
+    onUpdateStatus: () -> Unit = {},
     titleAlpha: Float = 1f,
     onStudioClick: (Int) -> Unit = {},
     onRelatedAnimeClick: (Int) -> Unit = {},
@@ -89,10 +92,16 @@ fun AnimeDetailContent(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            StatusBadge(
+            StatusBadgeOutlined(
                 text = anime.status.displayName,
                 color = animeStatusColor(anime.status)
             )
+            if (anime.mediaType != MalAnimeMediaType.Unknown) {
+                StatusBadge(
+                    text = anime.mediaType.displayName,
+                    color = MaterialTheme.colorScheme.tertiary
+                )
+            }
             val airedText = buildAiredText(anime.startDate, anime.endDate)
             if (airedText != null) {
                 Text(
@@ -184,6 +193,15 @@ fun AnimeDetailContent(
         if (authorized) {
             Spacer(modifier = Modifier.height(24.dp))
             if (isInMyList) {
+                Button(
+                    onClick = onUpdateStatus,
+                    enabled = !isUpdatingList,
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(16.dp)
+                ) {
+                    Text("Update status")
+                }
+                Spacer(modifier = Modifier.height(8.dp))
                 Button(
                     onClick = { showDeleteConfirm = true },
                     enabled = !isUpdatingList,

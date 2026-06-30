@@ -36,6 +36,8 @@ import coil.compose.AsyncImage
 import com.grig.core.theme.AppTheme
 import com.grig.myanimelist.data.model.manga.MalRelatedManga
 import com.grig.myanimelist.ui.home.StatusBadge
+import com.grig.myanimelist.ui.home.StatusBadgeOutlined
+import com.grig.myanimelist.ui.home.mangaStatusColor
 import com.grig.myanimelist.ui.mangalist.previewManga
 import com.grig.myanimelist.ui.mangalist.previewMangaFinished
 
@@ -134,6 +136,14 @@ private fun RelatedMangaItem(
                 StatusBadge(
                     text = related.relationTypeFormatted,
                     color = MaterialTheme.colorScheme.tertiary
+                )
+                StatusBadge(
+                    text = related.node.mediaType.displayName,
+                    color = MaterialTheme.colorScheme.secondary
+                )
+                StatusBadgeOutlined(
+                    text = related.node.status.displayName,
+                    color = mangaStatusColor(related.node.status)
                 )
                 val year = related.node.startDate?.take(4)
                 if (year != null) {

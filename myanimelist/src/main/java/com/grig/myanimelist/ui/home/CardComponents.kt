@@ -1,5 +1,6 @@
 package com.grig.myanimelist.ui.home
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -83,11 +84,40 @@ fun StatsRow(
     }
 }
 
+/**
+ * Soft-filled chip used for the user's own list status (Watching/Watched/etc.)
+ * and other primary signals. For media airing/publishing status use
+ * [StatusBadgeOutlined] so the two categories read as visually distinct kinds
+ * of information rather than the same color scale.
+ */
 @Composable
 fun StatusBadge(text: String, color: Color) {
     Surface(
         shape = RoundedCornerShape(8.dp),
         color = color.copy(alpha = 0.15f)
+    ) {
+        Text(
+            text = text,
+            modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
+            style = MaterialTheme.typography.labelSmall,
+            fontWeight = FontWeight.SemiBold,
+            color = color,
+            fontSize = 11.sp
+        )
+    }
+}
+
+/**
+ * Outlined chip used for media airing/publishing status. Same shape/size as
+ * [StatusBadge] but a border with no fill, so it reads as a different category
+ * of information from the user's filled list-status badge.
+ */
+@Composable
+fun StatusBadgeOutlined(text: String, color: Color) {
+    Surface(
+        shape = RoundedCornerShape(8.dp),
+        color = Color.Transparent,
+        border = BorderStroke(1.dp, color.copy(alpha = 0.5f))
     ) {
         Text(
             text = text,
@@ -106,20 +136,23 @@ fun animeStatusColor(status: MalAnimeAiringStatus): Color = when (status) {
     MalAnimeAiringStatus.NotYetAired -> Color(0xFF42A5F5)
 }
 
+// Colors are keyed to lifecycle stage so they stay consistent with the media
+// airing/publishing palette: green = active, grey = done, blue = not started,
+// orange = paused, red = abandoned.
 fun watchingStatusColor(status: MalAnimeWatchingStatus): Color = when (status) {
     MalAnimeWatchingStatus.Watching -> Color(0xFF4CAF50)
-    MalAnimeWatchingStatus.Completed -> Color(0xFF42A5F5)
+    MalAnimeWatchingStatus.Completed -> Color(0xFF78909C)
     MalAnimeWatchingStatus.OnHold -> Color(0xFFFF9800)
     MalAnimeWatchingStatus.Dropped -> Color(0xFFE53935)
-    MalAnimeWatchingStatus.PlanToWatch -> Color(0xFF78909C)
+    MalAnimeWatchingStatus.PlanToWatch -> Color(0xFF42A5F5)
 }
 
 fun readingStatusColor(status: MalMangaReadingStatus): Color = when (status) {
     MalMangaReadingStatus.Reading -> Color(0xFF4CAF50)
-    MalMangaReadingStatus.Completed -> Color(0xFF42A5F5)
+    MalMangaReadingStatus.Completed -> Color(0xFF78909C)
     MalMangaReadingStatus.OnHold -> Color(0xFFFF9800)
     MalMangaReadingStatus.Dropped -> Color(0xFFE53935)
-    MalMangaReadingStatus.PlanToRead -> Color(0xFF78909C)
+    MalMangaReadingStatus.PlanToRead -> Color(0xFF42A5F5)
 }
 
 fun mangaStatusColor(status: MalMangaPublishStatus): Color = when (status) {
@@ -128,6 +161,22 @@ fun mangaStatusColor(status: MalMangaPublishStatus): Color = when (status) {
     MalMangaPublishStatus.NotYetPublished -> Color(0xFF42A5F5)
     MalMangaPublishStatus.OnHiatus -> Color(0xFFFF9800)
     MalMangaPublishStatus.Discontinued -> Color(0xFFE53935)
+}
+
+/**
+ * Maps a media airing/publishing status *display label* (e.g. "Finished",
+ * "Airing") to the shared lifecycle color. Used where only the formatted label
+ * is available (cross-media relations) rather than the typed status enum.
+ * Falls back to grey for anything unrecognized.
+ */
+fun statusLabelColor(label: String): Color = when (label) {
+    MalAnimeAiringStatus.CurrentlyAiring.displayName,
+    MalMangaPublishStatus.CurrentlyPublishing.displayName -> Color(0xFF4CAF50)
+    MalAnimeAiringStatus.NotYetAired.displayName,
+    MalMangaPublishStatus.NotYetPublished.displayName -> Color(0xFF42A5F5)
+    MalMangaPublishStatus.OnHiatus.displayName -> Color(0xFFFF9800)
+    MalMangaPublishStatus.Discontinued.displayName -> Color(0xFFE53935)
+    else -> Color(0xFF78909C) // Finished / unknown
 }
 
 fun formatMemberCount(count: Int): String = when {
@@ -156,7 +205,7 @@ private fun StatsRowDarkPreview() {
 @Composable
 private fun StatusBadgeAiringPreview() {
     AppTheme(darkTheme = false) {
-        StatusBadge(
+        StatusBadgeOutlined(
             text = MalAnimeAiringStatus.CurrentlyAiring.displayName,
             color = animeStatusColor(MalAnimeAiringStatus.CurrentlyAiring)
         )
@@ -167,7 +216,7 @@ private fun StatusBadgeAiringPreview() {
 @Composable
 private fun StatusBadgeFinishedPreview() {
     AppTheme(darkTheme = false) {
-        StatusBadge(
+        StatusBadgeOutlined(
             text = MalAnimeAiringStatus.FinishedAiring.displayName,
             color = animeStatusColor(MalAnimeAiringStatus.FinishedAiring)
         )

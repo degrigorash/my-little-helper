@@ -37,9 +37,11 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.grig.core.theme.AppTheme
 import com.grig.myanimelist.R
+import com.grig.myanimelist.data.model.anime.MalAnimeMediaType
 import com.grig.myanimelist.ui.home.FilteredEmptyItem
 import com.grig.myanimelist.ui.home.ListSearchBar
 import com.grig.myanimelist.ui.home.StatusBadge
+import com.grig.myanimelist.ui.home.StatusBadgeOutlined
 import com.grig.myanimelist.ui.home.animeStatusColor
 import com.grig.myanimelist.ui.home.buildAiredText
 import com.grig.myanimelist.ui.home.formatMemberCount
@@ -190,10 +192,16 @@ fun AnimeCard(
                                 color = watchingStatusColor(listStatus.status)
                             )
                         }
-                        StatusBadge(
+                        StatusBadgeOutlined(
                             text = anime.status.displayName,
                             color = animeStatusColor(anime.status)
                         )
+                        if (anime.mediaType != MalAnimeMediaType.Unknown) {
+                            StatusBadge(
+                                text = anime.mediaType.displayName,
+                                color = MaterialTheme.colorScheme.tertiary
+                            )
+                        }
                     }
                 }
             }

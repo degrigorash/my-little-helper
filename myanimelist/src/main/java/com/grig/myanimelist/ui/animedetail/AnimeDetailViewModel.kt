@@ -94,6 +94,11 @@ class AnimeDetailViewModel @Inject constructor(
         }
     }
 
+    /** Reloads detail after the edit bottom sheet changes the list status. */
+    fun reload() {
+        viewModelScope.launch { refreshDetail() }
+    }
+
     private suspend fun refreshDetail() {
         val result = malRepository.getAnimeDetails(animeId)
         result.fold(
