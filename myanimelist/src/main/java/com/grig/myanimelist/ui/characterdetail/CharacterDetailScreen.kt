@@ -22,7 +22,8 @@ import com.grig.myanimelist.ui.common.CollapsingHeaderLayout
 @Composable
 fun CharacterDetailScreen(
     viewModel: CharacterDetailViewModel,
-    navigateBack: () -> Unit
+    navigateBack: () -> Unit,
+    navigateToPersonDetail: (Int) -> Unit = {}
 ) {
     val state by viewModel.state.collectAsState()
     val colors = AppThemeExtended.colorScheme
@@ -54,7 +55,8 @@ fun CharacterDetailScreen(
                 ) { titleAlpha ->
                     CharacterDetailContent(
                         character = character,
-                        titleAlpha = titleAlpha
+                        titleAlpha = titleAlpha,
+                        onVoiceActorClick = navigateToPersonDetail
                     )
                 }
             }

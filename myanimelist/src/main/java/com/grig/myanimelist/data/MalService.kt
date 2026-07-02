@@ -1,5 +1,6 @@
 package com.grig.myanimelist.data
 
+import com.grig.myanimelist.data.model.MalCharacter
 import com.grig.myanimelist.data.model.MalUser
 import com.grig.myanimelist.data.model.anime.MalAnime
 import com.grig.myanimelist.data.model.anime.MalAnimeList
@@ -19,6 +20,12 @@ interface MalService {
 
     @GET("v2/users/@me")
     suspend fun getUser(): Result<MalUser>
+
+    @GET("v2/characters/{character_id}")
+    suspend fun getCharacter(
+        @Path("character_id") characterId: Int,
+        @Query("fields") fields: String = "num_favorites"
+    ): Result<MalCharacter>
 
     @GET("v2/anime")
     suspend fun searchAnime(

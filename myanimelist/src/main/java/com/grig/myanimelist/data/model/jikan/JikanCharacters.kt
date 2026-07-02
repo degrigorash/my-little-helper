@@ -15,6 +15,8 @@ data class JikanCharacterEntry(
     val character: JikanCharacterMeta,
     @SerialName("role")
     val role: String,
+    @SerialName("favorites")
+    val favorites: Int = 0,
     @SerialName("voice_actors")
     val voiceActors: List<JikanVoiceActor> = emptyList()
 )

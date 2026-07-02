@@ -1,5 +1,6 @@
 package com.grig.myanimelist.ui.characterdetail
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -23,7 +24,8 @@ import com.grig.myanimelist.ui.home.StatusBadge
 @Composable
 fun CharacterDetailContent(
     character: JikanCharacterFull,
-    titleAlpha: Float = 1f
+    titleAlpha: Float = 1f,
+    onVoiceActorClick: (Int) -> Unit = {}
 ) {
     Column {
         Text(
@@ -56,6 +58,15 @@ fun CharacterDetailContent(
                     )
                 }
             }
+        }
+
+        val japaneseVoice = character.voices.firstOrNull { it.language == "Japanese" }
+        if (japaneseVoice != null) {
+            Spacer(modifier = Modifier.height(16.dp))
+            JapaneseVoiceActorCard(
+                voice = japaneseVoice,
+                onClick = { onVoiceActorClick(japaneseVoice.person.malId) }
+            )
         }
 
         if (character.favorites > 0) {
@@ -128,7 +139,9 @@ fun CharacterDetailContent(
                     text = "${voice.person.name} (${voice.language})",
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(vertical = 2.dp)
+                    modifier = Modifier
+                        .clickable { onVoiceActorClick(voice.person.malId) }
+                        .padding(vertical = 2.dp)
                 )
             }
         }

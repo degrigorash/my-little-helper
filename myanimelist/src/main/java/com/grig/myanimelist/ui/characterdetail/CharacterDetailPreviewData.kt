@@ -71,3 +71,12 @@ val previewCharacterFullMinimal = JikanCharacterFull(
     favorites = 0,
     about = null
 )
+
+val previewJapaneseVoice = JikanCharacterVoiceEntry(
+    language = "Japanese",
+    person = JikanPersonMeta(
+        malId = 40,
+        url = "https://myanimelist.net/people/40",
+        name = "Tanaka, Mayumi"
+    )
+)

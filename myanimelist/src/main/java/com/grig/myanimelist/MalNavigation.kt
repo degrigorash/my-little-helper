@@ -18,6 +18,7 @@ import com.grig.myanimelist.ui.login.MalLoginScreen
 import com.grig.myanimelist.ui.mangadetail.MangaDetailScreen
 import com.grig.myanimelist.ui.mangalist.MangaListViewModel
 import com.grig.myanimelist.ui.mangasearch.MangaSearchScreen
+import com.grig.myanimelist.ui.persondetail.PersonDetailScreen
 import com.grig.myanimelist.ui.reviews.ReviewsScreen
 import com.grig.myanimelist.ui.studiodetail.StudioDetailScreen
 import com.grig.myanimelist.ui.watchlist.WatchlistScreen
@@ -239,7 +240,23 @@ fun NavGraphBuilder.malNavigation(
         AppTheme {
             CharacterDetailScreen(
                 viewModel = hiltViewModel(),
-                navigateBack = { navController.popBackStack() }
+                navigateBack = { navController.popBackStack() },
+                navigateToPersonDetail = { personId ->
+                    navController.navigate(MalRoute.PersonDetail(personId))
+                }
+            )
+        }
+    }
+    composable<MalRoute.PersonDetail> {
+        AppTheme {
+            PersonDetailScreen(
+                viewModel = hiltViewModel(),
+                navigateBack = { navController.popBackStack() },
+                navigateToCharacterDetail = { characterId ->
+                    navController.navigate(MalRoute.CharacterDetail(characterId)) {
+                        popUpTo<MalRoute.PersonDetail> { inclusive = true }
+                    }
+                }
             )
         }
     }
