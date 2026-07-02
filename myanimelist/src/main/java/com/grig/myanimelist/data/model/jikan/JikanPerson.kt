@@ -30,7 +30,9 @@ data class JikanPersonFull(
     @SerialName("anime")
     val anime: List<JikanPersonAnimeEntry> = emptyList(),
     @SerialName("manga")
-    val manga: List<JikanPersonMangaEntry> = emptyList()
+    val manga: List<JikanPersonMangaEntry> = emptyList(),
+    @SerialName("voices")
+    val voices: List<JikanPersonVoiceRole> = emptyList()
 )
 
 @Serializable

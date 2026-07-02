@@ -42,7 +42,9 @@ class CharactersViewModel @Inject constructor(
                     if (response.data.isEmpty()) {
                         _state.value = CharactersState.Empty
                     } else {
-                        _state.value = CharactersState.Content(characters = response.data)
+                        _state.value = CharactersState.Content(
+                            characters = response.data.sortedByDescending { it.favorites }
+                        )
                     }
                 },
                 onFailure = { error ->

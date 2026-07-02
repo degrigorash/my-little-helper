@@ -4,13 +4,19 @@ import android.net.Uri
 import com.grig.myanimelist.clientApiId
 import com.grig.myanimelist.data.model.MalUserState
 import com.grig.myanimelist.data.model.anime.MalAnime
+import com.grig.myanimelist.data.model.jikan.PersonDetail
 import com.grig.myanimelist.data.model.jikan.ResolvedRelation
+import com.grig.myanimelist.data.model.jikan.VoicedCharacter
+import com.grig.myanimelist.data.model.jikan.VoicedCharacterAnime
 import com.grig.myanimelist.data.model.manga.MalManga
 import com.grig.myanimelist.tools.generateCodeVerifier
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.sync.Semaphore
+import kotlinx.coroutines.sync.withPermit
+import java.util.concurrent.atomic.AtomicInteger
 import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -153,6 +159,64 @@ class MalRepository @Inject constructor(
     suspend fun getPersonFull(personId: Int) =
         jikanService.getPersonFull(personId)
 
+    /**
+     * Fetches a person's profile and voice roles, grouping roles by character (each
+     * character carries every anime they appear in), enriching each character with its
+     * MAL favorites count, and sorting characters by favorites descending. Fails only if
+     * the profile can't be loaded; missing voice roles are tolerated as an empty list.
+     *
+     * The Jikan voices data has no per-character favorites, so favorites are fetched one
+     * request per unique character from the MAL v2 API (ids match Jikan's). These run
+     * concurrently but capped at [FAVORITES_FETCH_CONCURRENCY] in flight so a prolific
+     * seiyuu (100+ characters) doesn't flood the shared HTTP client at once.
+     *
+     * [onFavoritesProgress] is invoked (done, total) after each favorites lookup completes,
+     * letting the UI show determinate loading progress. It is not called when there are no
+     * characters to fetch.
+     */
+    suspend fun getPersonWithVoices(
+        personId: Int,
+        onFavoritesProgress: (done: Int, total: Int) -> Unit = { _, _ -> }
+    ): Result<PersonDetail> = coroutineScope {
+        val person = jikanService.getPersonFull(personId)
+            .getOrElse { return@coroutineScope Result.failure(it) }
+            .data
+
+        // /people/{id}/full already embeds the full voices array, so no separate call needed.
+        val roles = person.voices.filter { it.anime.title.isNotBlank() }
+
+        // Group every role by the character voiced, preserving first-seen character metadata.
+        val grouped = roles.groupBy { it.character.malId }
+
+        // Fetch favorites per unique character, bounding concurrency with a semaphore and
+        // reporting progress as each lookup finishes.
+        val total = grouped.size
+        val done = AtomicInteger(0)
+        val semaphore = Semaphore(FAVORITES_FETCH_CONCURRENCY)
+        val favorites = grouped.keys.map { characterId ->
+            async {
+                val favs = semaphore.withPermit {
+                    malService.getCharacter(characterId).getOrNull()?.numFavorites ?: 0
+                }
+                onFavoritesProgress(done.incrementAndGet(), total)
+                characterId to favs
+            }
+        }.awaitAll().toMap()
+
+        val characters = grouped.values.map { characterRoles ->
+            val first = characterRoles.first()
+            VoicedCharacter(
+                character = first.character,
+                favorites = favorites[first.character.malId] ?: 0,
+                roles = characterRoles
+                    .map { VoicedCharacterAnime(anime = it.anime, role = it.role) }
+                    .sortedByDescending { it.role.equals("Main", ignoreCase = true) }
+            )
+        }.sortedByDescending { it.favorites }
+
+        Result.success(PersonDetail(person = person, characters = characters))
+    }
+
     suspend fun getAnimeRelatedManga(animeId: Int): List<ResolvedRelation> {
         val rawRelations = jikanService.getAnimeRelations(animeId).getOrNull()
             ?.data
@@ -231,5 +295,8 @@ class MalRepository @Inject constructor(
 
     companion object {
         const val MAL_AUTH_REDIRECT_HOST = "grigmal.auth"
+
+        // Max concurrent MAL character-favorites lookups on the person screen.
+        private const val FAVORITES_FETCH_CONCURRENCY = 8
     }
 }

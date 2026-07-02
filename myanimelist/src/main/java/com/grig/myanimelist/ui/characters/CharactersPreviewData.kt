@@ -12,6 +12,7 @@ val previewCharacterEntry = JikanCharacterEntry(
         name = "Monkey D. Luffy"
     ),
     role = "Main",
+    favorites = 78234,
     voiceActors = listOf(
         JikanVoiceActor(
             person = JikanPersonMeta(
@@ -31,6 +32,7 @@ val previewCharacterEntrySupporting = JikanCharacterEntry(
         name = "Shanks"
     ),
     role = "Supporting",
+    favorites = 12045,
     voiceActors = listOf(
         JikanVoiceActor(
             person = JikanPersonMeta(
