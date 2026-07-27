@@ -35,19 +35,20 @@ class NetworkModule {
 
     @Singleton
     @Provides
-    fun provideOkHttpClientBuilder() = OkHttpClient.Builder()
+    fun provideOkHttpClient(): OkHttpClient = OkHttpClient.Builder()
         .connectTimeout(30, TimeUnit.SECONDS)
         .writeTimeout(30, TimeUnit.SECONDS)
         .readTimeout(30, TimeUnit.SECONDS)
+        .build()
 
     @OptIn(ExperimentalSerializationApi::class)
     @Singleton
     @Provides
     @Named("Oauth2")
     fun provideAuthRetrofit(
-        okHttpClientBuilder: OkHttpClient.Builder
+        okHttpClient: OkHttpClient
     ): Retrofit = Retrofit.Builder()
-        .client(okHttpClientBuilder.build())
+        .client(okHttpClient)
         .baseUrl("https://myanimelist.net/")
         .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
         .addCallAdapterFactory(ResultCallAdapterFactory())
@@ -58,12 +59,12 @@ class NetworkModule {
     @Provides
     @Named("Mal")
     fun provideMalRetrofit(
-        okHttpClientBuilder: OkHttpClient.Builder,
+        okHttpClient: OkHttpClient,
         userManager: UserManager,
         malAuthService: MalAuthService
     ): Retrofit = Retrofit.Builder()
         .client(
-            okHttpClientBuilder
+            okHttpClient.newBuilder()
                 .addInterceptor(AuthorizationInterceptor(userManager))
                 .authenticator(TokenAuthenticator(userManager, malAuthService))
                 .build()
@@ -90,9 +91,9 @@ class NetworkModule {
     @Provides
     @Named("Jikan")
     fun provideJikanRetrofit(
-        okHttpClientBuilder: OkHttpClient.Builder
+        okHttpClient: OkHttpClient
     ): Retrofit = Retrofit.Builder()
-        .client(okHttpClientBuilder.build())
+        .client(okHttpClient)
         .baseUrl("https://api.jikan.moe/")
         .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
         .addCallAdapterFactory(ResultCallAdapterFactory())
