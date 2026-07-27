@@ -6,6 +6,7 @@ import com.grig.myanimelist.data.MalAuthService
 import com.grig.myanimelist.data.MalService
 import com.grig.myanimelist.data.UserManager
 import com.grig.myanimelist.data.setup.AuthorizationInterceptor
+import com.grig.myanimelist.data.setup.JikanRetryInterceptor
 import com.grig.myanimelist.data.setup.TokenAuthenticator
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module
@@ -93,7 +94,11 @@ class NetworkModule {
     fun provideJikanRetrofit(
         okHttpClient: OkHttpClient
     ): Retrofit = Retrofit.Builder()
-        .client(okHttpClient)
+        .client(
+            okHttpClient.newBuilder()
+                .addInterceptor(JikanRetryInterceptor())
+                .build()
+        )
         .baseUrl("https://api.jikan.moe/")
         .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
         .addCallAdapterFactory(ResultCallAdapterFactory())
