@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.grig.myanimelist.MalRoute
 import com.grig.myanimelist.data.MalRepository
+import com.grig.myanimelist.data.toJikanErrorMessage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -30,6 +31,10 @@ class CharactersViewModel @Inject constructor(
         loadCharacters()
     }
 
+    fun retry() {
+        loadCharacters()
+    }
+
     private fun loadCharacters() {
         _state.value = CharactersState.Loading
         viewModelScope.launch {
@@ -49,7 +54,7 @@ class CharactersViewModel @Inject constructor(
                 },
                 onFailure = { error ->
                     _state.value = CharactersState.Error(
-                        message = error.message ?: "Failed to load characters"
+                        message = error.toJikanErrorMessage("Failed to load characters")
                     )
                 }
             )
