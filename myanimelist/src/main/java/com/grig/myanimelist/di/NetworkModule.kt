@@ -6,6 +6,7 @@ import com.grig.myanimelist.data.MalAuthService
 import com.grig.myanimelist.data.MalService
 import com.grig.myanimelist.data.UserManager
 import com.grig.myanimelist.data.setup.AuthorizationInterceptor
+import com.grig.myanimelist.data.setup.JikanRetryInterceptor
 import com.grig.myanimelist.data.setup.TokenAuthenticator
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module
@@ -92,7 +93,14 @@ class NetworkModule {
     fun provideJikanRetrofit(
         okHttpClientBuilder: OkHttpClient.Builder
     ): Retrofit = Retrofit.Builder()
-        .client(okHttpClientBuilder.build())
+        .client(
+            // newBuilder() copy keeps the retry interceptor off the shared
+            // singleton Builder, so the MAL clients never inherit it.
+            okHttpClientBuilder.build()
+                .newBuilder()
+                .addInterceptor(JikanRetryInterceptor())
+                .build()
+        )
         .baseUrl("https://api.jikan.moe/")
         .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
         .addCallAdapterFactory(ResultCallAdapterFactory())
