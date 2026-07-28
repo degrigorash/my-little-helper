@@ -5,12 +5,15 @@ import okhttp3.Response
 import java.io.InterruptedIOException
 
 /**
- * Retries Jikan requests that fail with transient upstream errors.
+ * Retries catalogue (Tenrai/Jikan) requests that fail with transient upstream errors.
  *
- * Jikan is a caching scraper in front of MyAnimeList: a cache miss triggers a live
- * scrape that can exceed Jikan's gateway timeout (504) or hit MAL's rate limiting
- * (429/503). The first failed request usually warms Jikan's cache, so a short-delay
- * retry succeeds far more often than not.
+ * Both APIs are caches in front of MyAnimeList and can return transient 429/5xx —
+ * for Jikan, a cache miss triggers a live scrape that can exceed its gateway
+ * timeout (504), and the first failed request usually warms its cache, so a
+ * short-delay retry succeeds far more often than not.
+ *
+ * Sits outside [TenraiFallbackInterceptor], so each retry round re-attempts the
+ * whole Tenrai-then-Jikan sequence.
  */
 class JikanRetryInterceptor : Interceptor {
 

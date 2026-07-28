@@ -254,11 +254,14 @@ class MalRepository @Inject constructor(
                     null
                 }
 
+                // Tenrai embeds image/media type in the relation entry itself, so the
+                // row still renders when the per-entry MAL lookup fails (or is skipped
+                // by rate limiting); Jikan-fallback entries carry no inline data.
                 val imageUrl = when (detail) {
                     is MalAnime -> detail.pictures?.medium ?: detail.pictures?.large
                     is MalManga -> detail.pictures?.medium ?: detail.pictures?.large
                     else -> null
-                }
+                } ?: entry.images?.jpg?.imageUrl ?: entry.images?.jpg?.largeImageUrl
                 val year = when (detail) {
                     is MalAnime -> detail.startDate?.take(4)
                     is MalManga -> detail.startDate?.take(4)
@@ -268,7 +271,7 @@ class MalRepository @Inject constructor(
                     is MalAnime -> detail.mediaType.displayName
                     is MalManga -> detail.mediaType.displayName
                     else -> null
-                }
+                } ?: entry.mediaType
                 val statusLabel = when (detail) {
                     is MalAnime -> detail.status.displayName
                     is MalManga -> detail.status.displayName

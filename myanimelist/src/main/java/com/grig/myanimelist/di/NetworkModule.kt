@@ -7,6 +7,7 @@ import com.grig.myanimelist.data.MalService
 import com.grig.myanimelist.data.UserManager
 import com.grig.myanimelist.data.setup.AuthorizationInterceptor
 import com.grig.myanimelist.data.setup.JikanRetryInterceptor
+import com.grig.myanimelist.data.setup.TenraiFallbackInterceptor
 import com.grig.myanimelist.data.setup.TokenAuthenticator
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module
@@ -95,11 +96,14 @@ class NetworkModule {
         okHttpClient: OkHttpClient
     ): Retrofit = Retrofit.Builder()
         .client(
+            // Retry sits outside the fallback, so each retry round attempts
+            // Tenrai first and replays against Jikan on failure.
             okHttpClient.newBuilder()
                 .addInterceptor(JikanRetryInterceptor())
+                .addInterceptor(TenraiFallbackInterceptor())
                 .build()
         )
-        .baseUrl("https://api.jikan.moe/")
+        .baseUrl("https://api.tenrai.org/v1/")
         .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
         .addCallAdapterFactory(ResultCallAdapterFactory())
         .build()

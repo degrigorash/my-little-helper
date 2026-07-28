@@ -11,51 +11,57 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
 
+/**
+ * Catalogue endpoints in the Jikan v4 schema. Served primarily by Tenrai
+ * (base URL `api.tenrai.org/v1/`), with [com.grig.myanimelist.data.setup.TenraiFallbackInterceptor]
+ * transparently replaying failed requests against Jikan (`api.jikan.moe/v4/`) —
+ * both APIs share this schema, so paths here are version-less.
+ */
 interface JikanService {
 
-    @GET("v4/anime/{id}/relations")
+    @GET("anime/{id}/relations")
     suspend fun getAnimeRelations(
         @Path("id") animeId: Int
     ): Result<JikanRelationsResponse>
 
-    @GET("v4/manga/{id}/relations")
+    @GET("manga/{id}/relations")
     suspend fun getMangaRelations(
         @Path("id") mangaId: Int
     ): Result<JikanRelationsResponse>
 
-    @GET("v4/anime/{id}/reviews")
+    @GET("anime/{id}/reviews")
     suspend fun getAnimeReviews(
         @Path("id") animeId: Int,
         @Query("page") page: Int = 1
     ): Result<JikanReviewsResponse>
 
-    @GET("v4/manga/{id}/reviews")
+    @GET("manga/{id}/reviews")
     suspend fun getMangaReviews(
         @Path("id") mangaId: Int,
         @Query("page") page: Int = 1
     ): Result<JikanReviewsResponse>
 
-    @GET("v4/anime/{id}/characters")
+    @GET("anime/{id}/characters")
     suspend fun getAnimeCharacters(
         @Path("id") animeId: Int
     ): Result<JikanCharactersResponse>
 
-    @GET("v4/manga/{id}/characters")
+    @GET("manga/{id}/characters")
     suspend fun getMangaCharacters(
         @Path("id") mangaId: Int
     ): Result<JikanCharactersResponse>
 
-    @GET("v4/characters/{id}/full")
+    @GET("characters/{id}/full")
     suspend fun getCharacterFull(
         @Path("id") characterId: Int
     ): Result<JikanCharacterFullResponse>
 
-    @GET("v4/producers/{id}")
+    @GET("producers/{id}")
     suspend fun getProducer(
         @Path("id") producerId: Int
     ): Result<JikanProducerResponse>
 
-    @GET("v4/anime")
+    @GET("anime")
     suspend fun getAnimeByProducer(
         @Query("producers") producerId: Int,
         @Query("order_by") orderBy: String = "score",
@@ -64,7 +70,7 @@ interface JikanService {
         @Query("limit") limit: Int = 25
     ): Result<JikanAnimeListResponse>
 
-    @GET("v4/people/{id}/full")
+    @GET("people/{id}/full")
     suspend fun getPersonFull(
         @Path("id") personId: Int
     ): Result<JikanPersonFullResponse>
