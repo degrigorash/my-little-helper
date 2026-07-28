@@ -4,9 +4,11 @@ import retrofit2.HttpException
 import java.io.IOException
 
 /**
- * Maps Jikan failures to a user-facing message. Jikan's 5xx responses (most often
- * 504) mean its scraper couldn't reach MyAnimeList — the data source is down, not
- * the user's connection — so the raw "HTTP 504 Gateway Time-out" would mislead.
+ * Maps catalogue-API (Tenrai/Jikan) failures to a user-facing message. Their 5xx
+ * responses (most often 504) mean the API couldn't serve MyAnimeList data — the
+ * data source is down, not the user's connection — so the raw "HTTP 504
+ * Gateway Time-out" would mislead. A non-2xx surfaces here only after both
+ * Tenrai and the Jikan fallback failed.
  */
 fun Throwable.toJikanErrorMessage(fallback: String): String {
     val httpCode = (this as? HttpException)?.code()
