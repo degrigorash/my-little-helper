@@ -28,6 +28,9 @@ class CharactersViewModel @Inject constructor(
     private val _state = MutableStateFlow<CharactersState>(CharactersState.Loading)
     val state: StateFlow<CharactersState> = _state.asStateFlow()
 
+    private var cached: List<JikanCharacterEntry> = emptyList()
+    private var searchQuery: String = ""
+
     init {
         loadCharacters()
     }
@@ -36,8 +39,14 @@ class CharactersViewModel @Inject constructor(
         loadCharacters()
     }
 
+    fun onSearchQueryChange(query: String) {
+        searchQuery = query
+        applyFilter()
+    }
+
     private fun loadCharacters() {
         _state.value = CharactersState.Loading
+        searchQuery = ""
         viewModelScope.launch {
             val result = when (mediaType) {
                 CharactersMediaType.ANIME -> malRepository.getAnimeCharacters(mediaId)
@@ -46,14 +55,14 @@ class CharactersViewModel @Inject constructor(
             result.fold(
                 onSuccess = { response ->
                     if (response.data.isEmpty()) {
+                        cached = emptyList()
                         _state.value = CharactersState.Empty
                     } else {
-                        _state.value = CharactersState.Content(
-                            characters = response.data.sortedWith(
-                                compareBy<JikanCharacterEntry> { it.role.roleSortOrder() }
-                                    .thenByDescending { it.favorites }
-                            )
+                        cached = response.data.sortedWith(
+                            compareBy<JikanCharacterEntry> { it.role.roleSortOrder() }
+                                .thenByDescending { it.favorites }
                         )
+                        applyFilter()
                     }
                 },
                 onFailure = { error ->
@@ -63,6 +72,23 @@ class CharactersViewModel @Inject constructor(
                 }
             )
         }
+    }
+
+    private fun applyFilter() {
+        if (cached.isEmpty()) return
+        val query = searchQuery
+        val filtered = if (query.isBlank()) {
+            cached
+        } else {
+            cached.filter { entry ->
+                entry.character.name.contains(query, ignoreCase = true) ||
+                    entry.voiceActors.any { it.person.name.contains(query, ignoreCase = true) }
+            }
+        }
+        _state.value = CharactersState.Content(
+            characters = filtered,
+            searchQuery = query
+        )
     }
 }
 

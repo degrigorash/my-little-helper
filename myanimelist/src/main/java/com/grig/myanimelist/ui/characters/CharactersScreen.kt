@@ -98,6 +98,8 @@ fun CharactersScreen(
                     is CharactersState.Content -> {
                         CharactersList(
                             characters = currentState.characters,
+                            searchQuery = currentState.searchQuery,
+                            onSearchQueryChange = viewModel::onSearchQueryChange,
                             onCharacterClick = navigateToCharacterDetail
                         )
                     }
