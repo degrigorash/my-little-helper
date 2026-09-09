@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.grig.myanimelist.MalRoute
 import com.grig.myanimelist.data.MalRepository
+import com.grig.myanimelist.data.model.jikan.JikanCharacterEntry
 import com.grig.myanimelist.data.toJikanErrorMessage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -48,7 +49,10 @@ class CharactersViewModel @Inject constructor(
                         _state.value = CharactersState.Empty
                     } else {
                         _state.value = CharactersState.Content(
-                            characters = response.data.sortedByDescending { it.favorites }
+                            characters = response.data.sortedWith(
+                                compareBy<JikanCharacterEntry> { it.role.roleSortOrder() }
+                                    .thenByDescending { it.favorites }
+                            )
                         )
                     }
                 },
@@ -60,4 +64,10 @@ class CharactersViewModel @Inject constructor(
             )
         }
     }
+}
+
+private fun String.roleSortOrder(): Int = when (lowercase()) {
+    "main" -> 0
+    "supporting" -> 1
+    else -> 2
 }
