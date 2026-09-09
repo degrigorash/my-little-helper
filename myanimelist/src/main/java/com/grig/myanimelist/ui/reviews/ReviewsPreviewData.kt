@@ -12,7 +12,16 @@ val previewReview = JikanReview(
     tags = listOf("Recommended"),
     isSpoiler = false,
     isPreliminary = false,
-    reactions = JikanReviewReactions(overall = 42, nice = 10, loveIt = 15),
+    reactions = JikanReviewReactions(
+        overall = 42,
+        nice = 10,
+        loveIt = 15,
+        funny = 3,
+        confusing = 1,
+        informative = 6,
+        wellWritten = 5,
+        creative = 2
+    ),
     user = JikanReviewUser(username = "AnimeReviewer42")
 )
 

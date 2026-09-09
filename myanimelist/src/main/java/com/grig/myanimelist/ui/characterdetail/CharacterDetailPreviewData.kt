@@ -15,7 +15,7 @@ val previewCharacterFull = JikanCharacterFull(
     nameKanji = "モンキー・D・ルフィ",
     nicknames = listOf("Straw Hat", "Mugiwara"),
     favorites = 120543,
-    about = "Monkey D. Luffy is the protagonist of the manga and anime One Piece. He is the founder and captain of the increasingly infamous and powerful Straw Hat Pirates. His lifelong dream is to become the Pirate King by finding the legendary treasure left behind by the late Gol D. Roger.",
+    about = "Monkey D. Luffy is the protagonist of the manga and anime One Piece. He is the founder and captain of the increasingly infamous and powerful Straw Hat Pirates. His lifelong dream is to become the Pirate King by finding the legendary treasure left behind by the late Gol D. Roger. [spoiler]He is later revealed to be the son of the revolutionary Monkey D. Dragon.[/spoiler]",
     anime = listOf(
         JikanCharacterAnimeEntry(
             role = "Main",

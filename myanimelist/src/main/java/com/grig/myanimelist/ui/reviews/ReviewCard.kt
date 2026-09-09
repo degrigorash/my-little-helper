@@ -36,6 +36,7 @@ import coil.compose.AsyncImage
 import com.grig.core.theme.AppTheme
 import com.grig.core.theme.AppThemeExtended
 import com.grig.myanimelist.data.model.jikan.JikanReview
+import com.grig.myanimelist.data.model.jikan.JikanReviewReactions
 import com.grig.myanimelist.ui.home.StatusBadge
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
@@ -121,12 +122,58 @@ fun ReviewCard(review: JikanReview) {
             modifier = Modifier.animateContentSize()
         )
 
-        val reactionsTotal = review.reactions?.overall ?: 0
-        if (reactionsTotal > 0) {
-            Spacer(modifier = Modifier.height(6.dp))
+        val reactions = review.reactions
+        if (reactions != null) {
+            val breakdown = reactionBreakdown(reactions)
+            if (breakdown.isNotEmpty()) {
+                Spacer(modifier = Modifier.height(8.dp))
+                FlowRow(
+                    horizontalArrangement = Arrangement.spacedBy(6.dp),
+                    verticalArrangement = Arrangement.spacedBy(6.dp)
+                ) {
+                    breakdown.forEach { reaction ->
+                        ReactionChip(emoji = reaction.emoji, count = reaction.count)
+                    }
+                }
+            }
+        }
+    }
+}
+
+private data class ReactionEntry(val emoji: String, val count: Int)
+
+private fun reactionBreakdown(reactions: JikanReviewReactions): List<ReactionEntry> =
+    listOf(
+        ReactionEntry("👍", reactions.nice),
+        ReactionEntry("❤️", reactions.loveIt),
+        ReactionEntry("😂", reactions.funny),
+        ReactionEntry("😕", reactions.confusing),
+        ReactionEntry("💡", reactions.informative),
+        ReactionEntry("✍️", reactions.wellWritten),
+        ReactionEntry("🎨", reactions.creative)
+    ).filter { it.count > 0 }
+        .sortedByDescending { it.count }
+
+@Composable
+fun ReactionChip(emoji: String, count: Int) {
+    Surface(
+        shape = RoundedCornerShape(8.dp),
+        color = MaterialTheme.colorScheme.surfaceVariant,
+        tonalElevation = 0.dp
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+        ) {
             Text(
-                text = "$reactionsTotal reactions",
-                style = MaterialTheme.typography.bodySmall,
+                text = emoji,
+                style = MaterialTheme.typography.labelMedium
+            )
+            Spacer(modifier = Modifier.width(4.dp))
+            Text(
+                text = count.toString(),
+                style = MaterialTheme.typography.labelMedium,
+                fontWeight = FontWeight.SemiBold,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
@@ -189,6 +236,22 @@ private fun ReviewCardPreview() {
 private fun ReviewCardDarkPreview() {
     AppTheme(darkTheme = true) {
         ReviewCard(review = previewReview)
+    }
+}
+
+@Preview(name = "Reaction Chip")
+@Composable
+private fun ReactionChipPreview() {
+    AppTheme(darkTheme = false) {
+        ReactionChip(emoji = "❤️", count = 15)
+    }
+}
+
+@Preview(name = "Reaction Chip - Dark")
+@Composable
+private fun ReactionChipDarkPreview() {
+    AppTheme(darkTheme = true) {
+        ReactionChip(emoji = "❤️", count = 15)
     }
 }
 
