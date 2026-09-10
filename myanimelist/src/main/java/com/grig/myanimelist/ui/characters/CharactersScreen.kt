@@ -26,6 +26,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.grig.core.theme.AppThemeExtended
 import com.grig.myanimelist.R
+import com.grig.myanimelist.ui.common.MalErrorContent
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -77,13 +78,11 @@ fun CharactersScreen(
                         )
                     }
                     is CharactersState.Error -> {
-                        Text(
-                            text = currentState.message,
-                            color = MaterialTheme.colorScheme.error,
-                            style = MaterialTheme.typography.bodyMedium,
-                            modifier = Modifier
-                                .align(Alignment.Center)
-                                .padding(32.dp)
+                        MalErrorContent(
+                            title = "Couldn't load characters",
+                            description = currentState.message,
+                            onRetry = viewModel::retry,
+                            modifier = Modifier.align(Alignment.Center)
                         )
                     }
                     is CharactersState.Empty -> {
@@ -99,6 +98,8 @@ fun CharactersScreen(
                     is CharactersState.Content -> {
                         CharactersList(
                             characters = currentState.characters,
+                            searchQuery = currentState.searchQuery,
+                            onSearchQueryChange = viewModel::onSearchQueryChange,
                             onCharacterClick = navigateToCharacterDetail
                         )
                     }

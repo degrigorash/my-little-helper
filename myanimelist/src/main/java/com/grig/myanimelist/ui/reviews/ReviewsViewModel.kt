@@ -7,6 +7,7 @@ import androidx.navigation.toRoute
 import com.grig.myanimelist.MalRoute
 import com.grig.myanimelist.data.MalRepository
 import com.grig.myanimelist.data.model.jikan.JikanReview
+import com.grig.myanimelist.data.toJikanErrorMessage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -31,6 +32,10 @@ class ReviewsViewModel @Inject constructor(
     val activeFilter: StateFlow<ReviewFilter?> = _activeFilter.asStateFlow()
 
     init {
+        loadReviews(page = 1)
+    }
+
+    fun retry() {
         loadReviews(page = 1)
     }
 
@@ -74,7 +79,7 @@ class ReviewsViewModel @Inject constructor(
                 onFailure = { error ->
                     if (isFirstPage) {
                         _state.value = ReviewsState.Error(
-                            message = error.message ?: "Failed to load reviews"
+                            message = error.toJikanErrorMessage("Failed to load reviews")
                         )
                     } else {
                         val current = _state.value as? ReviewsState.Content ?: return@fold

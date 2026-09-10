@@ -14,6 +14,9 @@ enum class CharactersMediaType(val value: String) {
 sealed interface CharactersState {
     data object Loading : CharactersState
     data object Empty : CharactersState
-    data class Content(val characters: List<JikanCharacterEntry>) : CharactersState
+    data class Content(
+        val characters: List<JikanCharacterEntry>,
+        val searchQuery: String = ""
+    ) : CharactersState
     data class Error(val message: String) : CharactersState
 }

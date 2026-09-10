@@ -18,6 +18,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.grig.core.theme.AppTheme
 import com.grig.myanimelist.data.model.jikan.JikanCharacterFull
+import com.grig.myanimelist.ui.common.SpoilerText
 import com.grig.myanimelist.ui.home.StatusBadge
 
 @OptIn(ExperimentalLayoutApi::class)
@@ -80,7 +81,7 @@ fun CharacterDetailContent(
 
         if (!character.about.isNullOrBlank()) {
             Spacer(modifier = Modifier.height(16.dp))
-            Text(
+            SpoilerText(
                 text = character.about,
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurface

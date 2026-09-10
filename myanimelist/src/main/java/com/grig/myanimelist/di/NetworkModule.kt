@@ -6,6 +6,8 @@ import com.grig.myanimelist.data.MalAuthService
 import com.grig.myanimelist.data.MalService
 import com.grig.myanimelist.data.UserManager
 import com.grig.myanimelist.data.setup.AuthorizationInterceptor
+import com.grig.myanimelist.data.setup.JikanRetryInterceptor
+import com.grig.myanimelist.data.setup.TenraiFallbackInterceptor
 import com.grig.myanimelist.data.setup.TokenAuthenticator
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module
@@ -35,19 +37,20 @@ class NetworkModule {
 
     @Singleton
     @Provides
-    fun provideOkHttpClientBuilder() = OkHttpClient.Builder()
+    fun provideOkHttpClient(): OkHttpClient = OkHttpClient.Builder()
         .connectTimeout(30, TimeUnit.SECONDS)
         .writeTimeout(30, TimeUnit.SECONDS)
         .readTimeout(30, TimeUnit.SECONDS)
+        .build()
 
     @OptIn(ExperimentalSerializationApi::class)
     @Singleton
     @Provides
     @Named("Oauth2")
     fun provideAuthRetrofit(
-        okHttpClientBuilder: OkHttpClient.Builder
+        okHttpClient: OkHttpClient
     ): Retrofit = Retrofit.Builder()
-        .client(okHttpClientBuilder.build())
+        .client(okHttpClient)
         .baseUrl("https://myanimelist.net/")
         .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
         .addCallAdapterFactory(ResultCallAdapterFactory())
@@ -58,12 +61,12 @@ class NetworkModule {
     @Provides
     @Named("Mal")
     fun provideMalRetrofit(
-        okHttpClientBuilder: OkHttpClient.Builder,
+        okHttpClient: OkHttpClient,
         userManager: UserManager,
         malAuthService: MalAuthService
     ): Retrofit = Retrofit.Builder()
         .client(
-            okHttpClientBuilder
+            okHttpClient.newBuilder()
                 .addInterceptor(AuthorizationInterceptor(userManager))
                 .authenticator(TokenAuthenticator(userManager, malAuthService))
                 .build()
@@ -90,10 +93,17 @@ class NetworkModule {
     @Provides
     @Named("Jikan")
     fun provideJikanRetrofit(
-        okHttpClientBuilder: OkHttpClient.Builder
+        okHttpClient: OkHttpClient
     ): Retrofit = Retrofit.Builder()
-        .client(okHttpClientBuilder.build())
-        .baseUrl("https://api.jikan.moe/")
+        .client(
+            // Retry sits outside the fallback, so each retry round attempts
+            // Tenrai first and replays against Jikan on failure.
+            okHttpClient.newBuilder()
+                .addInterceptor(JikanRetryInterceptor())
+                .addInterceptor(TenraiFallbackInterceptor())
+                .build()
+        )
+        .baseUrl("https://api.tenrai.org/v1/")
         .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
         .addCallAdapterFactory(ResultCallAdapterFactory())
         .build()
