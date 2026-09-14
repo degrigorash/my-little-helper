@@ -149,25 +149,12 @@ class AnimeListViewModel @Inject constructor(
     }
 
     private suspend fun loadAnimeList(username: String?) {
-        var offset = 0
-        val animes = mutableListOf<Pair<MalAnime, MalAnimeListStatus?>>()
-
-        var response = malRepository.getUserAnimeList(username = username, offset = offset)
-        if (response.isFailure) {
-            _listState.value = AnimeListState.Error(response.exceptionOrNull())
+        val result = malRepository.getAllUserAnime(username = username)
+        val nodes = result.getOrElse {
+            _listState.value = AnimeListState.Error(it)
             return
         }
-
-        while (response.isSuccess) {
-            val body = response.getOrNull() ?: break
-            if (body.data.isEmpty()) break
-            animes.addAll(body.data.map { it.anime to it.listStatus })
-            offset += body.data.size
-            if (body.data.size < 100) break
-            response = malRepository.getUserAnimeList(username = username, offset = offset)
-        }
-
-        cached = animes
+        cached = nodes.map { it.anime to it.listStatus }
         applyFilter()
     }
 

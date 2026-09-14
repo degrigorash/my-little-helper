@@ -34,7 +34,7 @@ fun MalHomeScreen(
     navigateToMangaSearch: (String) -> Unit,
     navigateToAnimeDetail: (Int) -> Unit,
     navigateToMangaDetail: (Int) -> Unit,
-    navigateToWatchlist: () -> Unit
+    navigateToSeasons: (String) -> Unit
 ) {
     val userState by homeViewModel.malUserFlow.collectAsState(initial = MalUserState.Unauthorized)
     val activeTab by homeViewModel.activeTab.collectAsState()
@@ -87,7 +87,7 @@ fun MalHomeScreen(
                     MalTab.Manga -> navigateToMangaSearch("")
                 }
             },
-            onWatchlistClick = navigateToWatchlist,
+            onSeasonsClick = { navigateToSeasons(if (authorized) "" else guestUsername) },
             onLogoutClick = {
                 homeViewModel.malLogout()
                 navigateToLogin()

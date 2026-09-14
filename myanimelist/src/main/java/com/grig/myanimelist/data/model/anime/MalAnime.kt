@@ -41,6 +41,8 @@ data class MalAnime(
     val startDate: String? = null,
     @SerialName("end_date")
     val endDate: String? = null,
+    @SerialName("start_season")
+    val startSeason: MalStartSeason? = null,
     @SerialName("main_picture")
     val pictures: MalPictures? = null,
     @SerialName("rating")

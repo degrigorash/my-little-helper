@@ -1,13 +1,9 @@
-package com.grig.myanimelist.ui.watchlist
+package com.grig.myanimelist.ui.seasons
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -22,22 +18,25 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.grig.core.theme.AppThemeExtended
 import com.grig.myanimelist.R
 import com.grig.myanimelist.ui.MalLoading
 import com.grig.myanimelist.ui.animeedit.EditAnimeBottomSheet
 import com.grig.myanimelist.ui.animeedit.EditAnimeViewModel
+import com.grig.myanimelist.ui.common.MalErrorContent
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun WatchlistScreen(
-    viewModel: WatchlistViewModel,
+fun SeasonsScreen(
+    viewModel: SeasonsViewModel,
     navigateBack: () -> Unit,
-    navigateToAnimeDetail: (Int) -> Unit
+    navigateToAnimeDetail: (Int) -> Unit,
+    onListChanged: () -> Unit = {}
 ) {
     val state by viewModel.state.collectAsState()
+    val authorized by viewModel.authorized.collectAsState()
+    val watchlistIds by viewModel.watchlistIds.collectAsState()
     val editSheetAnime by viewModel.editSheetAnime.collectAsState()
     val colors = AppThemeExtended.colorScheme
 
@@ -54,7 +53,7 @@ fun WatchlistScreen(
             containerColor = Color.Transparent,
             topBar = {
                 TopAppBar(
-                    title = { Text("Watch Next", color = colors.headerText) },
+                    title = { Text("Seasons", color = colors.headerText) },
                     navigationIcon = {
                         IconButton(onClick = navigateBack) {
                             Icon(
@@ -76,12 +75,22 @@ fun WatchlistScreen(
                     .padding(padding)
             ) {
                 when (val s = state) {
-                    is WatchlistState.Loading -> MalLoading()
-                    is WatchlistState.Empty -> WatchlistEmpty()
-                    is WatchlistState.Error -> WatchlistErrorContent(onRetry = viewModel::loadWatchlist)
-                    is WatchlistState.Content -> WatchlistList(
-                        items = s.items,
-                        onItemClick = viewModel::onItemClick
+                    is SeasonsState.Loading -> MalLoading()
+                    is SeasonsState.Empty -> SeasonsEmpty()
+                    is SeasonsState.Error -> MalErrorContent(
+                        title = "Couldn't load your seasons",
+                        description = "MyAnimeList data is temporarily unavailable. Please try again later.",
+                        onRetry = viewModel::retry
+                    )
+                    is SeasonsState.Content -> SeasonsContent(
+                        groups = s.groups,
+                        onAnimeClick = { data -> navigateToAnimeDetail(data.anime.id) },
+                        onAnimeLongClick = if (authorized) {
+                            viewModel::onAnimeLongClick
+                        } else {
+                            { data -> navigateToAnimeDetail(data.anime.id) }
+                        },
+                        watchlistIds = watchlistIds
                     )
                 }
             }
@@ -96,32 +105,16 @@ fun WatchlistScreen(
             onDismiss = viewModel::dismissEditSheet,
             onSaved = { event ->
                 viewModel.onAnimeUpdated(data.anime.id, event.updatedStatus)
+                onListChanged()
             },
             onDeleted = {
                 viewModel.onAnimeDeleted(data.anime.id)
+                onListChanged()
             },
             onOpenDetail = {
                 viewModel.dismissEditSheet()
                 navigateToAnimeDetail(data.anime.id)
             }
         )
-    }
-}
-
-@Composable
-fun WatchlistList(
-    items: List<WatchlistItemData>,
-    onItemClick: (WatchlistItemData) -> Unit
-) {
-    LazyColumn(
-        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
-    ) {
-        items(items, key = { it.anime.id }) { item ->
-            WatchlistCard(
-                item = item,
-                onClick = { onItemClick(item) }
-            )
-        }
     }
 }

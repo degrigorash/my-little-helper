@@ -4,6 +4,7 @@ import android.net.Uri
 import com.grig.myanimelist.clientApiId
 import com.grig.myanimelist.data.model.MalUserState
 import com.grig.myanimelist.data.model.anime.MalAnime
+import com.grig.myanimelist.data.model.anime.MalAnimeNode
 import com.grig.myanimelist.data.model.jikan.PersonDetail
 import com.grig.myanimelist.data.model.jikan.ResolvedRelation
 import com.grig.myanimelist.data.model.jikan.VoicedCharacter
@@ -86,6 +87,26 @@ class MalRepository @Inject constructor(
         offset = offset,
         status = status
     )
+
+    /**
+     * Fetches every page of the user's anime list (optionally filtered by [status]).
+     */
+    suspend fun getAllUserAnime(
+        username: String?,
+        status: String? = null
+    ): Result<List<MalAnimeNode>> {
+        val all = mutableListOf<MalAnimeNode>()
+        var offset = 0
+        while (true) {
+            val response = getUserAnimeList(username = username, offset = offset, status = status)
+            val body = response.getOrElse { return Result.failure(it) }
+            if (body.data.isEmpty()) break
+            all.addAll(body.data)
+            offset += body.data.size
+            if (body.data.size < ANIME_LIST_PAGE_SIZE) break
+        }
+        return Result.success(all)
+    }
 
     suspend fun updateAnimeListStatus(
         animeId: Int,
@@ -301,5 +322,6 @@ class MalRepository @Inject constructor(
 
         // Max concurrent MAL character-favorites lookups on the person screen.
         private const val FAVORITES_FETCH_CONCURRENCY = 8
+        private const val ANIME_LIST_PAGE_SIZE = 100
     }
 }

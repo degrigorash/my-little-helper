@@ -56,7 +56,7 @@ fun UserHeader(
     onGuestUsernameChange: (String) -> Unit,
     onGuestSearch: () -> Unit,
     onSearchClick: () -> Unit,
-    onWatchlistClick: () -> Unit,
+    onSeasonsClick: () -> Unit,
     onLogoutClick: () -> Unit
 ) {
     val colors = AppThemeExtended.colorScheme
@@ -84,7 +84,7 @@ fun UserHeader(
         }
         OverflowMenu(
             onSearchClick = onSearchClick,
-            onWatchlistClick = onWatchlistClick,
+            onSeasonsClick = onSeasonsClick,
             onLogoutClick = onLogoutClick
         )
     }
@@ -93,7 +93,7 @@ fun UserHeader(
 @Composable
 private fun OverflowMenu(
     onSearchClick: () -> Unit,
-    onWatchlistClick: () -> Unit,
+    onSeasonsClick: () -> Unit,
     onLogoutClick: () -> Unit
 ) {
     val colors = AppThemeExtended.colorScheme
@@ -125,14 +125,14 @@ private fun OverflowMenu(
                 }
             )
             DropdownMenuItem(
-                text = { Text("Watch Next") },
+                text = { Text("Seasons") },
                 onClick = {
                     expanded = false
-                    onWatchlistClick()
+                    onSeasonsClick()
                 },
                 leadingIcon = {
                     Icon(
-                        painter = painterResource(R.drawable.ic_bookmark),
+                        painter = painterResource(R.drawable.ic_calendar_month),
                         contentDescription = null
                     )
                 }
@@ -273,7 +273,7 @@ private fun UserHeaderAuthorizedPreview() {
             onGuestUsernameChange = {},
             onGuestSearch = {},
             onSearchClick = {},
-            onWatchlistClick = {},
+            onSeasonsClick = {},
             onLogoutClick = {}
         )
     }
@@ -290,7 +290,7 @@ private fun UserHeaderGuestPreview() {
             onGuestUsernameChange = {},
             onGuestSearch = {},
             onSearchClick = {},
-            onWatchlistClick = {},
+            onSeasonsClick = {},
             onLogoutClick = {}
         )
     }
@@ -307,7 +307,7 @@ private fun UserHeaderGuestWithUsernamePreview() {
             onGuestUsernameChange = {},
             onGuestSearch = {},
             onSearchClick = {},
-            onWatchlistClick = {},
+            onSeasonsClick = {},
             onLogoutClick = {}
         )
     }
@@ -324,7 +324,7 @@ private fun UserHeaderGuestDarkPreview() {
             onGuestUsernameChange = {},
             onGuestSearch = {},
             onSearchClick = {},
-            onWatchlistClick = {},
+            onSeasonsClick = {},
             onLogoutClick = {}
         )
     }
@@ -341,7 +341,7 @@ private fun UserHeaderDarkPreview() {
             onGuestUsernameChange = {},
             onGuestSearch = {},
             onSearchClick = {},
-            onWatchlistClick = {},
+            onSeasonsClick = {},
             onLogoutClick = {}
         )
     }
