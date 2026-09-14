@@ -30,7 +30,7 @@ fun SeasonsList(
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         groups.forEach { group ->
-            stickyHeader(key = headerKey(group)) {
+            item(key = headerKey(group)) {
                 SeasonHeader(title = group.displayName)
             }
             items(group.animes, key = { it.anime.id }) { data ->
@@ -46,7 +46,7 @@ fun SeasonsList(
     }
 }
 
-/** Lazy-list key of a group's sticky header. */
+/** Lazy-list key of a group's header item. */
 fun headerKey(group: SeasonGroup): String = "header_${group.key}"
 
 /** Index of each group's header inside the flattened lazy list. */

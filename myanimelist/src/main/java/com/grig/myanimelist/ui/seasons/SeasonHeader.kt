@@ -1,6 +1,5 @@
 package com.grig.myanimelist.ui.seasons
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
@@ -18,16 +17,14 @@ fun SeasonHeader(
     title: String,
     modifier: Modifier = Modifier
 ) {
-    val colors = AppThemeExtended.colorScheme
     Text(
         text = title,
         style = MaterialTheme.typography.titleMedium,
         fontWeight = FontWeight.Bold,
-        color = colors.headerText,
+        color = AppThemeExtended.colorScheme.headerText,
         modifier = modifier
             .fillMaxWidth()
-            .background(colors.gradientBackgroundTop)
-            .padding(vertical = 8.dp)
+            .padding(top = 4.dp)
     )
 }
 
