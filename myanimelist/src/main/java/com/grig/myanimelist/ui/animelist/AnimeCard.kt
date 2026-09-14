@@ -30,6 +30,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -87,7 +88,8 @@ fun AnimeList(
                 data = data,
                 onClick = onAnimeClick?.let { { it(data) } },
                 onLongClick = { onAnimeLongClick(data) },
-                isBookmarked = data.anime.id in watchlistIds
+                isBookmarked = data.anime.id in watchlistIds,
+                notes = data.listStatus?.comments
             )
         }
     }
@@ -99,7 +101,8 @@ fun AnimeCard(
     data: AnimeCardData,
     onClick: (() -> Unit)? = null,
     onLongClick: () -> Unit = {},
-    isBookmarked: Boolean = false
+    isBookmarked: Boolean = false,
+    notes: String? = null
 ) {
     val anime = data.anime
     val listStatus = data.listStatus
@@ -113,96 +116,110 @@ fun AnimeCard(
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Box {
-            Row(
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(12.dp)
             ) {
-                AsyncImage(
-                    model = anime.pictures?.medium,
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(100.dp)
-                        .clip(RoundedCornerShape(12.dp)),
-                    contentScale = ContentScale.Crop
-                )
-                Spacer(modifier = Modifier.width(12.dp))
-                Column(
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Text(
-                        text = anime.title,
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onSurface
+                Row(modifier = Modifier.fillMaxWidth()) {
+                    AsyncImage(
+                        model = anime.pictures?.medium,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(100.dp)
+                            .clip(RoundedCornerShape(12.dp)),
+                        contentScale = ContentScale.Crop
                     )
-
-                    Spacer(modifier = Modifier.height(4.dp))
-
-                    val studioNames = anime.studios.joinToString(", ") { it.name }
-                    if (studioNames.isNotEmpty()) {
-                        Text(
-                            text = studioNames,
-                            style = MaterialTheme.typography.bodySmall,
-                            fontWeight = FontWeight.SemiBold,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-
-                    val epText = buildEpisodeProgress(data)
-                    if (epText != null) {
-                        Text(
-                            text = epText,
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            modifier = Modifier.padding(top = 2.dp)
-                        )
-                    }
-
-                    val airedText = buildAiredText(anime.startDate, anime.endDate)
-                    if (airedText != null) {
-                        Text(
-                            text = airedText,
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                            modifier = Modifier.padding(top = 2.dp)
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    StatsRowWithMyScore(
-                        mean = anime.mean,
-                        rank = anime.rank,
-                        members = anime.numListUsers,
-                        myScore = listStatus?.score
-                    )
-
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        verticalAlignment = Alignment.CenterVertically
+                    Spacer(modifier = Modifier.width(12.dp))
+                    Column(
+                        modifier = Modifier.weight(1f)
                     ) {
-                        if (listStatus != null) {
-                            StatusBadge(
-                                text = listStatus.status.displayName,
-                                color = watchingStatusColor(listStatus.status)
+                        Text(
+                            text = anime.title,
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+
+                        Spacer(modifier = Modifier.height(4.dp))
+
+                        val studioNames = anime.studios.joinToString(", ") { it.name }
+                        if (studioNames.isNotEmpty()) {
+                            Text(
+                                text = studioNames,
+                                style = MaterialTheme.typography.bodySmall,
+                                fontWeight = FontWeight.SemiBold,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         }
-                        StatusBadgeOutlined(
-                            text = anime.status.displayName,
-                            color = animeStatusColor(anime.status)
-                        )
-                        if (anime.mediaType != MalAnimeMediaType.Unknown) {
-                            StatusBadge(
-                                text = anime.mediaType.displayName,
-                                color = MaterialTheme.colorScheme.tertiary
+
+                        val epText = buildEpisodeProgress(data)
+                        if (epText != null) {
+                            Text(
+                                text = epText,
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                modifier = Modifier.padding(top = 2.dp)
                             )
+                        }
+
+                        val airedText = buildAiredText(anime.startDate, anime.endDate)
+                        if (airedText != null) {
+                            Text(
+                                text = airedText,
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                                modifier = Modifier.padding(top = 2.dp)
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        StatsRowWithMyScore(
+                            mean = anime.mean,
+                            rank = anime.rank,
+                            members = anime.numListUsers,
+                            myScore = listStatus?.score
+                        )
+
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            if (listStatus != null) {
+                                StatusBadge(
+                                    text = listStatus.status.displayName,
+                                    color = watchingStatusColor(listStatus.status)
+                                )
+                            }
+                            StatusBadgeOutlined(
+                                text = anime.status.displayName,
+                                color = animeStatusColor(anime.status)
+                            )
+                            if (anime.mediaType != MalAnimeMediaType.Unknown) {
+                                StatusBadge(
+                                    text = anime.mediaType.displayName,
+                                    color = MaterialTheme.colorScheme.tertiary
+                                )
+                            }
                         }
                     }
+                }
+                if (!notes.isNullOrBlank()) {
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = notes,
+                        style = MaterialTheme.typography.bodySmall,
+                        fontStyle = FontStyle.Italic,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        maxLines = 3,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.padding(start = 4.dp)
+                    )
                 }
             }
             if (isBookmarked) {
@@ -306,6 +323,18 @@ private fun AnimeCardPreview() {
 private fun AnimeCardFinishedPreview() {
     AppTheme(darkTheme = false) {
         AnimeCard(data = previewAnimeCardDataFinished)
+    }
+}
+
+@Preview(name = "Anime Card - With Notes")
+@Composable
+private fun AnimeCardWithNotesPreview() {
+    AppTheme(darkTheme = false) {
+        AnimeCard(
+            data = previewAnimeCardData,
+            isBookmarked = true,
+            notes = "Recommended by a friend, supposedly the best arc of the series."
+        )
     }
 }
 

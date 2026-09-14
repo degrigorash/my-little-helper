@@ -21,8 +21,7 @@ import com.grig.myanimelist.ui.mangasearch.MangaSearchScreen
 import com.grig.myanimelist.ui.persondetail.PersonDetailScreen
 import com.grig.myanimelist.ui.reviews.ReviewsScreen
 import com.grig.myanimelist.ui.studiodetail.StudioDetailScreen
-import com.grig.myanimelist.ui.watchlist.WatchlistScreen
-import com.grig.myanimelist.ui.watchlist.WatchlistViewModel
+import com.grig.myanimelist.ui.seasons.SeasonsScreen
 
 const val ANIME_LIST_CHANGED = "anime_list_changed"
 const val MANGA_LIST_CHANGED = "manga_list_changed"
@@ -87,20 +86,37 @@ fun NavGraphBuilder.malNavigation(
                 navigateToMangaDetail = { mangaId ->
                     navController.navigate(MalRoute.MangaDetail(mangaId))
                 },
-                navigateToWatchlist = {
-                    navController.navigate(MalRoute.Watchlist)
+                navigateToSeasons = { username ->
+                    navController.navigate(MalRoute.Seasons(username))
                 }
             )
         }
     }
-    composable<MalRoute.Watchlist> {
-        val watchlistViewModel: WatchlistViewModel = hiltViewModel()
+    composable<MalRoute.Seasons> { backStackEntry ->
+        LaunchedEffect(Unit) {
+            backStackEntry.savedStateHandle
+                .getStateFlow(ANIME_LIST_CHANGED, false)
+                .collect { changed ->
+                    if (changed) {
+                        backStackEntry.savedStateHandle[ANIME_LIST_CHANGED] = false
+                        navController.previousBackStackEntry
+                            ?.savedStateHandle
+                            ?.set(ANIME_LIST_CHANGED, true)
+                    }
+                }
+        }
+
         AppTheme {
-            WatchlistScreen(
-                viewModel = watchlistViewModel,
+            SeasonsScreen(
+                viewModel = hiltViewModel(),
                 navigateBack = { navController.popBackStack() },
                 navigateToAnimeDetail = { animeId ->
                     navController.navigate(MalRoute.AnimeDetail(animeId))
+                },
+                onListChanged = {
+                    navController.previousBackStackEntry
+                        ?.savedStateHandle
+                        ?.set(ANIME_LIST_CHANGED, true)
                 }
             )
         }
