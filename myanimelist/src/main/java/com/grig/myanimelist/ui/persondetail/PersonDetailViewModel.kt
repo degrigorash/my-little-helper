@@ -36,8 +36,11 @@ class PersonDetailViewModel @Inject constructor(
                 personId = personId,
                 onFavoritesProgress = { done, total ->
                     if (total > 0) {
-                        _state.value = PersonDetailState.Loading(progress = done.toFloat() / total)
+                        updateLoading { it.copy(progress = done.toFloat() / total) }
                     }
+                },
+                onThrottledChange = { throttled ->
+                    updateLoading { it.copy(isThrottled = throttled) }
                 }
             ).fold(
                 onSuccess = { person ->
@@ -50,5 +53,9 @@ class PersonDetailViewModel @Inject constructor(
                 }
             )
         }
+    }
+
+    private fun updateLoading(transform: (PersonDetailState.Loading) -> PersonDetailState.Loading) {
+        (_state.value as? PersonDetailState.Loading)?.let { _state.value = transform(it) }
     }
 }

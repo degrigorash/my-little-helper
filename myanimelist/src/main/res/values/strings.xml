@@ -28,4 +28,7 @@
     <!-- Filtered empty state -->
     <string name="no_filter_results">No matches found</string>
     <string name="no_filter_results_description">Try a different name or adjust your filters.</string>
+
+    <!-- Person screen loading -->
+    <string name="person_loading_throttled">MyAnimeList is limiting requests right now. Loading will continue automatically in about a minute.</string>
 </resources>

@@ -21,6 +21,7 @@ import java.util.concurrent.atomic.AtomicInteger
 import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.time.Duration.Companion.seconds
 
 @Singleton
 class MalRepository @Inject constructor(
@@ -191,13 +192,19 @@ class MalRepository @Inject constructor(
      * concurrently but capped at [FAVORITES_FETCH_CONCURRENCY] in flight so a prolific
      * seiyuu (100+ characters) doesn't flood the shared HTTP client at once.
      *
+     * A prolific seiyuu (400 characters for Akira Ishida) trips MAL's silent throttling
+     * mid-fan-out, so lookups go through a [MalThrottleGate] that pauses them together
+     * and retries timed-out characters instead of recording them with 0 favorites.
+     *
      * [onFavoritesProgress] is invoked (done, total) after each favorites lookup completes,
      * letting the UI show determinate loading progress. It is not called when there are no
-     * characters to fetch.
+     * characters to fetch. [onThrottledChange] reports when lookups pause for and resume
+     * after MAL's throttling.
      */
     suspend fun getPersonWithVoices(
         personId: Int,
-        onFavoritesProgress: (done: Int, total: Int) -> Unit = { _, _ -> }
+        onFavoritesProgress: (done: Int, total: Int) -> Unit = { _, _ -> },
+        onThrottledChange: (throttled: Boolean) -> Unit = {}
     ): Result<PersonDetail> = coroutineScope {
         val person = jikanService.getPersonFull(personId)
             .getOrElse { return@coroutineScope Result.failure(it) }
@@ -214,11 +221,17 @@ class MalRepository @Inject constructor(
         val total = grouped.size
         val done = AtomicInteger(0)
         val semaphore = Semaphore(FAVORITES_FETCH_CONCURRENCY)
+        val gate = MalThrottleGate(
+            requestTimeout = FAVORITES_LOOKUP_TIMEOUT,
+            pause = FAVORITES_THROTTLE_PAUSE,
+            maxFailedProbes = FAVORITES_MAX_FAILED_PROBES,
+            onThrottledChange = onThrottledChange
+        )
         val favorites = grouped.keys.map { characterId ->
             async {
                 val favs = semaphore.withPermit {
-                    malService.getCharacter(characterId).getOrNull()?.numFavorites ?: 0
-                }
+                    gate.run { malService.getCharacter(characterId) }
+                }?.getOrNull()?.numFavorites ?: 0
                 onFavoritesProgress(done.incrementAndGet(), total)
                 characterId to favs
             }
@@ -320,8 +333,17 @@ class MalRepository @Inject constructor(
     companion object {
         const val MAL_AUTH_REDIRECT_HOST = "grigmal.auth"
 
-        // Max concurrent MAL character-favorites lookups on the person screen.
-        private const val FAVORITES_FETCH_CONCURRENCY = 8
+        // Max concurrent MAL character-favorites lookups on the person screen. Matches
+        // OkHttp's per-host limit so each permit holder is actually on the wire and
+        // FAVORITES_LOOKUP_TIMEOUT measures MAL's response, not the dispatcher queue.
+        private const val FAVORITES_FETCH_CONCURRENCY = 5
+
+        // A normal lookup answers in under 1s; one that takes longer means MAL is throttling.
+        private val FAVORITES_LOOKUP_TIMEOUT = 5.seconds
+        // MAL's throttling lasts ~60–90s, so this probes a few times per block.
+        private val FAVORITES_THROTTLE_PAUSE = 15.seconds
+        // ~3 minutes of failed probes (well past a throttling block) before giving up.
+        private const val FAVORITES_MAX_FAILED_PROBES = 9
         private const val ANIME_LIST_PAGE_SIZE = 100
     }
 }

@@ -42,7 +42,10 @@ fun PersonDetailScreen(
     ) {
         when (val currentState = state) {
             is PersonDetailState.Loading -> {
-                PersonDetailLoading(progress = currentState.progress)
+                PersonDetailLoading(
+                    progress = currentState.progress,
+                    isThrottled = currentState.isThrottled
+                )
             }
             is PersonDetailState.Content -> {
                 val person = currentState.person
