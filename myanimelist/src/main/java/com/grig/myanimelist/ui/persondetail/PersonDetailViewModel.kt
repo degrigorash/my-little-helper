@@ -44,7 +44,12 @@ class PersonDetailViewModel @Inject constructor(
                 }
             ).fold(
                 onSuccess = { person ->
-                    _state.value = PersonDetailState.Content(person = person)
+                    val hasStaffCredits = person.person.anime.isNotEmpty() || person.person.manga.isNotEmpty()
+                    _state.value = if (person.characters.isEmpty() && hasStaffCredits) {
+                        PersonDetailState.NoVoiceRoles(personId = personId)
+                    } else {
+                        PersonDetailState.Content(person = person)
+                    }
                 },
                 onFailure = { error ->
                     _state.value = PersonDetailState.Error(

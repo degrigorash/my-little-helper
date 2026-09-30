@@ -35,6 +35,49 @@
                     android:host="grigmal.auth"
                     android:scheme="app" />
             </intent-filter>
+            <!--
+                myanimelist.net pages with an in-app screen; see parseMalDeepLink. Paths are kept
+                to numeric ids so /anime/season, genre pages and the OAuth login stay in the browser.
+                pathPattern has no digit class (pathAdvancedPattern needs API 31), hence one pattern
+                per leading digit. MAL won't host our assetlinks.json, so the links can't be verified:
+                on Android 12+ they open in-app only after the user adds myanimelist.net under
+                App info > Open by default.
+            -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="https" />
+                <data android:scheme="http" />
+                <data android:host="myanimelist.net" />
+                <data android:host="www.myanimelist.net" />
+
+                <data android:pathPattern="/anime/1.*" />
+                <data android:pathPattern="/anime/2.*" />
+                <data android:pathPattern="/anime/3.*" />
+                <data android:pathPattern="/anime/4.*" />
+                <data android:pathPattern="/anime/5.*" />
+                <data android:pathPattern="/anime/6.*" />
+                <data android:pathPattern="/anime/7.*" />
+                <data android:pathPattern="/anime/8.*" />
+                <data android:pathPattern="/anime/9.*" />
+                <data android:pathPrefix="/anime/producer/" />
+
+                <data android:pathPattern="/manga/1.*" />
+                <data android:pathPattern="/manga/2.*" />
+                <data android:pathPattern="/manga/3.*" />
+                <data android:pathPattern="/manga/4.*" />
+                <data android:pathPattern="/manga/5.*" />
+                <data android:pathPattern="/manga/6.*" />
+                <data android:pathPattern="/manga/7.*" />
+                <data android:pathPattern="/manga/8.*" />
+                <data android:pathPattern="/manga/9.*" />
+
+                <data android:pathPrefix="/character/" />
+                <data android:pathPrefix="/people/" />
+            </intent-filter>
         </activity>
     </application>
 

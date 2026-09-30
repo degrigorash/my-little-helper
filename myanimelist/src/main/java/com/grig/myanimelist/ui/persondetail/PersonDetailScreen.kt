@@ -10,6 +10,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -30,7 +31,8 @@ import com.grig.myanimelist.ui.common.ToolbarOverlay
 fun PersonDetailScreen(
     viewModel: PersonDetailViewModel,
     navigateBack: () -> Unit,
-    navigateToCharacterDetail: (Int) -> Unit = {}
+    navigateToCharacterDetail: (Int) -> Unit = {},
+    navigateToAuthorDetail: (Int) -> Unit = {}
 ) {
     val state by viewModel.state.collectAsState()
     val colors = AppThemeExtended.colorScheme
@@ -102,6 +104,12 @@ fun PersonDetailScreen(
                         onBackClick = navigateBack
                     )
                 }
+            }
+            is PersonDetailState.NoVoiceRoles -> {
+                LaunchedEffect(currentState.personId) {
+                    navigateToAuthorDetail(currentState.personId)
+                }
+                PersonDetailLoading(progress = null)
             }
             is PersonDetailState.Error -> {
                 Text(

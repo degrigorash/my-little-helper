@@ -14,5 +14,11 @@ sealed interface PersonDetailState {
         val isThrottled: Boolean = false
     ) : PersonDetailState
     data class Content(val person: PersonDetail) : PersonDetailState
+
+    /**
+     * The person voices no characters but has staff or author credits (a mangaka opened via a
+     * myanimelist.net/people link), which the author screen shows instead.
+     */
+    data class NoVoiceRoles(val personId: Int) : PersonDetailState
     data class Error(val message: String) : PersonDetailState
 }

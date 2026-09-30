@@ -288,6 +288,11 @@ fun NavGraphBuilder.malNavigation(
                     navController.navigate(MalRoute.CharacterDetail(characterId)) {
                         popUpTo<MalRoute.PersonDetail> { inclusive = true }
                     }
+                },
+                navigateToAuthorDetail = { personId ->
+                    navController.navigate(MalRoute.AuthorDetail(personId)) {
+                        popUpTo<MalRoute.PersonDetail> { inclusive = true }
+                    }
                 }
             )
         }
