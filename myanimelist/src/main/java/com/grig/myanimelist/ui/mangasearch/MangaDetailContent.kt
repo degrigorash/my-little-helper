@@ -57,7 +57,8 @@ fun MangaDetailContent(
     isLoadingRelatedAnime: Boolean = false,
     onRelatedAnimeClick: (Int) -> Unit = {},
     onReviewsClick: () -> Unit = {},
-    onCharactersClick: () -> Unit = {}
+    onCharactersClick: () -> Unit = {},
+    onScoreClick: () -> Unit = {}
 ) {
     var showDeleteConfirm by remember { mutableStateOf(false) }
 
@@ -110,7 +111,12 @@ fun MangaDetailContent(
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        StatsRow(mean = manga.mean, rank = manga.rank, members = manga.numListUsers)
+        StatsRow(
+            mean = manga.mean,
+            rank = manga.rank,
+            members = manga.numListUsers,
+            onScoreClick = onScoreClick
+        )
 
         val chapterCount = manga.numChapters?.takeIf { it > 0 }
         val volumeCount = manga.numVolumes?.takeIf { it > 0 }

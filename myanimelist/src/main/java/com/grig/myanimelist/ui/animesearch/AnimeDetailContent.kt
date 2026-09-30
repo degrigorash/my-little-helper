@@ -59,7 +59,8 @@ fun AnimeDetailContent(
     isLoadingRelatedManga: Boolean = false,
     onRelatedMangaClick: (Int) -> Unit = {},
     onReviewsClick: () -> Unit = {},
-    onCharactersClick: () -> Unit = {}
+    onCharactersClick: () -> Unit = {},
+    onScoreClick: () -> Unit = {}
 ) {
     var showDeleteConfirm by remember { mutableStateOf(false) }
 
@@ -114,7 +115,12 @@ fun AnimeDetailContent(
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        StatsRow(mean = anime.mean, rank = anime.rank, members = anime.numListUsers)
+        StatsRow(
+            mean = anime.mean,
+            rank = anime.rank,
+            members = anime.numListUsers,
+            onScoreClick = onScoreClick
+        )
 
         val epCount = anime.numEpisodes?.takeIf { it > 0 }
         if (epCount != null) {

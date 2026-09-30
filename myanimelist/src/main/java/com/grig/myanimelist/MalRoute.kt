@@ -25,6 +25,14 @@ sealed class MalRoute {
     @Serializable
     data class Reviews(val mediaId: Int, val mediaType: String) : MalRoute()
 
+    /** Dialog destination; [mean] comes from the detail screen so the header renders instantly. */
+    @Serializable
+    data class ScoreStats(
+        val mediaId: Int,
+        val mediaType: String,
+        val mean: Float
+    ) : MalRoute()
+
     @Serializable
     data class Characters(val mediaId: Int, val mediaType: String) : MalRoute()
 

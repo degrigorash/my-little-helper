@@ -1,6 +1,7 @@
 package com.grig.myanimelist.ui.home
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -15,6 +16,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -31,18 +33,33 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
+/**
+ * Score, rank and member count. When [onScoreClick] is set the score becomes
+ * tappable and gets a trailing chevron as the affordance.
+ */
 @Composable
 fun StatsRow(
     mean: Float?,
     rank: Int?,
-    members: Int?
+    members: Int?,
+    onScoreClick: (() -> Unit)? = null
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         if (mean != null) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = if (onScoreClick != null) {
+                    Modifier
+                        .clip(RoundedCornerShape(8.dp))
+                        .clickable(onClickLabel = "Show score statistics", onClick = onScoreClick)
+                        .padding(vertical = 4.dp)
+                } else {
+                    Modifier
+                }
+            ) {
                 Icon(
                     painter = painterResource(R.drawable.ic_star),
                     contentDescription = null,
@@ -56,6 +73,14 @@ fun StatsRow(
                     fontWeight = FontWeight.SemiBold,
                     color = MaterialTheme.colorScheme.onSurface
                 )
+                if (onScoreClick != null) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_chevron_right),
+                        contentDescription = null,
+                        modifier = Modifier.size(16.dp),
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
             }
         }
         if (rank != null) {
@@ -198,6 +223,22 @@ private fun StatsRowPreview() {
 private fun StatsRowDarkPreview() {
     AppTheme(darkTheme = true) {
         StatsRow(mean = 8.9f, rank = 1, members = 2_100_000)
+    }
+}
+
+@Preview(name = "Stats Row - Clickable score")
+@Composable
+private fun StatsRowClickablePreview() {
+    AppTheme(darkTheme = false) {
+        StatsRow(mean = 8.9f, rank = 1, members = 2_100_000, onScoreClick = {})
+    }
+}
+
+@Preview(name = "Stats Row - Clickable score Dark")
+@Composable
+private fun StatsRowClickableDarkPreview() {
+    AppTheme(darkTheme = true) {
+        StatsRow(mean = 8.9f, rank = 1, members = 2_100_000, onScoreClick = {})
     }
 }
 

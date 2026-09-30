@@ -7,6 +7,7 @@ import com.grig.myanimelist.data.model.jikan.JikanPersonFullResponse
 import com.grig.myanimelist.data.model.jikan.JikanProducerResponse
 import com.grig.myanimelist.data.model.jikan.JikanRelationsResponse
 import com.grig.myanimelist.data.model.jikan.JikanReviewsResponse
+import com.grig.myanimelist.data.model.jikan.JikanStatisticsResponse
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -40,6 +41,16 @@ interface JikanService {
         @Path("id") mangaId: Int,
         @Query("page") page: Int = 1
     ): Result<JikanReviewsResponse>
+
+    @GET("anime/{id}/statistics")
+    suspend fun getAnimeStatistics(
+        @Path("id") animeId: Int
+    ): Result<JikanStatisticsResponse>
+
+    @GET("manga/{id}/statistics")
+    suspend fun getMangaStatistics(
+        @Path("id") mangaId: Int
+    ): Result<JikanStatisticsResponse>
 
     @GET("anime/{id}/characters")
     suspend fun getAnimeCharacters(

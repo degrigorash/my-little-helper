@@ -163,6 +163,12 @@ class MalRepository @Inject constructor(
     suspend fun getMangaReviews(mangaId: Int, page: Int = 1) =
         jikanService.getMangaReviews(mangaId, page)
 
+    suspend fun getAnimeStatistics(animeId: Int) =
+        jikanService.getAnimeStatistics(animeId)
+
+    suspend fun getMangaStatistics(mangaId: Int) =
+        jikanService.getMangaStatistics(mangaId)
+
     suspend fun getAnimeCharacters(animeId: Int) =
         jikanService.getAnimeCharacters(animeId)
 

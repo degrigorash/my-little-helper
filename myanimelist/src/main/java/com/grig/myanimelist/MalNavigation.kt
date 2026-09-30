@@ -5,6 +5,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.dialog
 import com.grig.core.theme.AppTheme
 import com.grig.myanimelist.ui.animedetail.AnimeDetailScreen
 import com.grig.myanimelist.ui.animelist.AnimeListViewModel
@@ -20,6 +21,7 @@ import com.grig.myanimelist.ui.mangalist.MangaListViewModel
 import com.grig.myanimelist.ui.mangasearch.MangaSearchScreen
 import com.grig.myanimelist.ui.persondetail.PersonDetailScreen
 import com.grig.myanimelist.ui.reviews.ReviewsScreen
+import com.grig.myanimelist.ui.scorestats.ScoreStatsScreen
 import com.grig.myanimelist.ui.studiodetail.StudioDetailScreen
 import com.grig.myanimelist.ui.seasons.SeasonsScreen
 
@@ -197,6 +199,9 @@ fun NavGraphBuilder.malNavigation(
                 },
                 navigateToCharacters = { animeId ->
                     navController.navigate(MalRoute.Characters(animeId, "anime"))
+                },
+                navigateToScoreStats = { animeId, mean ->
+                    navController.navigate(MalRoute.ScoreStats(animeId, "anime", mean))
                 }
             )
         }
@@ -229,6 +234,9 @@ fun NavGraphBuilder.malNavigation(
                 },
                 navigateToCharacters = { mangaId ->
                     navController.navigate(MalRoute.Characters(mangaId, "manga"))
+                },
+                navigateToScoreStats = { mangaId, mean ->
+                    navController.navigate(MalRoute.ScoreStats(mangaId, "manga", mean))
                 }
             )
         }
@@ -238,6 +246,14 @@ fun NavGraphBuilder.malNavigation(
             ReviewsScreen(
                 viewModel = hiltViewModel(),
                 navigateBack = { navController.popBackStack() }
+            )
+        }
+    }
+    dialog<MalRoute.ScoreStats> {
+        AppTheme {
+            ScoreStatsScreen(
+                viewModel = hiltViewModel(),
+                onDismiss = { navController.popBackStack() }
             )
         }
     }
